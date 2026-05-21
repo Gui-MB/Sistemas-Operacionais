@@ -3,12 +3,14 @@
 
 enum Color { RED, BLACK };
 
+// Nó da árvore vermelha e preta
 typedef struct RBNode {
     Process* process;
     enum Color color;
     struct RBNode *left, *right, *parent;
 } RBNode;
 
+// Raiz da árvore e nó nulo
 static RBNode* root;
 static RBNode* TNULL;
 
@@ -21,6 +23,7 @@ void rb_init(void) {
     root = TNULL;
 }
 
+// Função de rotação à esquerda
 void left_rotate(RBNode* x) {
     RBNode* y = x->right;
     x->right = y->left;
@@ -33,6 +36,7 @@ void left_rotate(RBNode* x) {
     x->parent = y;
 }
 
+// Função de rotação à direita
 void right_rotate(RBNode* x) {
     RBNode* y = x->left;
     x->left = y->right;
@@ -101,7 +105,7 @@ void rb_insert(Process* p) {
 
     while (x != TNULL) {
         y = x;
-        // Ordena pelo vruntime. Em caso de empate, usa o PID para estabilidade
+        // Ordena pelo vruntime. Em caso de empate, usa o PID
         if (node->process->vruntime < x->process->vruntime || 
            (node->process->vruntime == x->process->vruntime && node->process->pid < x->process->pid)) {
             x = x->left;
@@ -129,6 +133,7 @@ void rb_insert(Process* p) {
     rb_insert_fix(node);
 }
 
+// Transplanta um nó na árvore (usado para remoção)
 void rb_transplant(RBNode* u, RBNode* v) {
     if (u->parent == NULL) root = v;
     else if (u == u->parent->left) u->parent->left = v;
@@ -136,6 +141,7 @@ void rb_transplant(RBNode* u, RBNode* v) {
     v->parent = u->parent;
 }
 
+// Encontra o nó com menor vruntime (mais à esquerda)
 static RBNode* rb_minimum(RBNode* node) {
     while (node->left != TNULL) node = node->left;
     return node;
@@ -230,6 +236,7 @@ static void rb_delete(RBNode* z) {
     free(z);
 }
 
+// Retorna o processo com menor vruntime (mais à esquerda)
 Process *rb_minimum_process(void) {
     if (root == TNULL) {
         return NULL;
@@ -237,6 +244,7 @@ Process *rb_minimum_process(void) {
     return rb_minimum(root)->process;
 }
 
+// Remove e retorna o processo com menor vruntime (mais à esquerda)
 Process *rb_pop_min_process(void) {
     if (root == TNULL) {
         return NULL;
@@ -247,6 +255,7 @@ Process *rb_pop_min_process(void) {
     return p;
 }
 
+// Destrói a árvore em relação a uma subárvore e libera a memória
 static void rb_free_subtree(RBNode *node) {
     if (node == NULL || node == TNULL) {
         return;
@@ -256,6 +265,7 @@ static void rb_free_subtree(RBNode *node) {
     free(node);
 }
 
+// Destrói a árvore e libera a memória
 void rb_destroy(void) {
     rb_free_subtree(root);
     free(TNULL);

@@ -1,0 +1,1 @@
+add documentation for scheduler_manager

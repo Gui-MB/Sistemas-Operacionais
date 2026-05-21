@@ -21,15 +21,6 @@ void cfs_destroy(void) {
 	}
 }
 
-// Reinsere um processo na árvore após ser preemptado
-void cfs_requeue(Process *p) {
-	if (p == NULL || p->is_completed || p->in_cfs_tree) {
-		return;
-	}
-	rb_insert(p);
-	p->in_cfs_tree = 1;
-}
-
 // Enfileira novos processos prontos na árvore
 static void cfs_enqueue_ready(int current_time) {
 	for (int i = 0; i < num_processes; i++) {
@@ -40,7 +31,7 @@ static void cfs_enqueue_ready(int current_time) {
 	}
 }
 
-// Seleciona o processo pronto com menor vruntime.
+// Seleciona o processo pronto com menor vruntime e enfileira novos processos na árvore
 int get_next_cfs(int current_time) {
 	cfs_init();
 	cfs_enqueue_ready(current_time);

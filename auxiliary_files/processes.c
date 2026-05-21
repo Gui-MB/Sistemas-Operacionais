@@ -10,6 +10,7 @@ int time_slice = 0;
 char algorithm[50];
 static FILE *log_file = NULL;
 
+// Imprime mensagens no arquivo de saída
 int init_output_file(const char *filename) {
     log_file = fopen(filename, "w");
     if (!log_file) {
@@ -18,6 +19,7 @@ int init_output_file(const char *filename) {
     return 1;
 }
 
+// Fecha o arquivo de saída, se estiver aberto
 void close_output_file(void) {
     if (log_file) {
         fclose(log_file);
@@ -25,6 +27,7 @@ void close_output_file(void) {
     }
 }
 
+// Imprime mensagens tanto no console quanto no arquivo de saída
 int log_printf(const char *format, ...) {
     va_list args;
     va_start(args, format);
@@ -43,7 +46,7 @@ int log_printf(const char *format, ...) {
     return count_stdout;
 }
 
-// Le o arquivo de entrada e inicializa a lista de processos, um por vez.
+// Lê o arquivo de entrada e inicializa a lista de processos
 void read_input_file(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -59,7 +62,7 @@ void read_input_file(const char *filename) {
         algorithm[strcspn(algorithm, "\r\n")] = 0;
     }
 
-    // Processos: tempo_criacao|pid|tempo_execucao|prioridade
+    // Linhas dos processos: tempo_criacao|pid|tempo_execucao|prioridade
     while (fgets(line, sizeof(line), file)) {
         sscanf(line, "%d|%d|%d|%d",
                &processes[num_processes].creation_time,
@@ -67,7 +70,7 @@ void read_input_file(const char *filename) {
                &processes[num_processes].exec_time,
                &processes[num_processes].priority);
 
-        // Inicializa os campos restantes do processo: remaining_time, vruntime, is_completed, creation_announced, in_cfs_tree
+        // Inicializa campos extras para cada processo: remaining_time|vruntime|is_completed|creation_announced|in_cfs_tree
         processes[num_processes].remaining_time = processes[num_processes].exec_time;
         processes[num_processes].vruntime = 0;
         processes[num_processes].is_completed = 0;
@@ -78,7 +81,7 @@ void read_input_file(const char *filename) {
     fclose(file);
 }
 
-// Imprime os detalhes de acordo com o algoritmo selecionado
+// Imprime os detalhes de evento de acordo com o algoritmo selecionado
 static void print_algo_details(const Process *p) {
     if (strcmp(algorithm, "prioridade") == 0) {
         log_printf(" | priority=%-4d", p->priority);
@@ -99,13 +102,25 @@ void print_process_event(const char *event, int current_time, const Process *p, 
         log_printf(" | remaining_t=%-4d | cpu_slice=%-3d", p->remaining_time, run_time);
     } else if (strcmp(event, "PREEMPT") == 0) {
         log_printf(" | remaining_t=%-4d", p->remaining_time);
+    } else if (strcmp(event, "FINISH") == 0) {
+        log_printf(" | remaining_t=%-4d", p->remaining_time);
     }
 
     print_algo_details(p);
     log_printf("\n");
 }
 
-// Imprime a tabela de resultados finais para cada processo.
+// Anuncia os processos criados no tempo atual e marca como anunciados
+void announce_created_processes(int current_time) {
+    for (int i = 0; i < num_processes; i++) {
+        if (!processes[i].creation_announced && processes[i].creation_time <= current_time) {
+            processes[i].creation_announced = 1;
+            print_process_event("CREATE", current_time, &processes[i], 0);
+        }
+    }
+}
+
+// Imprime a tabela de resultados finais
 void print_metrics(void) {
     log_printf("\n--- RESULTADOS DA EXECUÇÃO ---\n");
     log_printf("%-5s | %-17s | %-16s | %-16s\n", "PID", "Latência", "Tempo de Espera", "Tempo de Execução");
