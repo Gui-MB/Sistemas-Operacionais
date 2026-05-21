@@ -11,8 +11,16 @@
 
 #define INPUT_FILE "entradaEscalonador.txt"
 
-// Função para verificar se o algoritmo selecionado é o CFS
-// Isso é feito para facilitar a chamada de funções específicas do CFS
+// Verifica qual é o algoritmo selecionado
+static int is_rr(void) {
+	return strcmp(algorithm, "alternanciaCircular") == 0;
+}
+static int is_priority(void) {
+	return strcmp(algorithm, "prioridade") == 0;
+}
+static int is_lottery(void) {
+	return strcmp(algorithm, "loteria") == 0;
+}
 static int is_cfs(void) {
 	return strcmp(algorithm, "CFS") == 0;
 }
@@ -29,13 +37,13 @@ static void announce_created_processes(int current_time) {
 
 // Função para selecionar o próximo processo a ser executado de acordo com o algoritmo escolhido
 static int select_next_process(int current_time, int *had_error) {
-	if (strcmp(algorithm, "alternanciaCircular") == 0) {
+	if (is_rr()) {
 		return get_next_rr(current_time);
 	}
-	if (strcmp(algorithm, "prioridade") == 0) {
+	if (is_priority()) {
 		return get_next_priority(current_time);
 	}
-	if (strcmp(algorithm, "loteria") == 0) {
+	if (is_lottery()) {
 		return get_next_lottery(current_time);
 	}
 	if (is_cfs()) {
@@ -51,7 +59,6 @@ static int select_next_process(int current_time, int *had_error) {
 static void execute_process(int selected_idx, int *current_time, int *completed_processes) {
 	Process *p = &processes[selected_idx];
 	int run_time = (p->remaining_time > time_slice) ? time_slice : p->remaining_time;
-
 	print_process_event("RUN", *current_time, p, run_time);
 
 	// Atualiza o tempo restante do processo e o tempo atual	
