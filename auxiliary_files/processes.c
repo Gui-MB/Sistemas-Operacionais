@@ -8,7 +8,7 @@ int num_processes = 0;
 int time_slice = 0;
 char algorithm[50];
 
-// Le o arquivo de entrada e inicializa a lista de processos.
+// Le o arquivo de entrada e inicializa a lista de processos, um por vez.
 void read_input_file(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -32,18 +32,46 @@ void read_input_file(const char *filename) {
                &processes[num_processes].exec_time,
                &processes[num_processes].priority);
 
-        // Inicializa os campos restantes do processo: remaining_time, vruntime, is_completed
+        // Inicializa os campos restantes do processo: remaining_time, vruntime, is_completed, creation_announced
         processes[num_processes].remaining_time = processes[num_processes].exec_time;
         processes[num_processes].vruntime = 0;
         processes[num_processes].is_completed = 0;
+        processes[num_processes].creation_announced = 0;
         num_processes++;
     }
     fclose(file);
 }
 
+// Imprime os detalhes de acordo com o algoritmo selecionado
+static void print_algo_details(const Process *p) {
+    if (strcmp(algorithm, "prioridade") == 0) {
+        printf(" | priority=%d", p->priority);
+    } else if (strcmp(algorithm, "loteria") == 0) {
+        printf(" | tickets=%d", p->priority);
+    } else if (strcmp(algorithm, "CFS") == 0) {
+        printf(" | priority=%d | vruntime=%d", p->priority, p->vruntime);
+    }
+}
+
+// Imprime os eventos de criação, execução, preempção e finalização dos processos.
+void print_process_event(const char *event, int current_time, const Process *p, int run_time) {
+    printf("[T=%03d] %s pid=%d", current_time, event, p->pid);
+
+    if (strcmp(event, "CREATE") == 0) {
+        printf(" | total_exec_time=%d", p->exec_time);
+    } else if (strcmp(event, "RUN") == 0) {
+        printf(" | remaining_exec_time=%d | CPU_slice=%d", p->remaining_time, run_time);
+    } else if (strcmp(event, "PREEMPT") == 0) {
+        printf(" | remaining_exec_time=%d", p->remaining_time);
+    }
+
+    print_algo_details(p);
+    printf("\n");
+}
+
 // Imprime a tabela de resultados finais para cada processo.
 void print_metrics(void) {
-    printf("\n--- RESULTADOS FINAIS ---\n");
+    printf("\n--- RESULTADOS DA EXECUÇÃO ---\n");
     printf("%-5s | %-16s | %-16s\n", "PID", "Latência", "Tempo de Espera");
     printf("-------------------------------------------------\n");
 
@@ -62,5 +90,5 @@ void print_metrics(void) {
     }
 
     printf("-------------------------------------------------\n");
-    printf("Latência Média: | %-16.2f\n Tempo de Espera Médio:| %-16.2f\n", total_latency / num_processes, total_wt / num_processes);
+    printf("Latência Média: | %-16.2f\nTempo de Espera Médio:| %-16.2f\n", total_latency / num_processes, total_wt / num_processes);
 }
