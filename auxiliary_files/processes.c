@@ -44,21 +44,23 @@ void read_input_file(const char *filename) {
 // Imprime a tabela de resultados finais para cada processo.
 void print_metrics(void) {
     printf("\n--- RESULTADOS FINAIS ---\n");
-    printf("%-5s | %-16s\n", "PID", "Latência");
+    printf("%-5s | %-16s | %-16s\n", "PID", "Latência", "Tempo de Espera");
     printf("-------------------------------------------------\n");
 
+    float total_latency = 0;
     float total_wt = 0;
 
     for (int i = 0; i < num_processes; i++) {
         Process p = processes[i];
-        int turnaround_time = p.completion_time - p.creation_time;
-        int waiting_time = turnaround_time - p.exec_time;
+        int latency_time = p.completion_time - p.creation_time;
+        int waiting_time = latency_time - p.exec_time;
 
+        total_latency += latency_time;
         total_wt += waiting_time;
 
-        printf("%-5d | %-16d\n", p.pid, waiting_time);
+        printf("%-5d | %-16d | %-16d\n", p.pid, latency_time, waiting_time);
     }
 
     printf("-------------------------------------------------\n");
-    printf("Média | %-16.2f\n", total_wt / num_processes);
+    printf("Latência Média: | %-16.2f\n Tempo de Espera Médio:| %-16.2f\n", total_latency / num_processes, total_wt / num_processes);
 }
