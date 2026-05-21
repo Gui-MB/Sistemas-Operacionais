@@ -22,6 +22,9 @@ extern int num_processes;
 extern int time_slice;
 extern char algorithm[50];
 
+int init_output_file(const char *filename);
+void close_output_file(void);
+int log_printf(const char *format, ...);
 void read_input_file(const char *filename);
 void print_process_event(const char *event, int current_time, const Process *p, int run_time);
 void print_metrics(void);

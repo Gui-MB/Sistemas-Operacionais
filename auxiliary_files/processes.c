@@ -1,4 +1,5 @@
 #include "processes.h"
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,12 +8,46 @@ Process processes[MAX_PROCESSES];
 int num_processes = 0;
 int time_slice = 0;
 char algorithm[50];
+static FILE *log_file = NULL;
+
+int init_output_file(const char *filename) {
+    log_file = fopen(filename, "w");
+    if (!log_file) {
+        return 0;
+    }
+    return 1;
+}
+
+void close_output_file(void) {
+    if (log_file) {
+        fclose(log_file);
+        log_file = NULL;
+    }
+}
+
+int log_printf(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    int count_stdout = vfprintf(stdout, format, args);
+    va_end(args);
+
+    if (log_file) {
+        va_list args_file;
+        va_start(args_file, format);
+        vfprintf(log_file, format, args_file);
+        va_end(args_file);
+        fflush(log_file);
+    }
+
+    fflush(stdout);
+    return count_stdout;
+}
 
 // Le o arquivo de entrada e inicializa a lista de processos, um por vez.
 void read_input_file(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
-        printf("Erro ao abrir o arquivo %s!\n", filename);
+        log_printf("Erro ao abrir o arquivo %s!\n", filename);
         exit(1);
     }
 
@@ -46,38 +81,39 @@ void read_input_file(const char *filename) {
 // Imprime os detalhes de acordo com o algoritmo selecionado
 static void print_algo_details(const Process *p) {
     if (strcmp(algorithm, "prioridade") == 0) {
-        printf(" | priority=%d", p->priority);
+        log_printf(" | priority=%-4d", p->priority);
     } else if (strcmp(algorithm, "loteria") == 0) {
-        printf(" | tickets=%d", p->priority);
+        log_printf(" | tickets=%-4d", p->priority);
     } else if (strcmp(algorithm, "CFS") == 0) {
-        printf(" | priority=%d | vruntime=%d", p->priority, p->vruntime);
+        log_printf(" | priority=%-4d | vruntime=%-4d", p->priority, p->vruntime);
     }
 }
 
 // Imprime os eventos de criação, execução, preempção e finalização dos processos.
 void print_process_event(const char *event, int current_time, const Process *p, int run_time) {
-    printf("[T=%03d] %-7s | pid=%-4d", current_time, event, p->pid);
+    log_printf("[T=%03d] %-7s | pid=%-3d", current_time, event, p->pid);
 
     if (strcmp(event, "CREATE") == 0) {
-        printf(" | total_t=%-4d", p->exec_time);
+        log_printf(" | total_t=%-8d", p->exec_time);
     } else if (strcmp(event, "RUN") == 0) {
-        printf(" | remaining_t=%-4d | cpu_slice=%-3d", p->remaining_time, run_time);
+        log_printf(" | remaining_t=%-4d | cpu_slice=%-3d", p->remaining_time, run_time);
     } else if (strcmp(event, "PREEMPT") == 0) {
-        printf(" | remaining_t=%-4d", p->remaining_time);
+        log_printf(" | remaining_t=%-4d", p->remaining_time);
     }
 
     print_algo_details(p);
-    printf("\n");
+    log_printf("\n");
 }
 
 // Imprime a tabela de resultados finais para cada processo.
 void print_metrics(void) {
-    printf("\n--- RESULTADOS DA EXECUÇÃO ---\n");
-    printf("%-5s | %-16s | %-16s\n", "PID", "Latência", "Tempo de Espera");
-    printf("-------------------------------------------------\n");
+    log_printf("\n--- RESULTADOS DA EXECUÇÃO ---\n");
+    log_printf("%-5s | %-17s | %-16s | %-16s\n", "PID", "Latência", "Tempo de Espera", "Tempo de Execução");
+    log_printf("---------------------------------------------------------------------\n");
 
     float total_latency = 0;
     float total_wt = 0;
+    int total_exec_time = 0;
 
     for (int i = 0; i < num_processes; i++) {
         Process p = processes[i];
@@ -86,10 +122,13 @@ void print_metrics(void) {
 
         total_latency += latency_time;
         total_wt += waiting_time;
+        total_exec_time += p.exec_time;
 
-        printf("%-5d | %-16d | %-16d\n", p.pid, latency_time, waiting_time);
+        log_printf("%-5d | %-16d | %-16d | %-16d\n", p.pid, latency_time, waiting_time, p.exec_time);
     }
 
-    printf("-------------------------------------------------\n");
-    printf("Latência Média: | %-16.2f\nTempo de Espera Médio:| %-16.2f\n", total_latency / num_processes, total_wt / num_processes);
+    log_printf("---------------------------------------------------------------------\n");
+    log_printf("Latência Média: %-16.2f\n", total_latency / num_processes);
+    log_printf("Tempo de Espera Médio: %-16.2f\n", total_wt / num_processes);
+    log_printf("Tempo Total de Execução: %-16d\n", total_exec_time);
 }

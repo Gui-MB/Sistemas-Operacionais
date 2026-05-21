@@ -48,4 +48,8 @@ Os resultados são exibidos no terminal. Em geral, a saída inclui:
 
 ## Observações sobre IA
 
-A IA foi utilizada para preencher os arquivos .h, para implementar a árvore vermelho e preta e para escrever o arquivo README.md
+A IA foi utilizada para:
+- preencher e revisar as informações dos arquivos .h
+- criar a função `log_printf()`
+- implementar a estrutura de dados da árvore vermelho e preta
+- auxiliar na escrita do arquivo README.md

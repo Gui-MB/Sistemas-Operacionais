@@ -10,6 +10,7 @@
 #include "scheduler_algorithms/round_robin.h"
 
 #define INPUT_FILE "entradaEscalonador.txt"
+#define OUTPUT_FILE "saidaEscalonador.txt"
 
 // Verifica qual é o algoritmo selecionado
 static int is_rr(void) {
@@ -50,7 +51,7 @@ static int select_next_process(int current_time, int *had_error) {
 		return get_next_cfs(current_time);
 	}
 
-	printf("Erro: Algoritmo desconhecido (%s)\n", algorithm);
+	log_printf("Erro: Algoritmo desconhecido (%s)\n", algorithm);
 	*had_error = 1;
 	return -1;
 }
@@ -90,10 +91,14 @@ static void execute_process(int selected_idx, int *current_time, int *completed_
 
 int main(void) {
 	srand((unsigned)time(NULL));
+	if (!init_output_file(OUTPUT_FILE)) {
+		fprintf(stderr, "Erro ao abrir o arquivo de saida %s!\n", OUTPUT_FILE);
+		return 1;
+	}
 	read_input_file(INPUT_FILE);
 
-	printf("Inicio do escalonador\n");
-	printf("Algoritmo: %s | Slice: %d\n\n", algorithm, time_slice);
+	log_printf("Inicio do escalonador\n");
+	log_printf("Algoritmo: %s | Slice: %d\n\n", algorithm, time_slice);
 
 	int current_time = 0;
 	int completed_processes = 0;
@@ -109,7 +114,7 @@ int main(void) {
 
 		// CPU ociosa quando não há processos prontos
 		if (selected_idx == -1) {
-			printf("[T=%03d] IDLE\n", current_time);
+			log_printf("[T=%03d] IDLE\n", current_time);
 			current_time++;
 			continue;
 		}
@@ -124,5 +129,6 @@ int main(void) {
 
 	// Imprime a tabela com os resultados finais
 	print_metrics();
+	close_output_file();
 	return 0;
 }
