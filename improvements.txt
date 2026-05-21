@@ -1,1 +1,2 @@
 add documentation for scheduler_manager
+update readme.md
