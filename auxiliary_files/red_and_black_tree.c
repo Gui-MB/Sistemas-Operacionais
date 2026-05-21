@@ -237,6 +237,16 @@ Process *rb_minimum_process(void) {
     return rb_minimum(root)->process;
 }
 
+Process *rb_pop_min_process(void) {
+    if (root == TNULL) {
+        return NULL;
+    }
+    RBNode *min_node = rb_minimum(root);
+    Process *p = min_node->process;
+    rb_delete(min_node);
+    return p;
+}
+
 static void rb_free_subtree(RBNode *node) {
     if (node == NULL || node == TNULL) {
         return;

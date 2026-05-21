@@ -7,5 +7,6 @@ void rb_init(void);
 void rb_destroy(void);
 void rb_insert(Process *p);
 Process *rb_minimum_process(void);
+Process *rb_pop_min_process(void);
 
 #endif
