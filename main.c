@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
 #include "auxiliary_files/processes.h"
 #include "scheduler_algorithms/cfs.h"
 #include "scheduler_algorithms/lottery.h"
 #include "scheduler_algorithms/priority.h"
 #include "scheduler_algorithms/round_robin.h"
+#include <locale.h>
 
 #define INPUT_FILE "entradaEscalonador.txt"
 
@@ -81,7 +81,8 @@ static void execute_process(int selected_idx, int *current_time, int *completed_
 	}
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
+	setlocale(LC_ALL, "pt_BR.UTF-8");
 	srand((unsigned)time(NULL));
 	read_input_file(INPUT_FILE);
 
