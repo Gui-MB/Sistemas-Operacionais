@@ -79,6 +79,10 @@ static void execute_process(int selected_idx, int *current_time, int *completed_
 	if (is_cfs()) {
 		cfs_requeue(p);
 	}
+	// Reinsere o processo na fila do RR se for o algoritmo selecionado
+	if (strcmp(algorithm, "alternanciaCircular") == 0) {
+		rr_requeue(selected_idx);
+	}
 }
 
 int main(int argc, char *argv[]) {

@@ -3,4 +3,6 @@
 
 int get_next_rr(int current_time);
 
+void rr_requeue(int idx);
+
 #endif
