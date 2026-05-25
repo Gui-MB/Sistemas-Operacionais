@@ -1,10 +1,12 @@
 #include "heap_min.h"
 #include <stddef.h>
 
+// Vetor que representa o heap mínimo e seu estado atual
 static Process *heap[MAX_PROCESSES];
 static int heap_size = 0;
 static int heap_initialized = 0;
 
+// Compara dois processos: menor prioridade vence. Em empate, menor PID vence
 static int is_less(const Process *a, const Process *b) {
     if (a->priority != b->priority) {
         return a->priority < b->priority;
@@ -12,11 +14,13 @@ static int is_less(const Process *a, const Process *b) {
     return a->pid < b->pid;
 }
 
+// Inicializa o heap mínimo
 void heap_min_init(void) {
     heap_size = 0;
     heap_initialized = 1;
 }
 
+// Insere um processo no heap mínimo
 void heap_min_insert(Process *p) {
     if (!heap_initialized) {
         heap_min_init();
@@ -40,6 +44,7 @@ void heap_min_insert(Process *p) {
     }
 }
 
+// Remove e retorna o processo com menor prioridade do heap
 Process *heap_min_pop(void) {
     if (!heap_initialized || heap_size == 0) {
         return NULL;
