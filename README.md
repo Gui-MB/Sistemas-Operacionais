@@ -2,6 +2,8 @@
 
 Este projeto implementa um simulador de escalonamento de processos em C. Ele lê um conjunto de processos de um arquivo de entrada e aplica o algoritmo de escalonamento escolhido sobre eles.
 
+O projeto foi testado e implementado usando a versão 11.4.0 do GCC (Ubuntu 11.4.0-1ubuntu1~22.04.3).
+
 ## Estrutura do projeto
 
 - `main.c`: é o arquivo principal que carrega a entrada, aciona as simulações e realiza a contagem do tempo decorrido.
