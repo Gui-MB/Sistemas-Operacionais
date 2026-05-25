@@ -73,6 +73,11 @@ int main(void) {
 		}
 
 		execute_process(selected_idx, &current_time, &completed_processes);
+
+		// Para o algoritmo de loteria, é necessário informar que o processo terminou para atualizar a segment tree
+		if (scheduler_manager_get_algorithm() == ALG_LOTTERY) {
+			lottery_process_finished(selected_idx);
+		}
 	}
 
 	// Destrói a estrutura de árvore no caso do CFS	
