@@ -6,9 +6,10 @@ Este projeto implementa um simulador de escalonamento de processos em C. Ele lê
 
 - `main.c`: é o arquivo principal que carrega a entrada, aciona as simulações e realiza a contagem do tempo decorrido.
 - `entradaEscalonador.txt`: é o arquivo de entrada que indica a estrutura dos processos e deve estar presente na raiz do projeto.
-- `auxiliary_files/`: define os utilitários comuns (como a lógica de processos e a árvore rubro-negra).
 - `scheduler_algorithms/`: implementações dos algoritmos de escalonamento.
+- `auxiliary_files/`: define os utilitários comuns (como a lógica aplicada para todos processos e as estruturas de dados).
 - `input_generator/`: contém o arquivo gerador de entradas.
+- `saidaEscalonador.txt`: arquivo de saída gerado que contém o resumo da última execução.
 
 ## Como compilar e executar
 
@@ -21,14 +22,14 @@ gcc main.c auxiliary_files/* scheduler_algorithms/*.c -o escalonador
 
 ## Arquivo de entrada
 
-O simulador lê os processos do arquivo em `entradaEscalonador.txt`. Cada linha representa um processo com seus atributos.
+O simulador lê os processos do arquivo em `entradaEscalonador.txt`.
 
-Para gerar entradas novas, use `input_files/geradorEntrada.py` (o arquivo será gerado na raiz do projeto).
+Para gerar entradas novas, use `input_generator/geradorEntrada.py` (o arquivo criado deve ser gerado na raiz do projeto).
 
 ## Algoritmos implementados
 
 - **Alternância Circular** (`round_robin.c`).
-- **Prioridade** (`priority.c`)l.
+- **Prioridade** (`priority.c`).
 - **Lottery** (`lottery.c`).
 - **CFS** (`cfs.c`).
 
@@ -42,7 +43,7 @@ Para gerar entradas novas, use `input_files/geradorEntrada.py` (o arquivo será 
 
 ## Saída
 
-Os resultados são exibidos no terminal. Em geral, a saída inclui:
+Os resultados são exibidos no terminal e também gravados em `saidaEscalonador.txt`. Em geral, a saída inclui:
 
 - o algoritmo escolhido e o quantum,
 - a ordem de execução dos processos ao longo do tempo,
@@ -53,8 +54,8 @@ Os resultados são exibidos no terminal. Em geral, a saída inclui:
 
 A IA foi utilizada para:
 
-- preencher e revisar as informações dos arquivos .h
 - criar a função `log_printf()`
 - implementar a estrutura de dados da árvore vermelho e preta
-- implementar a estrutura de dados heap minímo
+- implementar a estrutura de dados heap mínimo
+- revisar as informações dos arquivos .h
 - auxiliar na escrita do arquivo README.md
