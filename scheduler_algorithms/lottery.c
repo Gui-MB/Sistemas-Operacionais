@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../auxiliary_files/processes.h"
-#define MAX_PROCESSES 1024   // Número arbitrário para o máximo de processos suportados. Para o contexto do trabalho é suficiente
 
 static int seg_tree[4 * MAX_PROCESSES]; // segment tree para armazenar a soma dos bilhetes (prioridades) em cada segmento
 static int leaf_tickets[MAX_PROCESSES]; // bilhetes (prioridades) dos processos nas folhas da segment tree

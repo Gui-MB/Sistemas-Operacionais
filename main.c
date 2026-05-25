@@ -5,6 +5,7 @@
 #include "auxiliary_files/processes.h"
 #include "scheduler_algorithms/cfs.h"
 #include "scheduler_algorithms/scheduler_manager.h"
+#include "scheduler_algorithms/lottery.h"
 
 #define INPUT_FILE "entradaEscalonador.txt"
 #define OUTPUT_FILE "saidaEscalonador.txt"
