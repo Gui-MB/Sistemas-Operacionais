@@ -8,11 +8,15 @@
 #include "rec_used.h"
 #include "freq_used.h"
 #include "optimal.h"
+#include "../auxiliary_files/processes.h" // Inserido para exibir o log de processos
 
 void memory_manager_simulate(const Process *p, PageFaultResult *result) {
     int frames = p->frame_limit;
     int seq_len = p->page_sequence_len;
     const int *seq = p->page_sequence;
+
+    // ATIVA OU DESATIVA O PRINT DO PASSO A PASSO
+    int print_seq = 1; 
 
     if (frames <= 0 || seq_len <= 0 || seq == NULL) {
         result->fifo_faults = 0;
@@ -22,8 +26,14 @@ void memory_manager_simulate(const Process *p, PageFaultResult *result) {
         return;
     }
 
-    result->fifo_faults = fifo_simulate(frames, seq, seq_len);
-    result->lru_faults = lru_simulate(frames, seq, seq_len);
-    result->nfu_faults = nfu_simulate(frames, seq, seq_len);
-    result->optimal_faults = optimal_simulate(frames, seq, seq_len);
+    if (print_seq) {
+        log_printf("\n----------------------------------------------------------------------\n");
+        log_printf("Estado de Memória para o processo PID: %d (Frames: %d)\n", p->pid, frames);
+        log_printf("----------------------------------------------------------------------");
+    }
+
+    result->fifo_faults = fifo_simulate(frames, seq, seq_len, print_seq);
+    result->lru_faults = lru_simulate(frames, seq, seq_len, print_seq);
+    result->nfu_faults = nfu_simulate(frames, seq, seq_len, print_seq);
+    result->optimal_faults = optimal_simulate(frames, seq, seq_len, print_seq);
 }

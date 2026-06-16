@@ -224,9 +224,9 @@ void announce_created_processes(int current_time) {
 
 // Imprime a tabela de resultados finais do escalonamento
 void print_metrics_scaling(void) {
-    log_printf("\n--- RESULTADOS DA EXECUÇÃO ---\n");
+    log_printf("\n----------------------- RESULTADOS DA EXECUÇÃO -----------------------\n");
     log_printf("%-5s | %-17s | %-16s | %-16s\n", "PID", "Latência", "Tempo de Espera", "Tempo de Execução");
-    log_printf("---------------------------------------------------------------------\n");
+    log_printf("----------------------------------------------------------------------\n");
 
     float total_latency = 0;
     float total_wt = 0;
@@ -244,7 +244,7 @@ void print_metrics_scaling(void) {
         log_printf("%-5d | %-16d | %-16d | %-16d\n", p.pid, latency_time, waiting_time, p.exec_time);
     }
 
-    log_printf("---------------------------------------------------------------------\n");
+    log_printf("----------------------------------------------------------------------\n");
     log_printf("Latência Média: %-16.2f\n", total_latency / num_processes);
     log_printf("Tempo de Espera Médio: %-16.2f\n", total_wt / num_processes);
     log_printf("Tempo Total de Execução: %-16d\n", total_exec_time);
@@ -252,7 +252,7 @@ void print_metrics_scaling(void) {
 
 // Imprime a tabela de resultados finais do gerenciamento de memória
 void print_metrics_memory(void) {
-int total_fifo    = 0;
+    int total_fifo    = 0;
     int total_lru     = 0;
     int total_nfu     = 0;
     int total_optimal = 0;
@@ -267,21 +267,30 @@ int total_fifo    = 0;
         total_optimal += res.optimal_faults;
     }
 
-    // Imprime a linha de resultados de memória
-    log_printf("\n--- RESULTADOS DA MEMÓRIA ---\n");
-    log_printf("FIFO|LRU|NFU|OTM|Melhor\n");
-    log_printf("%d|%d|%d|%d|", total_fifo, total_lru, total_nfu, total_optimal);
+    int diff_fifo = total_fifo - total_optimal;
+    int diff_lru  = total_lru  - total_optimal;
+    int diff_nfu  = total_nfu  - total_optimal;
 
-    /* Determina o algoritmo não-ótimo mais próximo do ótimo */
-    int diff_fifo = abs(total_fifo - total_optimal);
-    int diff_lru  = abs(total_lru  - total_optimal);
-    int diff_nfu  = abs(total_nfu  - total_optimal);
+    // Encontra a menor diferença (mais próximo do ótimo)
+    int min_diff = diff_fifo;
+    if (diff_lru < min_diff) min_diff = diff_lru;
+    if (diff_nfu < min_diff) min_diff = diff_nfu;
 
-    const char *best      = "FIFO";
-    int         best_diff = diff_fifo;
-    
-    if (diff_lru < best_diff) { best = "LRU"; best_diff = diff_lru; }
-    if (diff_nfu < best_diff) { best = "NFU"; }
+    int count_best = 0;
+    const char *best = "";
 
-    log_printf("%s\n", best);
+    if (diff_fifo == min_diff) { count_best++; best = "FIFO"; }
+    if (diff_lru == min_diff)  { count_best++; best = "LRU"; }
+    if (diff_nfu == min_diff)  { count_best++; best = "NFU"; }
+
+    // Imprime 'empate' se mais de um algoritmo for o melhor
+    if (count_best > 1) {
+        best = "empate";
+    }
+
+    log_printf("\n----------------------- RESULTADOS DA MEMÓRIA  -----------------------\n");
+    log_printf("%-8s | %-8s | %-8s | %-8s | %-8s\n", "FIFO", "LRU", "NFU", "OTM", "Melhor");
+    log_printf("----------------------------------------------------------------------\n");
+    log_printf("%-8d | %-8d | %-8d | %-8d | %-8s\n", total_fifo, total_lru, total_nfu, total_optimal, best);
+    log_printf("----------------------------------------------------------------------\n");
 }

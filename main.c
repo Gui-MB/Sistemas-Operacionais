@@ -53,7 +53,8 @@ int main(void) {
 
     scheduler_manager_init();
  
-    log_printf("Inicio do escalonador\n");
+	log_printf("\n----------------------------------------------------------------------\n");
+    log_printf("Log de escalonamento:\n");
     log_printf("Algoritmo: %s | Slice: %d\n\n", algorithm, time_slice);
  
     //Simulação de escalonamento
@@ -93,6 +94,8 @@ int main(void) {
     print_metrics_scaling();
 
     // Imprime a tabela com os resultados finais para a memória
+	log_printf("\n----------------------------------------------------------------------\n");
+    log_printf("Log dos algoritmos de memória:\n");
     print_metrics_memory();
     close_output_file();
     return 0;
