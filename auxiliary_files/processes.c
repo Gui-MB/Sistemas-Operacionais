@@ -8,6 +8,10 @@ Process processes[MAX_PROCESSES];
 int num_processes = 0;
 int time_slice = 0;
 char algorithm[50];
+char memory_policy[50];
+int memory_size_bytes = 0;
+int page_size_bytes = 0;
+int allocation_percent = 0;
 static FILE *log_file = NULL;
 
 // Imprime mensagens no arquivo de saída
@@ -46,6 +50,33 @@ int log_printf(const char *format, ...) {
     return count_stdout;
 }
 
+// Conta o número de páginas na sequência de acesso de um processo
+static int count_pages_in_sequence(const char *sequence) {
+    int count = 0;
+    char *copy = strdup(sequence);
+    if (!copy) {
+        return 0;
+    }
+
+    char *save_ptr = NULL;
+    for (char *token = strtok_r(copy, " \t\r\n", &save_ptr); token != NULL; token = strtok_r(NULL, " \t\r\n", &save_ptr)) {
+        count++;
+    }
+
+    free(copy);
+    return count;
+}
+
+// Libera a memória alocada para as sequências de acesso dos processos
+void free_input_data(void) {
+    for (int i = 0; i < num_processes; i++) {
+        free(processes[i].page_sequence);
+        processes[i].page_sequence = NULL;
+        processes[i].page_sequence_len = 0;
+    }
+    num_processes = 0;
+}
+
 // Lê o arquivo de entrada e inicializa a lista de processos
 void read_input_file(const char *filename) {
     FILE *file = fopen(filename, "r");
@@ -54,31 +85,100 @@ void read_input_file(const char *filename) {
         exit(1);
     }
 
-    char line[256];
+    free_input_data();
 
-    // Primeira linha: algoritmo|time_slice
-    if (fgets(line, sizeof(line), file)) {
-        sscanf(line, "%[^|]|%d", algorithm, &time_slice);
+    char *line = NULL;
+    size_t line_size = 0;
+
+    // Primeira linha: algoritmo|fraçãoCPU|políticaMemória|tamanhoMemória|tamanhoPáginasMolduras|percentualAlocação
+    if (getline(&line, &line_size, file) != -1) {
+        sscanf(line, "%49[^|]|%d|%49[^|]|%d|%d|%d",
+               algorithm,
+               &time_slice,
+               memory_policy,
+               &memory_size_bytes,
+               &page_size_bytes,
+               &allocation_percent);
+
         algorithm[strcspn(algorithm, "\r\n")] = 0;
+        memory_policy[strcspn(memory_policy, "\r\n")] = 0;
     }
 
-    // Linhas dos processos: tempo_criacao|pid|tempo_execucao|prioridade
-    while (fgets(line, sizeof(line), file)) {
-        sscanf(line, "%d|%d|%d|%d",
-               &processes[num_processes].creation_time,
-               &processes[num_processes].pid,
-               &processes[num_processes].exec_time,
-               &processes[num_processes].priority);
+    // Linhas dos processos: tempo_criacao|pid|tempo_execucao|prioridade|qtdeMemoria|sequênciaAcesso
+    while (getline(&line, &line_size, file) != -1) {
+        char *save_ptr = NULL;
+        char *creation = strtok_r(line, "|", &save_ptr);
+        char *pid = strtok_r(NULL, "|", &save_ptr);
+        char *exec_time = strtok_r(NULL, "|", &save_ptr);
+        char *priority = strtok_r(NULL, "|", &save_ptr);
+        char *memory = strtok_r(NULL, "|", &save_ptr);
+        char *sequence = strtok_r(NULL, "", &save_ptr);
 
-        // Inicializa campos extras para cada processo: remaining_time|vruntime|is_completed|creation_announced|in_cfs_tree|in_priority_heap
-        processes[num_processes].remaining_time = processes[num_processes].exec_time;
-        processes[num_processes].vruntime = 0;
-        processes[num_processes].is_completed = 0;
-        processes[num_processes].creation_announced = 0;
-        processes[num_processes].in_cfs_tree = 0;
-        processes[num_processes].in_priority_heap = 0;
+        if (!creation || !pid || !exec_time || !priority || !memory || !sequence) {
+            continue;
+        }
+
+        Process *process = &processes[num_processes];
+        memset(process, 0, sizeof(*process));
+
+        process->creation_time = (int)strtol(creation, NULL, 10);
+        process->pid = (int)strtol(pid, NULL, 10);
+        process->exec_time = (int)strtol(exec_time, NULL, 10);
+        process->priority = (int)strtol(priority, NULL, 10);
+        process->memory_bytes = (int)strtol(memory, NULL, 10);
+        process->page_sequence_len = count_pages_in_sequence(sequence);
+        process->virtual_pages = (process->memory_bytes + page_size_bytes - 1) / page_size_bytes;
+        if (process->virtual_pages <= 0) {
+            process->virtual_pages = 1;
+        }
+        process->frame_limit = (process->virtual_pages * allocation_percent + 99) / 100;
+        if (process->frame_limit <= 0) {
+            process->frame_limit = 1;
+        }
+        if (process->frame_limit > process->virtual_pages) {
+            process->frame_limit = process->virtual_pages;
+        }
+
+        process->page_sequence = calloc((size_t)process->page_sequence_len, sizeof(int));
+        if (!process->page_sequence && process->page_sequence_len > 0) {
+            fclose(file);
+            free(line);
+            log_printf("Erro de memoria ao ler a sequência de páginas do processo %d!\n", process->pid);
+            exit(1);
+        }
+
+        char *seq_copy = strdup(sequence);
+        if (!seq_copy) {
+            fclose(file);
+            free(line);
+            log_printf("Erro de memoria ao copiar a sequência de páginas do processo %d!\n", process->pid);
+            exit(1);
+        }
+
+        int page_idx = 0;
+        char *seq_save_ptr = NULL;
+        for (char *token = strtok_r(seq_copy, " \t\r\n", &seq_save_ptr); token != NULL; token = strtok_r(NULL, " \t\r\n", &seq_save_ptr)) {
+            if (page_idx < process->page_sequence_len) {
+                process->page_sequence[page_idx++] = (int)strtol(token, NULL, 10);
+            }
+        }
+
+        free(seq_copy);
+
+        // Inicializa campos extras para cada processo: remaining_time|vruntime|is_completed|creation_announced|in_cfs_tree|in_priority_heap|next_access_index
+        process->remaining_time = process->exec_time;
+        process->vruntime = 0;
+        process->completion_time = 0;
+        process->is_completed = 0;
+        process->creation_announced = 0;
+        process->in_cfs_tree = 0;
+        process->in_priority_heap = 0;
+        process->next_access_index = 0;
+
         num_processes++;
     }
+
+    free(line);
     fclose(file);
 }
 
@@ -121,8 +221,8 @@ void announce_created_processes(int current_time) {
     }
 }
 
-// Imprime a tabela de resultados finais
-void print_metrics(void) {
+// Imprime a tabela de resultados finais do escalonamento
+void print_metrics_scaling(void) {
     log_printf("\n--- RESULTADOS DA EXECUÇÃO ---\n");
     log_printf("%-5s | %-17s | %-16s | %-16s\n", "PID", "Latência", "Tempo de Espera", "Tempo de Execução");
     log_printf("---------------------------------------------------------------------\n");
@@ -147,4 +247,9 @@ void print_metrics(void) {
     log_printf("Latência Média: %-16.2f\n", total_latency / num_processes);
     log_printf("Tempo de Espera Médio: %-16.2f\n", total_wt / num_processes);
     log_printf("Tempo Total de Execução: %-16d\n", total_exec_time);
+}
+
+// Imprime a tabela de resultados finais do gerenciamento de memória
+void print_metrics_memory(void) {
+
 }

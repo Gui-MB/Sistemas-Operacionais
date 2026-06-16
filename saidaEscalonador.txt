@@ -1,89 +1,35 @@
 Inicio do escalonador
-Algoritmo: CFS | Slice: 2
+Algoritmo: alternancia | Slice: 5
 
-[T=000] CREATE  | pid=1   | total_t=20       | priority=1    | vruntime=0   
-[T=000] CREATE  | pid=2   | total_t=20       | priority=1    | vruntime=0   
-[T=000] CREATE  | pid=4   | total_t=20       | priority=2    | vruntime=0   
-[T=000] RUN     | pid=1   | remaining_t=20   | cpu_slice=2   | priority=1    | vruntime=0   
-[T=002] PREEMPT | pid=1   | remaining_t=18   | priority=1    | vruntime=2   
-[T=002] RUN     | pid=2   | remaining_t=20   | cpu_slice=2   | priority=1    | vruntime=0   
-[T=004] PREEMPT | pid=2   | remaining_t=18   | priority=1    | vruntime=2   
-[T=004] RUN     | pid=4   | remaining_t=20   | cpu_slice=2   | priority=2    | vruntime=0   
-[T=006] PREEMPT | pid=4   | remaining_t=18   | priority=2    | vruntime=4   
-[T=006] RUN     | pid=1   | remaining_t=18   | cpu_slice=2   | priority=1    | vruntime=2   
-[T=008] PREEMPT | pid=1   | remaining_t=16   | priority=1    | vruntime=4   
-[T=008] CREATE  | pid=3   | total_t=10       | priority=100  | vruntime=0   
-[T=008] RUN     | pid=3   | remaining_t=10   | cpu_slice=2   | priority=100  | vruntime=0   
-[T=010] PREEMPT | pid=3   | remaining_t=8    | priority=100  | vruntime=200 
-[T=010] RUN     | pid=2   | remaining_t=18   | cpu_slice=2   | priority=1    | vruntime=2   
-[T=012] PREEMPT | pid=2   | remaining_t=16   | priority=1    | vruntime=4   
-[T=012] RUN     | pid=1   | remaining_t=16   | cpu_slice=2   | priority=1    | vruntime=4   
-[T=014] PREEMPT | pid=1   | remaining_t=14   | priority=1    | vruntime=6   
-[T=014] RUN     | pid=2   | remaining_t=16   | cpu_slice=2   | priority=1    | vruntime=4   
-[T=016] PREEMPT | pid=2   | remaining_t=14   | priority=1    | vruntime=6   
-[T=016] RUN     | pid=4   | remaining_t=18   | cpu_slice=2   | priority=2    | vruntime=4   
-[T=018] PREEMPT | pid=4   | remaining_t=16   | priority=2    | vruntime=8   
-[T=018] RUN     | pid=1   | remaining_t=14   | cpu_slice=2   | priority=1    | vruntime=6   
-[T=020] PREEMPT | pid=1   | remaining_t=12   | priority=1    | vruntime=8   
-[T=020] RUN     | pid=2   | remaining_t=14   | cpu_slice=2   | priority=1    | vruntime=6   
-[T=022] PREEMPT | pid=2   | remaining_t=12   | priority=1    | vruntime=8   
-[T=022] RUN     | pid=1   | remaining_t=12   | cpu_slice=2   | priority=1    | vruntime=8   
-[T=024] PREEMPT | pid=1   | remaining_t=10   | priority=1    | vruntime=10  
-[T=024] RUN     | pid=2   | remaining_t=12   | cpu_slice=2   | priority=1    | vruntime=8   
-[T=026] PREEMPT | pid=2   | remaining_t=10   | priority=1    | vruntime=10  
-[T=026] RUN     | pid=4   | remaining_t=16   | cpu_slice=2   | priority=2    | vruntime=8   
-[T=028] PREEMPT | pid=4   | remaining_t=14   | priority=2    | vruntime=12  
-[T=028] RUN     | pid=1   | remaining_t=10   | cpu_slice=2   | priority=1    | vruntime=10  
-[T=030] PREEMPT | pid=1   | remaining_t=8    | priority=1    | vruntime=12  
-[T=030] RUN     | pid=2   | remaining_t=10   | cpu_slice=2   | priority=1    | vruntime=10  
-[T=032] PREEMPT | pid=2   | remaining_t=8    | priority=1    | vruntime=12  
-[T=032] RUN     | pid=1   | remaining_t=8    | cpu_slice=2   | priority=1    | vruntime=12  
-[T=034] PREEMPT | pid=1   | remaining_t=6    | priority=1    | vruntime=14  
-[T=034] RUN     | pid=2   | remaining_t=8    | cpu_slice=2   | priority=1    | vruntime=12  
-[T=036] PREEMPT | pid=2   | remaining_t=6    | priority=1    | vruntime=14  
-[T=036] RUN     | pid=4   | remaining_t=14   | cpu_slice=2   | priority=2    | vruntime=12  
-[T=038] PREEMPT | pid=4   | remaining_t=12   | priority=2    | vruntime=16  
-[T=038] RUN     | pid=1   | remaining_t=6    | cpu_slice=2   | priority=1    | vruntime=14  
-[T=040] PREEMPT | pid=1   | remaining_t=4    | priority=1    | vruntime=16  
-[T=040] RUN     | pid=2   | remaining_t=6    | cpu_slice=2   | priority=1    | vruntime=14  
-[T=042] PREEMPT | pid=2   | remaining_t=4    | priority=1    | vruntime=16  
-[T=042] RUN     | pid=1   | remaining_t=4    | cpu_slice=2   | priority=1    | vruntime=16  
-[T=044] PREEMPT | pid=1   | remaining_t=2    | priority=1    | vruntime=18  
-[T=044] RUN     | pid=2   | remaining_t=4    | cpu_slice=2   | priority=1    | vruntime=16  
-[T=046] PREEMPT | pid=2   | remaining_t=2    | priority=1    | vruntime=18  
-[T=046] RUN     | pid=4   | remaining_t=12   | cpu_slice=2   | priority=2    | vruntime=16  
-[T=048] PREEMPT | pid=4   | remaining_t=10   | priority=2    | vruntime=20  
-[T=048] RUN     | pid=1   | remaining_t=2    | cpu_slice=2   | priority=1    | vruntime=18  
-[T=050] FINISH  | pid=1   | remaining_t=0    | priority=1    | vruntime=20  
-[T=050] RUN     | pid=2   | remaining_t=2    | cpu_slice=2   | priority=1    | vruntime=18  
-[T=052] FINISH  | pid=2   | remaining_t=0    | priority=1    | vruntime=20  
-[T=052] RUN     | pid=4   | remaining_t=10   | cpu_slice=2   | priority=2    | vruntime=20  
-[T=054] PREEMPT | pid=4   | remaining_t=8    | priority=2    | vruntime=24  
-[T=054] RUN     | pid=4   | remaining_t=8    | cpu_slice=2   | priority=2    | vruntime=24  
-[T=056] PREEMPT | pid=4   | remaining_t=6    | priority=2    | vruntime=28  
-[T=056] RUN     | pid=4   | remaining_t=6    | cpu_slice=2   | priority=2    | vruntime=28  
-[T=058] PREEMPT | pid=4   | remaining_t=4    | priority=2    | vruntime=32  
-[T=058] RUN     | pid=4   | remaining_t=4    | cpu_slice=2   | priority=2    | vruntime=32  
-[T=060] PREEMPT | pid=4   | remaining_t=2    | priority=2    | vruntime=36  
-[T=060] RUN     | pid=4   | remaining_t=2    | cpu_slice=2   | priority=2    | vruntime=36  
-[T=062] FINISH  | pid=4   | remaining_t=0    | priority=2    | vruntime=40  
-[T=062] RUN     | pid=3   | remaining_t=8    | cpu_slice=2   | priority=100  | vruntime=200 
-[T=064] PREEMPT | pid=3   | remaining_t=6    | priority=100  | vruntime=400 
-[T=064] RUN     | pid=3   | remaining_t=6    | cpu_slice=2   | priority=100  | vruntime=400 
-[T=066] PREEMPT | pid=3   | remaining_t=4    | priority=100  | vruntime=600 
-[T=066] RUN     | pid=3   | remaining_t=4    | cpu_slice=2   | priority=100  | vruntime=600 
-[T=068] PREEMPT | pid=3   | remaining_t=2    | priority=100  | vruntime=800 
-[T=068] RUN     | pid=3   | remaining_t=2    | cpu_slice=2   | priority=100  | vruntime=800 
-[T=070] FINISH  | pid=3   | remaining_t=0    | priority=100  | vruntime=1000
+[T=000] CREATE  | pid=1   | total_t=15      
+[T=000] RUN     | pid=1   | remaining_t=15   | cpu_slice=5  
+[T=005] PREEMPT | pid=1   | remaining_t=10  
+[T=005] CREATE  | pid=2   | total_t=24      
+[T=005] RUN     | pid=2   | remaining_t=24   | cpu_slice=5  
+[T=010] PREEMPT | pid=2   | remaining_t=19  
+[T=010] RUN     | pid=1   | remaining_t=10   | cpu_slice=5  
+[T=015] PREEMPT | pid=1   | remaining_t=5   
+[T=015] RUN     | pid=2   | remaining_t=19   | cpu_slice=5  
+[T=020] PREEMPT | pid=2   | remaining_t=14  
+[T=020] RUN     | pid=1   | remaining_t=5    | cpu_slice=5  
+[T=025] FINISH  | pid=1   | remaining_t=0   
+[T=025] RUN     | pid=2   | remaining_t=14   | cpu_slice=5  
+[T=030] PREEMPT | pid=2   | remaining_t=9   
+[T=030] RUN     | pid=2   | remaining_t=9    | cpu_slice=5  
+[T=035] PREEMPT | pid=2   | remaining_t=4   
+[T=035] RUN     | pid=2   | remaining_t=4    | cpu_slice=4  
+[T=039] FINISH  | pid=2   | remaining_t=0   
+
+--- RESULTADOS DA MEMÓRIA ---
+FIFO|LRU|NFU|OTM|Melhor
+16|14|16|14|LRU
 
 --- RESULTADOS DA EXECUÇÃO ---
 PID   | Latência         | Tempo de Espera  | Tempo de Execução
 ---------------------------------------------------------------------
-1     | 50               | 30               | 20              
-2     | 52               | 32               | 20              
-3     | 62               | 52               | 10              
-4     | 62               | 42               | 20              
+1     | 25               | 10               | 15              
+2     | 35               | 11               | 24              
 ---------------------------------------------------------------------
-Latência Média: 56.50           
-Tempo de Espera Médio: 39.00           
-Tempo Total de Execução: 70              
+Latência Média: 30.00           
+Tempo de Espera Médio: 10.50           
+Tempo Total de Execução: 39              

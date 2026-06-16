@@ -8,12 +8,11 @@
 #include "priority.h"
 #include "round_robin.h"
 
-
 static Algorithm current_algorithm = ALG_UNKNOWN;
 
 // Função para mapear a string do algoritmo para o enum correspondente
 static Algorithm parse_algorithm(void) {
-    if (strcmp(algorithm, "alternanciaCircular") == 0) {
+    if (strcmp(algorithm, "alternanciaCircular") == 0 || strcmp(algorithm, "alternancia") == 0) {
         return ALG_RR;
     } else if (strcmp(algorithm, "prioridade") == 0) {
         return ALG_PRIORITY;
