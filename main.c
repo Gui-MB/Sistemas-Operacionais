@@ -19,7 +19,15 @@ static void execute_process(int selected_idx, int *current_time, int *completed_
     int run_time = (p->remaining_time > time_slice) ? time_slice : p->remaining_time;
     print_process_event("RUN", *current_time, p, run_time);
 
-    // Atualiza o tempo restante do processo e o tempo atual	
+    // Cada ciclo de CPU contabiliza um acesso real à memória
+    for(int i = 0; i < run_time; i++) {
+        if (p->next_access_index < p->page_sequence_len) {
+            int page = p->page_sequence[p->next_access_index++];
+            record_memory_access(p->pid, page); // Insere na fila de contexto global
+        }
+    }
+
+	// Simula o avanço do tempo e a execução do processo	
     p->remaining_time -= run_time;
     *current_time += run_time;
  
@@ -44,20 +52,28 @@ static void execute_process(int selected_idx, int *current_time, int *completed_
 int main(void) {
     srand((unsigned)time(NULL));
  
+    // Configuração de logs
+    log_cfg.cpu_events = 1;
+    log_cfg.memory_steps = 1;
+    log_cfg.final_metrics = 1;
+
     if (!init_output_file(OUTPUT_FILE)) {
-        fprintf(stderr, "Erro ao abrir o arquivo de saida %s!\n", OUTPUT_FILE);
+        fprintf(stderr, "Erro ao abrir o arquivo de saída %s!\n", OUTPUT_FILE);
         return 1;
     }
- 
+	// Lê o arquivo de entrada e inicializa os processos
     read_input_file(INPUT_FILE);
 
-    scheduler_manager_init();
+    // Inicializa o gerenciador de escalonamento
+	scheduler_manager_init();
  
-	log_printf("\n----------------------------------------------------------------------\n");
-    log_printf("Log de escalonamento:\n");
-    log_printf("Algoritmo: %s | Slice: %d\n\n", algorithm, time_slice);
+    if (log_cfg.cpu_events) {
+        log_printf("\n----------------------------------------------------------------------\n");
+        log_printf("Log de escalonamento:\n");
+        log_printf("Algoritmo: %s | Slice: %d\n\n", algorithm, time_slice);
+    }
  
-    //Simulação de escalonamento
+	// Loop principal de simulação do escalonamento
     int current_time = 0;
     int completed_processes = 0;
  
@@ -66,13 +82,10 @@ int main(void) {
  
         int had_error = 0;
         int selected_idx = scheduler_manager_select_next(current_time, &had_error);
-        if (had_error) {
-            return 1;
-        }
+        if (had_error) return 1;
  
-        // CPU ociosa quando não há processos prontos
         if (selected_idx == -1) {
-            log_printf("[T=%03d] IDLE\n", current_time);
+            if (log_cfg.cpu_events) log_printf("[T=%03d] IDLE\n", current_time);
             current_time++;
             continue;
         }
@@ -90,13 +103,9 @@ int main(void) {
         cfs_destroy();
     }
 
-    // Imprime a tabela com os resultados finais para o escalonamento
     print_metrics_scaling();
-
-    // Imprime a tabela com os resultados finais para a memória
-	log_printf("\n----------------------------------------------------------------------\n");
-    log_printf("Log dos algoritmos de memória:\n");
     print_metrics_memory();
+    
     close_output_file();
     return 0;
 }

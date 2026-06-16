@@ -1,6 +1,5 @@
 #ifndef PROCESSES_H
 #define PROCESSES_H
-
 #define MAX_PROCESSES 1000
 
 // Estrutura para armazenar as informacoes de cada processo
@@ -28,24 +27,48 @@ typedef struct {
     int optimal_faults;
 } Process;
 
-extern Process processes[MAX_PROCESSES];
+// Configurações globais lidas do arquivo de entrada
 
+// Array global para armazenar os processos lidos do arquivo de entrada
+extern Process processes[MAX_PROCESSES]; 
+
+// Número total de processos lidos do arquivo de entrada
 extern int num_processes;
+
+// Time slice fornecido ao escalonador (para algoritmos que utilizam time slice)
 extern int time_slice;
+
+// Algoritmo de escalonamento: "alternanciaCircular", "prioridade", "loteria" ou "CFS"
 extern char algorithm[50];
+
+// Política de memória: "global" ou "local"
 extern char memory_policy[50];
+
+// Tamanho total da memória em bytes (para cálculos de memória)
 extern int memory_size_bytes;
+
+// Tamanho da página em bytes (para cálculos de memória)
 extern int page_size_bytes;
+
+// Percentual de alocação de frames para cada processo (para memória local)
 extern int allocation_percent;
 
-int init_output_file(const char *filename);
-void close_output_file(void);
-int log_printf(const char *format, ...);
+// Fila global para simulação de memória compartilhada
+extern int *global_page_sequence;
+
+// Comprimento atual da fila global de acesso à memória
+extern int global_sequence_len;
+
+// Função para ler o arquivo de entrada e inicializar a lista de processos
 void read_input_file(const char *filename);
+
+// Função para liberar toda memória alocada dinamicamente das entradas e da fila global
 void free_input_data(void);
-void print_process_event(const char *event, int current_time, const Process *p, int run_time);
-void announce_created_processes(int current_time);
-void print_metrics_scaling(void);
-void print_metrics_memory(void);
+
+// Função para registrar um acesso de memória à fila global, codificando PID e Página
+void record_memory_access(int pid, int page);
+
+// Inclusão do arquivo de logs
+#include "logs.h" 
 
 #endif
