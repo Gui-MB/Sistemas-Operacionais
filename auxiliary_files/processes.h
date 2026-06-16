@@ -9,22 +9,27 @@ typedef struct {
     int creation_time;
     int exec_time;
     int remaining_time;
+    int completion_time;
     int priority;
+    int vruntime;
+    int in_cfs_tree;
+    int in_priority_heap;
+    int is_completed;
+    int creation_announced;
     int memory_bytes;
     int virtual_pages;
     int frame_limit;
     int page_sequence_len;
     int next_access_index;
     int *page_sequence;
-    int vruntime;
-    int completion_time;
-    int is_completed;
-    int creation_announced;
-    int in_cfs_tree;
-    int in_priority_heap;
+    int fifo_faults;
+    int lru_faults;
+    int nfu_faults;
+    int optimal_faults;
 } Process;
 
 extern Process processes[MAX_PROCESSES];
+
 extern int num_processes;
 extern int time_slice;
 extern char algorithm[50];

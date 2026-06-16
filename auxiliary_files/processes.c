@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../memory_algorithms/memory_manager.h"
 
 Process processes[MAX_PROCESSES];
 int num_processes = 0;
@@ -251,5 +252,36 @@ void print_metrics_scaling(void) {
 
 // Imprime a tabela de resultados finais do gerenciamento de memória
 void print_metrics_memory(void) {
+int total_fifo    = 0;
+    int total_lru     = 0;
+    int total_nfu     = 0;
+    int total_optimal = 0;
 
+    for (int i = 0; i < num_processes; i++) {
+        PageFaultResult res;
+        memory_manager_simulate(&processes[i], &res);
+
+        total_fifo    += res.fifo_faults;
+        total_lru     += res.lru_faults;
+        total_nfu     += res.nfu_faults;
+        total_optimal += res.optimal_faults;
+    }
+
+    // Imprime a linha de resultados de memória
+    log_printf("\n--- RESULTADOS DA MEMÓRIA ---\n");
+    log_printf("FIFO|LRU|NFU|OTM|Melhor\n");
+    log_printf("%d|%d|%d|%d|", total_fifo, total_lru, total_nfu, total_optimal);
+
+    /* Determina o algoritmo não-ótimo mais próximo do ótimo */
+    int diff_fifo = abs(total_fifo - total_optimal);
+    int diff_lru  = abs(total_lru  - total_optimal);
+    int diff_nfu  = abs(total_nfu  - total_optimal);
+
+    const char *best      = "FIFO";
+    int         best_diff = diff_fifo;
+    
+    if (diff_lru < best_diff) { best = "LRU"; best_diff = diff_lru; }
+    if (diff_nfu < best_diff) { best = "NFU"; }
+
+    log_printf("%s\n", best);
 }

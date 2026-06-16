@@ -11,7 +11,7 @@
  
 #define INPUT_FILE "entradaEscalonador.txt"
 #define OUTPUT_FILE "saidaEscalonador.txt"
- 
+
 // Executa o processo selecionado por um time slice (ou pelo tempo restante)
 static void execute_process(int selected_idx, int *current_time, int *completed_processes) {
 	// Imprime o evento de execução do processo selecionado
@@ -60,12 +60,6 @@ int main(void) {
     int current_time = 0;
     int completed_processes = 0;
  
-    // Substituição de páginas
-    int total_fifo    = 0;
-    int total_lru     = 0;
-    int total_nfu     = 0;
-    int total_optimal = 0;
-
     while (completed_processes < num_processes) {
         announce_created_processes(current_time);
  
@@ -89,33 +83,6 @@ int main(void) {
             lottery_process_finished(selected_idx);
         }
     }
-
-    for (int i = 0; i < num_processes; i++) {
-        PageFaultResult res;
-        memory_manager_simulate(&processes[i], &res);
- 
-        total_fifo    += res.fifo_faults;
-        total_lru     += res.lru_faults;
-        total_nfu     += res.nfu_faults;
-        total_optimal += res.optimal_faults;
-    }
- 
-	// Imprime a linha de resultados de memória
-    log_printf("\n--- RESULTADOS DA MEMÓRIA ---\n");
-    log_printf("FIFO|LRU|NFU|OTM|Melhor\n");
-    log_printf("%d|%d|%d|%d|", total_fifo, total_lru, total_nfu, total_optimal);
- 
-    /* Determina o algoritmo não-ótimo mais próximo do ótimo */
-    int diff_fifo = abs(total_fifo - total_optimal);
-    int diff_lru  = abs(total_lru  - total_optimal);
-    int diff_nfu  = abs(total_nfu  - total_optimal);
- 
-    const char *best      = "FIFO";
-    int         best_diff = diff_fifo;
-    if (diff_lru < best_diff) { best = "LRU"; best_diff = diff_lru; }
-    if (diff_nfu < best_diff) { best = "NFU"; }
- 
-    log_printf("%s\n", best);
 
 	// Destrói a estrutura de árvore no caso do CFS	
     if (scheduler_manager_get_algorithm() == ALG_CFS) {

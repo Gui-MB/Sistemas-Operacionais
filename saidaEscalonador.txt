@@ -20,10 +20,6 @@ Algoritmo: alternancia | Slice: 5
 [T=035] RUN     | pid=2   | remaining_t=4    | cpu_slice=4  
 [T=039] FINISH  | pid=2   | remaining_t=0   
 
---- RESULTADOS DA MEMÓRIA ---
-FIFO|LRU|NFU|OTM|Melhor
-16|14|16|14|LRU
-
 --- RESULTADOS DA EXECUÇÃO ---
 PID   | Latência         | Tempo de Espera  | Tempo de Execução
 ---------------------------------------------------------------------
@@ -33,3 +29,7 @@ PID   | Latência         | Tempo de Espera  | Tempo de Execução
 Latência Média: 30.00           
 Tempo de Espera Médio: 10.50           
 Tempo Total de Execução: 39              
+
+--- RESULTADOS DA MEMÓRIA ---
+FIFO|LRU|NFU|OTM|Melhor
+16|14|16|14|LRU
