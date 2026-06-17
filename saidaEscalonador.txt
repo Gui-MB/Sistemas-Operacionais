@@ -1,181 +1,380 @@
 
 ----------------------------------------------------------------------
 Log de escalonamento:
-Algoritmo: prioridade | Slice: 4
+Algoritmo: alternancia | Slice: 10
 
-[T=000] CREATE  | pid=1   | total_t=12       | priority=1   
-[T=000] RUN     | pid=1   | remaining_t=12   | cpu_slice=4   | priority=1   
-[T=004] PREEMPT | pid=1   | remaining_t=8    | priority=1   
-[T=004] CREATE  | pid=2   | total_t=12       | priority=2   
-[T=004] CREATE  | pid=3   | total_t=8        | priority=3   
-[T=004] RUN     | pid=1   | remaining_t=8    | cpu_slice=4   | priority=1   
-[T=008] PREEMPT | pid=1   | remaining_t=4    | priority=1   
-[T=008] RUN     | pid=1   | remaining_t=4    | cpu_slice=4   | priority=1   
-[T=012] FINISH  | pid=1   | remaining_t=0    | priority=1   
-[T=012] RUN     | pid=2   | remaining_t=12   | cpu_slice=4   | priority=2   
-[T=016] PREEMPT | pid=2   | remaining_t=8    | priority=2   
-[T=016] RUN     | pid=2   | remaining_t=8    | cpu_slice=4   | priority=2   
-[T=020] PREEMPT | pid=2   | remaining_t=4    | priority=2   
-[T=020] RUN     | pid=2   | remaining_t=4    | cpu_slice=4   | priority=2   
-[T=024] FINISH  | pid=2   | remaining_t=0    | priority=2   
-[T=024] RUN     | pid=3   | remaining_t=8    | cpu_slice=4   | priority=3   
-[T=028] PREEMPT | pid=3   | remaining_t=4    | priority=3   
-[T=028] RUN     | pid=3   | remaining_t=4    | cpu_slice=4   | priority=3   
-[T=032] FINISH  | pid=3   | remaining_t=0    | priority=3   
+[T=000] CREATE  | pid=1   | total_t=20      
+[T=000] CREATE  | pid=2   | total_t=24      
+[T=000] CREATE  | pid=3   | total_t=32      
+[T=000] RUN     | pid=1   | remaining_t=20   | cpu_slice=10 
+[T=010] PREEMPT | pid=1   | remaining_t=10  
+[T=010] RUN     | pid=2   | remaining_t=24   | cpu_slice=10 
+[T=020] PREEMPT | pid=2   | remaining_t=14  
+[T=020] RUN     | pid=3   | remaining_t=32   | cpu_slice=10 
+[T=030] PREEMPT | pid=3   | remaining_t=22  
+[T=030] RUN     | pid=1   | remaining_t=10   | cpu_slice=10 
+[T=040] FINISH  | pid=1   | remaining_t=0   
+[T=040] RUN     | pid=2   | remaining_t=14   | cpu_slice=10 
+[T=050] PREEMPT | pid=2   | remaining_t=4   
+[T=050] RUN     | pid=3   | remaining_t=22   | cpu_slice=10 
+[T=060] PREEMPT | pid=3   | remaining_t=12  
+[T=060] RUN     | pid=2   | remaining_t=4    | cpu_slice=4  
+[T=064] FINISH  | pid=2   | remaining_t=0   
+[T=064] RUN     | pid=3   | remaining_t=12   | cpu_slice=10 
+[T=074] PREEMPT | pid=3   | remaining_t=2   
+[T=074] RUN     | pid=3   | remaining_t=2    | cpu_slice=2  
+[T=076] FINISH  | pid=3   | remaining_t=0   
 
 ----------------------- RESULTADOS DA EXECUÇÃO -----------------------
 PID   | Latência         | Tempo de Espera  | Tempo de Execução
 ----------------------------------------------------------------------
-1     | 12               | 0                | 12              
-2     | 22               | 10               | 12              
-3     | 28               | 20               | 8               
+1     | 40               | 20               | 20              
+2     | 64               | 40               | 24              
+3     | 76               | 44               | 32              
 ----------------------------------------------------------------------
-Latência Média: 20.67           
-Tempo de Espera Médio: 10.00           
-Tempo Total de Execução: 32              
+Latência Média: 60.00           
+Tempo de Espera Médio: 34.67           
+Tempo Total de Execução: 76              
 
 ----------------------------------------------------------------------
-SIMULANDO MEMÓRIA GLOBAL (Frames Totais: 8)
+Estado de Memória para o processo PID: 1 (Frames: 4)
 ----------------------------------------------------------------------
-
 --- Simulação FIFO ---
-Ref: P1-p01 | Mem: [P1:p01,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p02 | Mem: [P1:p01, P1:p02,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P2-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P2-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02,   --  ,   --  ] | Preenchimento
-Ref: P2-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03,   --  ] | Preenchimento
-Ref: P2-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Preenchimento
-Ref: P2-p05 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P2-p01 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p02 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p03 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p04 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p05 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p01 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p02 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P3-p10 | Mem: [P2:p05, P3:p10, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p11 | Mem: [P2:p05, P3:p10, P3:p11, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p12 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p13 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P3:p13, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p10 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P3:p13, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P3-p11 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P3:p13, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P3-p12 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P3:p13, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P3-p13 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P3:p13, P2:p02, P2:p03, P2:p04] | Acerto
+Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
+Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
+Ref:  3 | Mem: [ 1,  2,  3,  4] | Acerto
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Acerto
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Acerto
+Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
+Ref:  1 | Mem: [ 5,  6,  1,  4] | Troca
+Ref:  5 | Mem: [ 5,  6,  1,  4] | Acerto
+Ref:  3 | Mem: [ 5,  6,  1,  3] | Troca
+Ref:  2 | Mem: [ 2,  6,  1,  3] | Troca
+Ref:  6 | Mem: [ 2,  6,  1,  3] | Acerto
+Ref:  7 | Mem: [ 2,  7,  1,  3] | Troca
+Ref:  7 | Mem: [ 2,  7,  1,  3] | Acerto
+Ref:  7 | Mem: [ 2,  7,  1,  3] | Acerto
+Ref:  8 | Mem: [ 2,  7,  8,  3] | Troca
 
 --- Simulação LRU ---
-Ref: P1-p01 | Mem: [P1:p01,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p02 | Mem: [P1:p01, P1:p02,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P2-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P2-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02,   --  ,   --  ] | Preenchimento
-Ref: P2-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03,   --  ] | Preenchimento
-Ref: P2-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Preenchimento
-Ref: P2-p05 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P2-p01 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p02 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p03 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p04 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p05 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p01 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p02 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P3-p10 | Mem: [P2:p05, P3:p10, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p11 | Mem: [P2:p05, P3:p10, P3:p11, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p12 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p13 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P2:p01, P2:p02, P3:p13, P2:p04] | Troca
-Ref: P3-p10 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P2:p01, P2:p02, P3:p13, P2:p04] | Acerto
-Ref: P3-p11 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P2:p01, P2:p02, P3:p13, P2:p04] | Acerto
-Ref: P3-p12 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P2:p01, P2:p02, P3:p13, P2:p04] | Acerto
-Ref: P3-p13 | Mem: [P2:p05, P3:p10, P3:p11, P3:p12, P2:p01, P2:p02, P3:p13, P2:p04] | Acerto
+Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
+Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
+Ref:  3 | Mem: [ 1,  2,  3,  4] | Acerto
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Acerto
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Acerto
+Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
+Ref:  1 | Mem: [ 5,  6,  1,  4] | Troca
+Ref:  5 | Mem: [ 5,  6,  1,  4] | Acerto
+Ref:  3 | Mem: [ 5,  6,  1,  3] | Troca
+Ref:  2 | Mem: [ 5,  2,  1,  3] | Troca
+Ref:  6 | Mem: [ 5,  2,  6,  3] | Troca
+Ref:  7 | Mem: [ 7,  2,  6,  3] | Troca
+Ref:  7 | Mem: [ 7,  2,  6,  3] | Acerto
+Ref:  7 | Mem: [ 7,  2,  6,  3] | Acerto
+Ref:  8 | Mem: [ 7,  2,  6,  8] | Troca
 
 --- Simulação NFU ---
-Ref: P1-p01 | Mem: [P1:p01,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p02 | Mem: [P1:p01, P1:p02,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P2-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P2-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02,   --  ,   --  ] | Preenchimento
-Ref: P2-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03,   --  ] | Preenchimento
-Ref: P2-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Preenchimento
-Ref: P2-p05 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P2-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P2:p01, P2:p03, P2:p04] | Troca
-Ref: P2-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P2-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p05 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P2:p01, P2:p03, P2:p04] | Troca
-Ref: P2-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p10 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P3:p10, P2:p03, P2:p04] | Troca
-Ref: P3-p11 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P3:p11, P2:p03, P2:p04] | Troca
-Ref: P3-p12 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P3:p12, P2:p03, P2:p04] | Troca
-Ref: P3-p13 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P3:p13, P2:p03, P2:p04] | Troca
-Ref: P3-p10 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P3:p10, P2:p03, P2:p04] | Troca
-Ref: P3-p11 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P3:p11, P2:p03, P2:p04] | Troca
-Ref: P3-p12 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P3:p12, P2:p03, P2:p04] | Troca
-Ref: P3-p13 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p05, P3:p13, P2:p03, P2:p04] | Troca
+Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
+Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
+Ref:  3 | Mem: [ 1,  2,  3,  4] | Acerto
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Acerto
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Acerto
+Ref:  6 | Mem: [ 5,  2,  6,  4] | Troca
+Ref:  1 | Mem: [ 5,  2,  1,  4] | Troca
+Ref:  5 | Mem: [ 5,  2,  1,  4] | Acerto
+Ref:  3 | Mem: [ 5,  2,  3,  4] | Troca
+Ref:  2 | Mem: [ 5,  2,  3,  4] | Acerto
+Ref:  6 | Mem: [ 5,  2,  6,  4] | Troca
+Ref:  7 | Mem: [ 5,  2,  7,  4] | Troca
+Ref:  7 | Mem: [ 5,  2,  7,  4] | Acerto
+Ref:  7 | Mem: [ 5,  2,  7,  4] | Acerto
+Ref:  8 | Mem: [ 5,  2,  7,  8] | Troca
 
 --- Simulação ÓTIMO ---
-Ref: P1-p01 | Mem: [P1:p01,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p02 | Mem: [P1:p01, P1:p02,   --  ,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03,   --  ,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P1-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P1-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04,   --  ,   --  ,   --  ,   --  ] | Acerto
-Ref: P2-p01 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01,   --  ,   --  ,   --  ] | Preenchimento
-Ref: P2-p02 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02,   --  ,   --  ] | Preenchimento
-Ref: P2-p03 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03,   --  ] | Preenchimento
-Ref: P2-p04 | Mem: [P1:p01, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Preenchimento
-Ref: P2-p05 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P2-p01 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p02 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p03 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p04 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p05 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p01 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P2-p02 | Mem: [P2:p05, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P3-p10 | Mem: [P3:p10, P1:p02, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p11 | Mem: [P3:p10, P3:p11, P1:p03, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p12 | Mem: [P3:p10, P3:p11, P3:p12, P1:p04, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p13 | Mem: [P3:p10, P3:p11, P3:p12, P3:p13, P2:p01, P2:p02, P2:p03, P2:p04] | Troca
-Ref: P3-p10 | Mem: [P3:p10, P3:p11, P3:p12, P3:p13, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P3-p11 | Mem: [P3:p10, P3:p11, P3:p12, P3:p13, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P3-p12 | Mem: [P3:p10, P3:p11, P3:p12, P3:p13, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
-Ref: P3-p13 | Mem: [P3:p10, P3:p11, P3:p12, P3:p13, P2:p01, P2:p02, P2:p03, P2:p04] | Acerto
+Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
+Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
+Ref:  3 | Mem: [ 1,  2,  3,  4] | Acerto
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Acerto
+Ref:  5 | Mem: [ 1,  2,  3,  5] | Troca
+Ref:  5 | Mem: [ 1,  2,  3,  5] | Acerto
+Ref:  6 | Mem: [ 1,  6,  3,  5] | Troca
+Ref:  1 | Mem: [ 1,  6,  3,  5] | Acerto
+Ref:  5 | Mem: [ 1,  6,  3,  5] | Acerto
+Ref:  3 | Mem: [ 1,  6,  3,  5] | Acerto
+Ref:  2 | Mem: [ 2,  6,  3,  5] | Troca
+Ref:  6 | Mem: [ 2,  6,  3,  5] | Acerto
+Ref:  7 | Mem: [ 7,  6,  3,  5] | Troca
+Ref:  7 | Mem: [ 7,  6,  3,  5] | Acerto
+Ref:  7 | Mem: [ 7,  6,  3,  5] | Acerto
+Ref:  8 | Mem: [ 8,  6,  3,  5] | Troca
+
+----------------------------------------------------------------------
+Estado de Memória para o processo PID: 2 (Frames: 2)
+----------------------------------------------------------------------
+--- Simulação FIFO ---
+Ref:  1 | Mem: [ 1,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2] | Preenchimento
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  4 | Mem: [ 3,  4] | Troca
+Ref:  3 | Mem: [ 3,  4] | Acerto
+Ref:  4 | Mem: [ 3,  4] | Acerto
+Ref:  4 | Mem: [ 3,  4] | Acerto
+Ref:  4 | Mem: [ 3,  4] | Acerto
+Ref:  2 | Mem: [ 2,  4] | Troca
+Ref:  3 | Mem: [ 2,  3] | Troca
+Ref:  2 | Mem: [ 2,  3] | Acerto
+Ref:  1 | Mem: [ 1,  3] | Troca
+Ref:  3 | Mem: [ 1,  3] | Acerto
+Ref:  2 | Mem: [ 1,  2] | Troca
+Ref:  1 | Mem: [ 1,  2] | Acerto
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  4 | Mem: [ 3,  4] | Troca
+Ref:  3 | Mem: [ 3,  4] | Acerto
+Ref:  2 | Mem: [ 2,  4] | Troca
+Ref:  2 | Mem: [ 2,  4] | Acerto
+
+--- Simulação LRU ---
+Ref:  1 | Mem: [ 1,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2] | Preenchimento
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  4 | Mem: [ 3,  4] | Troca
+Ref:  3 | Mem: [ 3,  4] | Acerto
+Ref:  4 | Mem: [ 3,  4] | Acerto
+Ref:  4 | Mem: [ 3,  4] | Acerto
+Ref:  4 | Mem: [ 3,  4] | Acerto
+Ref:  2 | Mem: [ 2,  4] | Troca
+Ref:  3 | Mem: [ 2,  3] | Troca
+Ref:  2 | Mem: [ 2,  3] | Acerto
+Ref:  1 | Mem: [ 2,  1] | Troca
+Ref:  3 | Mem: [ 3,  1] | Troca
+Ref:  2 | Mem: [ 3,  2] | Troca
+Ref:  1 | Mem: [ 1,  2] | Troca
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  4 | Mem: [ 3,  4] | Troca
+Ref:  3 | Mem: [ 3,  4] | Acerto
+Ref:  2 | Mem: [ 3,  2] | Troca
+Ref:  2 | Mem: [ 3,  2] | Acerto
+
+--- Simulação NFU ---
+Ref:  1 | Mem: [ 1,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2] | Preenchimento
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  4 | Mem: [ 4,  2] | Troca
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  4 | Mem: [ 4,  2] | Troca
+Ref:  4 | Mem: [ 4,  2] | Acerto
+Ref:  4 | Mem: [ 4,  2] | Acerto
+Ref:  2 | Mem: [ 4,  2] | Acerto
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  2 | Mem: [ 3,  2] | Acerto
+Ref:  1 | Mem: [ 1,  2] | Troca
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  2 | Mem: [ 3,  2] | Acerto
+Ref:  1 | Mem: [ 1,  2] | Troca
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  4 | Mem: [ 4,  2] | Troca
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  2 | Mem: [ 3,  2] | Acerto
+Ref:  2 | Mem: [ 3,  2] | Acerto
+
+--- Simulação ÓTIMO ---
+Ref:  1 | Mem: [ 1,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2] | Preenchimento
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  2 | Mem: [ 1,  2] | Acerto
+Ref:  3 | Mem: [ 3,  2] | Troca
+Ref:  4 | Mem: [ 3,  4] | Troca
+Ref:  3 | Mem: [ 3,  4] | Acerto
+Ref:  4 | Mem: [ 3,  4] | Acerto
+Ref:  4 | Mem: [ 3,  4] | Acerto
+Ref:  4 | Mem: [ 3,  4] | Acerto
+Ref:  2 | Mem: [ 3,  2] | Troca
+Ref:  3 | Mem: [ 3,  2] | Acerto
+Ref:  2 | Mem: [ 3,  2] | Acerto
+Ref:  1 | Mem: [ 3,  1] | Troca
+Ref:  3 | Mem: [ 3,  1] | Acerto
+Ref:  2 | Mem: [ 2,  1] | Troca
+Ref:  1 | Mem: [ 2,  1] | Acerto
+Ref:  2 | Mem: [ 2,  1] | Acerto
+Ref:  2 | Mem: [ 2,  1] | Acerto
+Ref:  3 | Mem: [ 2,  3] | Troca
+Ref:  4 | Mem: [ 4,  3] | Troca
+Ref:  3 | Mem: [ 4,  3] | Acerto
+Ref:  2 | Mem: [ 2,  3] | Troca
+Ref:  2 | Mem: [ 2,  3] | Acerto
+
+----------------------------------------------------------------------
+Estado de Memória para o processo PID: 3 (Frames: 4)
+----------------------------------------------------------------------
+--- Simulação FIFO ---
+Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
+Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
+Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
+Ref:  7 | Mem: [ 5,  6,  7,  4] | Troca
+Ref:  8 | Mem: [ 5,  6,  7,  8] | Troca
+Ref:  4 | Mem: [ 4,  6,  7,  8] | Troca
+Ref:  3 | Mem: [ 4,  3,  7,  8] | Troca
+Ref:  2 | Mem: [ 4,  3,  2,  8] | Troca
+Ref:  1 | Mem: [ 4,  3,  2,  1] | Troca
+Ref:  1 | Mem: [ 4,  3,  2,  1] | Acerto
+Ref:  6 | Mem: [ 6,  3,  2,  1] | Troca
+Ref:  7 | Mem: [ 6,  7,  2,  1] | Troca
+Ref:  5 | Mem: [ 6,  7,  5,  1] | Troca
+Ref:  6 | Mem: [ 6,  7,  5,  1] | Acerto
+Ref:  8 | Mem: [ 6,  7,  5,  8] | Troca
+Ref:  3 | Mem: [ 3,  7,  5,  8] | Troca
+Ref:  2 | Mem: [ 3,  2,  5,  8] | Troca
+Ref:  2 | Mem: [ 3,  2,  5,  8] | Acerto
+Ref:  1 | Mem: [ 3,  2,  1,  8] | Troca
+Ref:  2 | Mem: [ 3,  2,  1,  8] | Acerto
+Ref:  2 | Mem: [ 3,  2,  1,  8] | Acerto
+Ref:  4 | Mem: [ 3,  2,  1,  4] | Troca
+Ref:  4 | Mem: [ 3,  2,  1,  4] | Acerto
+Ref:  5 | Mem: [ 5,  2,  1,  4] | Troca
+Ref:  3 | Mem: [ 5,  3,  1,  4] | Troca
+Ref:  2 | Mem: [ 5,  3,  2,  4] | Troca
+Ref:  1 | Mem: [ 5,  3,  2,  1] | Troca
+Ref:  7 | Mem: [ 7,  3,  2,  1] | Troca
+Ref:  8 | Mem: [ 7,  8,  2,  1] | Troca
+
+--- Simulação LRU ---
+Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
+Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
+Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
+Ref:  7 | Mem: [ 5,  6,  7,  4] | Troca
+Ref:  8 | Mem: [ 5,  6,  7,  8] | Troca
+Ref:  4 | Mem: [ 4,  6,  7,  8] | Troca
+Ref:  3 | Mem: [ 4,  3,  7,  8] | Troca
+Ref:  2 | Mem: [ 4,  3,  2,  8] | Troca
+Ref:  1 | Mem: [ 4,  3,  2,  1] | Troca
+Ref:  1 | Mem: [ 4,  3,  2,  1] | Acerto
+Ref:  6 | Mem: [ 6,  3,  2,  1] | Troca
+Ref:  7 | Mem: [ 6,  7,  2,  1] | Troca
+Ref:  5 | Mem: [ 6,  7,  5,  1] | Troca
+Ref:  6 | Mem: [ 6,  7,  5,  1] | Acerto
+Ref:  8 | Mem: [ 6,  7,  5,  8] | Troca
+Ref:  3 | Mem: [ 6,  3,  5,  8] | Troca
+Ref:  2 | Mem: [ 6,  3,  2,  8] | Troca
+Ref:  2 | Mem: [ 6,  3,  2,  8] | Acerto
+Ref:  1 | Mem: [ 1,  3,  2,  8] | Troca
+Ref:  2 | Mem: [ 1,  3,  2,  8] | Acerto
+Ref:  2 | Mem: [ 1,  3,  2,  8] | Acerto
+Ref:  4 | Mem: [ 1,  3,  2,  4] | Troca
+Ref:  4 | Mem: [ 1,  3,  2,  4] | Acerto
+Ref:  5 | Mem: [ 1,  5,  2,  4] | Troca
+Ref:  3 | Mem: [ 3,  5,  2,  4] | Troca
+Ref:  2 | Mem: [ 3,  5,  2,  4] | Acerto
+Ref:  1 | Mem: [ 3,  5,  2,  1] | Troca
+Ref:  7 | Mem: [ 3,  7,  2,  1] | Troca
+Ref:  8 | Mem: [ 8,  7,  2,  1] | Troca
+
+--- Simulação NFU ---
+Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
+Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
+Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
+Ref:  7 | Mem: [ 5,  6,  7,  4] | Troca
+Ref:  8 | Mem: [ 5,  6,  7,  8] | Troca
+Ref:  4 | Mem: [ 4,  6,  7,  8] | Troca
+Ref:  3 | Mem: [ 3,  6,  7,  8] | Troca
+Ref:  2 | Mem: [ 2,  6,  7,  8] | Troca
+Ref:  1 | Mem: [ 1,  6,  7,  8] | Troca
+Ref:  1 | Mem: [ 1,  6,  7,  8] | Acerto
+Ref:  6 | Mem: [ 1,  6,  7,  8] | Acerto
+Ref:  7 | Mem: [ 1,  6,  7,  8] | Acerto
+Ref:  5 | Mem: [ 1,  6,  7,  5] | Troca
+Ref:  6 | Mem: [ 1,  6,  7,  5] | Acerto
+Ref:  8 | Mem: [ 1,  6,  7,  8] | Troca
+Ref:  3 | Mem: [ 1,  6,  7,  3] | Troca
+Ref:  2 | Mem: [ 1,  6,  7,  2] | Troca
+Ref:  2 | Mem: [ 1,  6,  7,  2] | Acerto
+Ref:  1 | Mem: [ 1,  6,  7,  2] | Acerto
+Ref:  2 | Mem: [ 1,  6,  7,  2] | Acerto
+Ref:  2 | Mem: [ 1,  6,  7,  2] | Acerto
+Ref:  4 | Mem: [ 1,  6,  4,  2] | Troca
+Ref:  4 | Mem: [ 1,  6,  4,  2] | Acerto
+Ref:  5 | Mem: [ 1,  6,  5,  2] | Troca
+Ref:  3 | Mem: [ 1,  6,  3,  2] | Troca
+Ref:  2 | Mem: [ 1,  6,  3,  2] | Acerto
+Ref:  1 | Mem: [ 1,  6,  3,  2] | Acerto
+Ref:  7 | Mem: [ 1,  6,  7,  2] | Troca
+Ref:  8 | Mem: [ 1,  6,  8,  2] | Troca
+
+--- Simulação ÓTIMO ---
+Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
+Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
+Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
+Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
+Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
+Ref:  6 | Mem: [ 6,  2,  3,  4] | Troca
+Ref:  7 | Mem: [ 7,  2,  3,  4] | Troca
+Ref:  8 | Mem: [ 8,  2,  3,  4] | Troca
+Ref:  4 | Mem: [ 8,  2,  3,  4] | Acerto
+Ref:  3 | Mem: [ 8,  2,  3,  4] | Acerto
+Ref:  2 | Mem: [ 8,  2,  3,  4] | Acerto
+Ref:  1 | Mem: [ 8,  2,  3,  1] | Troca
+Ref:  1 | Mem: [ 8,  2,  3,  1] | Acerto
+Ref:  6 | Mem: [ 8,  2,  3,  6] | Troca
+Ref:  7 | Mem: [ 8,  7,  3,  6] | Troca
+Ref:  5 | Mem: [ 8,  5,  3,  6] | Troca
+Ref:  6 | Mem: [ 8,  5,  3,  6] | Acerto
+Ref:  8 | Mem: [ 8,  5,  3,  6] | Acerto
+Ref:  3 | Mem: [ 8,  5,  3,  6] | Acerto
+Ref:  2 | Mem: [ 8,  5,  3,  2] | Troca
+Ref:  2 | Mem: [ 8,  5,  3,  2] | Acerto
+Ref:  1 | Mem: [ 1,  5,  3,  2] | Troca
+Ref:  2 | Mem: [ 1,  5,  3,  2] | Acerto
+Ref:  2 | Mem: [ 1,  5,  3,  2] | Acerto
+Ref:  4 | Mem: [ 4,  5,  3,  2] | Troca
+Ref:  4 | Mem: [ 4,  5,  3,  2] | Acerto
+Ref:  5 | Mem: [ 4,  5,  3,  2] | Acerto
+Ref:  3 | Mem: [ 4,  5,  3,  2] | Acerto
+Ref:  2 | Mem: [ 4,  5,  3,  2] | Acerto
+Ref:  1 | Mem: [ 1,  5,  3,  2] | Troca
+Ref:  7 | Mem: [ 7,  5,  3,  2] | Troca
+Ref:  8 | Mem: [ 8,  5,  3,  2] | Troca
 
 ----------------------- RESULTADOS DA MEMÓRIA  -----------------------
 FIFO     | LRU      | NFU      | OTM      | Melhor  
 ----------------------------------------------------------------------
-5        | 5        | 13       | 5        | empate  
+38       | 40       | 35       | 27       | NFU     
 ----------------------------------------------------------------------
