@@ -1,39 +1,173 @@
 
 ----------------------------------------------------------------------
 Log de escalonamento:
-Algoritmo: alternancia | Slice: 10
+Algoritmo: alternancia | Slice: 1
 
 [T=000] CREATE  | pid=1   | total_t=20      
 [T=000] CREATE  | pid=2   | total_t=24      
 [T=000] CREATE  | pid=3   | total_t=32      
-[T=000] RUN     | pid=1   | remaining_t=20   | cpu_slice=10 
-[T=010] PREEMPT | pid=1   | remaining_t=10  
-[T=010] RUN     | pid=2   | remaining_t=24   | cpu_slice=10 
-[T=020] PREEMPT | pid=2   | remaining_t=14  
-[T=020] RUN     | pid=3   | remaining_t=32   | cpu_slice=10 
+[T=000] RUN     | pid=1   | remaining_t=20   | cpu_slice=1  
+[T=001] PREEMPT | pid=1   | remaining_t=19  
+[T=001] RUN     | pid=2   | remaining_t=24   | cpu_slice=1  
+[T=002] PREEMPT | pid=2   | remaining_t=23  
+[T=002] RUN     | pid=3   | remaining_t=32   | cpu_slice=1  
+[T=003] PREEMPT | pid=3   | remaining_t=31  
+[T=003] RUN     | pid=1   | remaining_t=19   | cpu_slice=1  
+[T=004] PREEMPT | pid=1   | remaining_t=18  
+[T=004] RUN     | pid=2   | remaining_t=23   | cpu_slice=1  
+[T=005] PREEMPT | pid=2   | remaining_t=22  
+[T=005] RUN     | pid=3   | remaining_t=31   | cpu_slice=1  
+[T=006] PREEMPT | pid=3   | remaining_t=30  
+[T=006] RUN     | pid=1   | remaining_t=18   | cpu_slice=1  
+[T=007] PREEMPT | pid=1   | remaining_t=17  
+[T=007] RUN     | pid=2   | remaining_t=22   | cpu_slice=1  
+[T=008] PREEMPT | pid=2   | remaining_t=21  
+[T=008] RUN     | pid=3   | remaining_t=30   | cpu_slice=1  
+[T=009] PREEMPT | pid=3   | remaining_t=29  
+[T=009] RUN     | pid=1   | remaining_t=17   | cpu_slice=1  
+[T=010] PREEMPT | pid=1   | remaining_t=16  
+[T=010] RUN     | pid=2   | remaining_t=21   | cpu_slice=1  
+[T=011] PREEMPT | pid=2   | remaining_t=20  
+[T=011] RUN     | pid=3   | remaining_t=29   | cpu_slice=1  
+[T=012] PREEMPT | pid=3   | remaining_t=28  
+[T=012] RUN     | pid=1   | remaining_t=16   | cpu_slice=1  
+[T=013] PREEMPT | pid=1   | remaining_t=15  
+[T=013] RUN     | pid=2   | remaining_t=20   | cpu_slice=1  
+[T=014] PREEMPT | pid=2   | remaining_t=19  
+[T=014] RUN     | pid=3   | remaining_t=28   | cpu_slice=1  
+[T=015] PREEMPT | pid=3   | remaining_t=27  
+[T=015] RUN     | pid=1   | remaining_t=15   | cpu_slice=1  
+[T=016] PREEMPT | pid=1   | remaining_t=14  
+[T=016] RUN     | pid=2   | remaining_t=19   | cpu_slice=1  
+[T=017] PREEMPT | pid=2   | remaining_t=18  
+[T=017] RUN     | pid=3   | remaining_t=27   | cpu_slice=1  
+[T=018] PREEMPT | pid=3   | remaining_t=26  
+[T=018] RUN     | pid=1   | remaining_t=14   | cpu_slice=1  
+[T=019] PREEMPT | pid=1   | remaining_t=13  
+[T=019] RUN     | pid=2   | remaining_t=18   | cpu_slice=1  
+[T=020] PREEMPT | pid=2   | remaining_t=17  
+[T=020] RUN     | pid=3   | remaining_t=26   | cpu_slice=1  
+[T=021] PREEMPT | pid=3   | remaining_t=25  
+[T=021] RUN     | pid=1   | remaining_t=13   | cpu_slice=1  
+[T=022] PREEMPT | pid=1   | remaining_t=12  
+[T=022] RUN     | pid=2   | remaining_t=17   | cpu_slice=1  
+[T=023] PREEMPT | pid=2   | remaining_t=16  
+[T=023] RUN     | pid=3   | remaining_t=25   | cpu_slice=1  
+[T=024] PREEMPT | pid=3   | remaining_t=24  
+[T=024] RUN     | pid=1   | remaining_t=12   | cpu_slice=1  
+[T=025] PREEMPT | pid=1   | remaining_t=11  
+[T=025] RUN     | pid=2   | remaining_t=16   | cpu_slice=1  
+[T=026] PREEMPT | pid=2   | remaining_t=15  
+[T=026] RUN     | pid=3   | remaining_t=24   | cpu_slice=1  
+[T=027] PREEMPT | pid=3   | remaining_t=23  
+[T=027] RUN     | pid=1   | remaining_t=11   | cpu_slice=1  
+[T=028] PREEMPT | pid=1   | remaining_t=10  
+[T=028] RUN     | pid=2   | remaining_t=15   | cpu_slice=1  
+[T=029] PREEMPT | pid=2   | remaining_t=14  
+[T=029] RUN     | pid=3   | remaining_t=23   | cpu_slice=1  
 [T=030] PREEMPT | pid=3   | remaining_t=22  
-[T=030] RUN     | pid=1   | remaining_t=10   | cpu_slice=10 
-[T=040] FINISH  | pid=1   | remaining_t=0   
-[T=040] RUN     | pid=2   | remaining_t=14   | cpu_slice=10 
-[T=050] PREEMPT | pid=2   | remaining_t=4   
-[T=050] RUN     | pid=3   | remaining_t=22   | cpu_slice=10 
+[T=030] RUN     | pid=1   | remaining_t=10   | cpu_slice=1  
+[T=031] PREEMPT | pid=1   | remaining_t=9   
+[T=031] RUN     | pid=2   | remaining_t=14   | cpu_slice=1  
+[T=032] PREEMPT | pid=2   | remaining_t=13  
+[T=032] RUN     | pid=3   | remaining_t=22   | cpu_slice=1  
+[T=033] PREEMPT | pid=3   | remaining_t=21  
+[T=033] RUN     | pid=1   | remaining_t=9    | cpu_slice=1  
+[T=034] PREEMPT | pid=1   | remaining_t=8   
+[T=034] RUN     | pid=2   | remaining_t=13   | cpu_slice=1  
+[T=035] PREEMPT | pid=2   | remaining_t=12  
+[T=035] RUN     | pid=3   | remaining_t=21   | cpu_slice=1  
+[T=036] PREEMPT | pid=3   | remaining_t=20  
+[T=036] RUN     | pid=1   | remaining_t=8    | cpu_slice=1  
+[T=037] PREEMPT | pid=1   | remaining_t=7   
+[T=037] RUN     | pid=2   | remaining_t=12   | cpu_slice=1  
+[T=038] PREEMPT | pid=2   | remaining_t=11  
+[T=038] RUN     | pid=3   | remaining_t=20   | cpu_slice=1  
+[T=039] PREEMPT | pid=3   | remaining_t=19  
+[T=039] RUN     | pid=1   | remaining_t=7    | cpu_slice=1  
+[T=040] PREEMPT | pid=1   | remaining_t=6   
+[T=040] RUN     | pid=2   | remaining_t=11   | cpu_slice=1  
+[T=041] PREEMPT | pid=2   | remaining_t=10  
+[T=041] RUN     | pid=3   | remaining_t=19   | cpu_slice=1  
+[T=042] PREEMPT | pid=3   | remaining_t=18  
+[T=042] RUN     | pid=1   | remaining_t=6    | cpu_slice=1  
+[T=043] PREEMPT | pid=1   | remaining_t=5   
+[T=043] RUN     | pid=2   | remaining_t=10   | cpu_slice=1  
+[T=044] PREEMPT | pid=2   | remaining_t=9   
+[T=044] RUN     | pid=3   | remaining_t=18   | cpu_slice=1  
+[T=045] PREEMPT | pid=3   | remaining_t=17  
+[T=045] RUN     | pid=1   | remaining_t=5    | cpu_slice=1  
+[T=046] PREEMPT | pid=1   | remaining_t=4   
+[T=046] RUN     | pid=2   | remaining_t=9    | cpu_slice=1  
+[T=047] PREEMPT | pid=2   | remaining_t=8   
+[T=047] RUN     | pid=3   | remaining_t=17   | cpu_slice=1  
+[T=048] PREEMPT | pid=3   | remaining_t=16  
+[T=048] RUN     | pid=1   | remaining_t=4    | cpu_slice=1  
+[T=049] PREEMPT | pid=1   | remaining_t=3   
+[T=049] RUN     | pid=2   | remaining_t=8    | cpu_slice=1  
+[T=050] PREEMPT | pid=2   | remaining_t=7   
+[T=050] RUN     | pid=3   | remaining_t=16   | cpu_slice=1  
+[T=051] PREEMPT | pid=3   | remaining_t=15  
+[T=051] RUN     | pid=1   | remaining_t=3    | cpu_slice=1  
+[T=052] PREEMPT | pid=1   | remaining_t=2   
+[T=052] RUN     | pid=2   | remaining_t=7    | cpu_slice=1  
+[T=053] PREEMPT | pid=2   | remaining_t=6   
+[T=053] RUN     | pid=3   | remaining_t=15   | cpu_slice=1  
+[T=054] PREEMPT | pid=3   | remaining_t=14  
+[T=054] RUN     | pid=1   | remaining_t=2    | cpu_slice=1  
+[T=055] PREEMPT | pid=1   | remaining_t=1   
+[T=055] RUN     | pid=2   | remaining_t=6    | cpu_slice=1  
+[T=056] PREEMPT | pid=2   | remaining_t=5   
+[T=056] RUN     | pid=3   | remaining_t=14   | cpu_slice=1  
+[T=057] PREEMPT | pid=3   | remaining_t=13  
+[T=057] RUN     | pid=1   | remaining_t=1    | cpu_slice=1  
+[T=058] FINISH  | pid=1   | remaining_t=0   
+[T=058] RUN     | pid=2   | remaining_t=5    | cpu_slice=1  
+[T=059] PREEMPT | pid=2   | remaining_t=4   
+[T=059] RUN     | pid=3   | remaining_t=13   | cpu_slice=1  
 [T=060] PREEMPT | pid=3   | remaining_t=12  
-[T=060] RUN     | pid=2   | remaining_t=4    | cpu_slice=4  
-[T=064] FINISH  | pid=2   | remaining_t=0   
-[T=064] RUN     | pid=3   | remaining_t=12   | cpu_slice=10 
+[T=060] RUN     | pid=2   | remaining_t=4    | cpu_slice=1  
+[T=061] PREEMPT | pid=2   | remaining_t=3   
+[T=061] RUN     | pid=3   | remaining_t=12   | cpu_slice=1  
+[T=062] PREEMPT | pid=3   | remaining_t=11  
+[T=062] RUN     | pid=2   | remaining_t=3    | cpu_slice=1  
+[T=063] PREEMPT | pid=2   | remaining_t=2   
+[T=063] RUN     | pid=3   | remaining_t=11   | cpu_slice=1  
+[T=064] PREEMPT | pid=3   | remaining_t=10  
+[T=064] RUN     | pid=2   | remaining_t=2    | cpu_slice=1  
+[T=065] PREEMPT | pid=2   | remaining_t=1   
+[T=065] RUN     | pid=3   | remaining_t=10   | cpu_slice=1  
+[T=066] PREEMPT | pid=3   | remaining_t=9   
+[T=066] RUN     | pid=2   | remaining_t=1    | cpu_slice=1  
+[T=067] FINISH  | pid=2   | remaining_t=0   
+[T=067] RUN     | pid=3   | remaining_t=9    | cpu_slice=1  
+[T=068] PREEMPT | pid=3   | remaining_t=8   
+[T=068] RUN     | pid=3   | remaining_t=8    | cpu_slice=1  
+[T=069] PREEMPT | pid=3   | remaining_t=7   
+[T=069] RUN     | pid=3   | remaining_t=7    | cpu_slice=1  
+[T=070] PREEMPT | pid=3   | remaining_t=6   
+[T=070] RUN     | pid=3   | remaining_t=6    | cpu_slice=1  
+[T=071] PREEMPT | pid=3   | remaining_t=5   
+[T=071] RUN     | pid=3   | remaining_t=5    | cpu_slice=1  
+[T=072] PREEMPT | pid=3   | remaining_t=4   
+[T=072] RUN     | pid=3   | remaining_t=4    | cpu_slice=1  
+[T=073] PREEMPT | pid=3   | remaining_t=3   
+[T=073] RUN     | pid=3   | remaining_t=3    | cpu_slice=1  
 [T=074] PREEMPT | pid=3   | remaining_t=2   
-[T=074] RUN     | pid=3   | remaining_t=2    | cpu_slice=2  
+[T=074] RUN     | pid=3   | remaining_t=2    | cpu_slice=1  
+[T=075] PREEMPT | pid=3   | remaining_t=1   
+[T=075] RUN     | pid=3   | remaining_t=1    | cpu_slice=1  
 [T=076] FINISH  | pid=3   | remaining_t=0   
 
 ----------------------- RESULTADOS DA EXECUÇÃO -----------------------
 PID   | Latência         | Tempo de Espera  | Tempo de Execução
 ----------------------------------------------------------------------
-1     | 40               | 20               | 20              
-2     | 64               | 40               | 24              
+1     | 58               | 38               | 20              
+2     | 67               | 43               | 24              
 3     | 76               | 44               | 32              
 ----------------------------------------------------------------------
-Latência Média: 60.00           
-Tempo de Espera Médio: 34.67           
+Latência Média: 67.00           
+Tempo de Espera Médio: 41.67           
 Tempo Total de Execução: 76              
 
 ----------------------------------------------------------------------
@@ -377,4 +511,12 @@ Ref:  8 | Mem: [ 8,  5,  3,  2] | Troca
 FIFO     | LRU      | NFU      | OTM      | Melhor  
 ----------------------------------------------------------------------
 38       | 40       | 35       | 27       | NFU     
+----------------------------------------------------------------------
+
+---------------- TROCAS DE MEMÓRIA POR PROCESSO/ALGORITMO ------------
+PID    | FIFO     | LRU      | NFU      | OTM     
+----------------------------------------------------------------------
+1      | 7        | 8        | 7        | 5       
+2      | 9        | 11       | 11       | 8       
+3      | 22       | 21       | 17       | 14      
 ----------------------------------------------------------------------

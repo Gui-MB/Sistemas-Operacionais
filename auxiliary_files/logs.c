@@ -106,11 +106,24 @@ void print_metrics_scaling(void) {
 
 void print_metrics_memory(void) {
     int total_fifo = 0, total_lru = 0, total_nfu = 0, total_optimal = 0;
+    int fifo_by_proc[MAX_PROCESSES] = {0};
+    int lru_by_proc[MAX_PROCESSES] = {0};
+    int nfu_by_proc[MAX_PROCESSES] = {0};
+    int optimal_by_proc[MAX_PROCESSES] = {0};
 
     // Lógica para Memória GLOBAL
     if (strcmp(memory_policy, "global") == 0) {
-        int total_frames = memory_size_bytes / page_size_bytes;
+        int total_frames = 0;
+        int physical_frames = memory_size_bytes / page_size_bytes;
+        if (physical_frames <= 0) physical_frames = 1;
+
+        // Em modo global, o limite de frames considera a soma do teto de cada processo.
+        // Isso evita superalocar molduras e mascarar trocas com valores sempre zerados.
+        for (int i = 0; i < num_processes; i++) {
+            total_frames += processes[i].frame_limit;
+        }
         if (total_frames <= 0) total_frames = 1;
+        if (total_frames > physical_frames) total_frames = physical_frames;
 
         if (log_cfg.memory_steps) {
             log_printf("\n----------------------------------------------------------------------\n");
@@ -118,16 +131,20 @@ void print_metrics_memory(void) {
             log_printf("----------------------------------------------------------------------\n");
         }
 
-        total_fifo    = fifo_simulate(total_frames, global_page_sequence, global_sequence_len, 1);
-        total_lru     = lru_simulate(total_frames, global_page_sequence, global_sequence_len, 1);
-        total_nfu     = nfu_simulate(total_frames, global_page_sequence, global_sequence_len, 1);
-        total_optimal = optimal_simulate(total_frames, global_page_sequence, global_sequence_len, 1);
+        total_fifo    = fifo_simulate(total_frames, global_page_sequence, global_sequence_len, 1, fifo_by_proc);
+        total_lru     = lru_simulate(total_frames, global_page_sequence, global_sequence_len, 1, lru_by_proc);
+        total_nfu     = nfu_simulate(total_frames, global_page_sequence, global_sequence_len, 1, nfu_by_proc);
+        total_optimal = optimal_simulate(total_frames, global_page_sequence, global_sequence_len, 1, optimal_by_proc);
 
     // Lógica para Memória LOCAL
     } else {
         for (int i = 0; i < num_processes; i++) {
             PageFaultResult res;
             memory_manager_simulate(&processes[i], &res);
+            fifo_by_proc[i] = res.fifo_faults;
+            lru_by_proc[i] = res.lru_faults;
+            nfu_by_proc[i] = res.nfu_faults;
+            optimal_by_proc[i] = res.optimal_faults;
             total_fifo    += res.fifo_faults;
             total_lru     += res.lru_faults;
             total_nfu     += res.nfu_faults;
@@ -158,8 +175,32 @@ void print_metrics_memory(void) {
         log_printf("----------------------------------------------------------------------\n");
         log_printf("%-8d | %-8d | %-8d | %-8d | %-8s\n", total_fifo, total_lru, total_nfu, total_optimal, best);
         log_printf("----------------------------------------------------------------------\n");
+
+        log_printf("\n---------------- TROCAS DE MEMÓRIA POR PROCESSO/ALGORITMO ------------\n");
+        log_printf("%-6s | %-8s | %-8s | %-8s | %-8s\n", "PID", "FIFO", "LRU", "NFU", "OTM");
+        log_printf("----------------------------------------------------------------------\n");
+        for (int i = 0; i < num_processes; i++) {
+            log_printf("%-6d | %-8d | %-8d | %-8d | %-8d\n",
+                      processes[i].pid,
+                      fifo_by_proc[i],
+                      lru_by_proc[i],
+                      nfu_by_proc[i],
+                      optimal_by_proc[i]);
+        }
+        log_printf("----------------------------------------------------------------------\n");
     }
 
-    // SAÍDA EXCLUSIVA DO TERMINAL (Usando printf nativo)
+    // Saída principal em uma linha para correção automática.
     printf("%d|%d|%d|%d|%s\n", total_fifo, total_lru, total_nfu, total_optimal, best);
+
+    // Tabela adicional no terminal com trocas por processo e por algoritmo.
+    printf("PID|FIFO|LRU|NFU|OTM\n");
+    for (int i = 0; i < num_processes; i++) {
+        printf("%d|%d|%d|%d|%d\n",
+               processes[i].pid,
+               fifo_by_proc[i],
+               lru_by_proc[i],
+               nfu_by_proc[i],
+               optimal_by_proc[i]);
+    }
 }

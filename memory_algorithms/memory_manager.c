@@ -31,8 +31,8 @@ void memory_manager_simulate(const Process *p, PageFaultResult *result) {
     }
 
     // O último parâmetro (0) indica modo LOCAL, já que a simulação aqui é por processo.
-    result->fifo_faults = fifo_simulate(frames, seq, seq_len, 0);
-    result->lru_faults = lru_simulate(frames, seq, seq_len, 0);
-    result->nfu_faults = nfu_simulate(frames, seq, seq_len, 0);
-    result->optimal_faults = optimal_simulate(frames, seq, seq_len, 0);
+    result->fifo_faults = fifo_simulate(frames, seq, seq_len, 0, NULL);
+    result->lru_faults = lru_simulate(frames, seq, seq_len, 0, NULL);
+    result->nfu_faults = nfu_simulate(frames, seq, seq_len, 0, NULL);
+    result->optimal_faults = optimal_simulate(frames, seq, seq_len, 0, NULL);
 }

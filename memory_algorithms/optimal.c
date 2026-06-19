@@ -1,10 +1,18 @@
 #include "optimal.h"
 #include "../auxiliary_files/processes.h"
 
-int optimal_simulate(int frames, const int *sequence, int seq_len, int is_global) {
+static int find_process_index_by_pid(int pid) {
+    for (int i = 0; i < num_processes; i++) {
+        if (processes[i].pid == pid) return i;
+    }
+    return -1;
+}
+
+int optimal_simulate(int frames, const int *sequence, int seq_len, int is_global, int *trocas_por_processo) {
     // O algoritmo ótimo olha o futuro da sequência e remove a página cujo próximo uso está mais distante.
     // Ele serve como referência teórica para comparar os demais algoritmos.
     int memory[frames], size = 0, trocas = 0;
+    int resident_count[MAX_PROCESSES] = {0};
 
     if (log_cfg.memory_steps) log_printf("\n--- Simulação ÓTIMO ---\n");
 
@@ -15,12 +23,22 @@ int optimal_simulate(int frames, const int *sequence, int seq_len, int is_global
 
         const char *status;
         if (!found) {
-            // Enquanto houver molduras livres, a página é apenas carregada.
-            if (size < frames) { memory[size++] = page; status = "Preenchimento"; }
-            else {
-                // Para cada página residente, procura a próxima ocorrência no restante da sequência.
+            int req_pid = is_global ? (page >> 16) : -1;
+            int req_idx = is_global ? find_process_index_by_pid(req_pid) : -1;
+            int req_limit = (req_idx >= 0) ? processes[req_idx].frame_limit : frames;
+            int req_at_limit = is_global && req_idx >= 0 && resident_count[req_idx] >= req_limit;
+
+            // Enquanto houver molduras livres e o processo está abaixo do limite, a página é apenas carregada.
+            if (size < frames && !req_at_limit) {
+                memory[size++] = page;
+                if (is_global && req_idx >= 0) resident_count[req_idx]++;
+                status = "Preenchimento";
+            } else {
+                // Para cada página candidata, procura a próxima ocorrência no restante da sequência.
                 int replace_idx = -1, farthest_next_use = -1;
-                for (int j = 0; j < frames; j++) {
+                for (int j = 0; j < size; j++) {
+                    if (req_at_limit && ((memory[j] >> 16) != req_pid)) continue;
+
                     int next_use = -1;
                     for (int k = i + 1; k < seq_len; k++) {
                         if (sequence[k] == memory[j]) { next_use = k; break; }
@@ -30,7 +48,23 @@ int optimal_simulate(int frames, const int *sequence, int seq_len, int is_global
                     // Caso todas serão reutilizadas, removemos a que será usada mais tarde.
                     if (next_use > farthest_next_use) { farthest_next_use = next_use; replace_idx = j; }
                 }
-                memory[replace_idx] = page; trocas++; status = "Troca";
+
+                if (replace_idx == -1) replace_idx = 0;
+
+                if (is_global && size > 0) {
+                    int victim_pid = memory[replace_idx] >> 16;
+                    int victim_idx = find_process_index_by_pid(victim_pid);
+                    if (victim_idx >= 0) resident_count[victim_idx]--;
+                }
+
+                memory[replace_idx] = page;
+                if (is_global && req_idx >= 0) resident_count[req_idx]++;
+
+                trocas++;
+                if (is_global && trocas_por_processo && req_idx >= 0) {
+                    trocas_por_processo[req_idx]++;
+                }
+                status = "Troca";
             }
         } else { status = "Acerto"; }
 

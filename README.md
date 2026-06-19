@@ -59,6 +59,8 @@ Os resultados são exibidos no terminal e também gravados em `saidaEscalonador.
 A IA foi utilizada para:
 
 - refatorar a arquitetura de logs
+- log em formato de tabela para número de trocas por processo e algoritmo
+- ajuda para encontrar o problema que causava o "global" não funcionar
 - refatorar a organização das informações dos processos para incluir memória
 - criar a função `log_printf()`
 - implementar a estrutura de dados da árvore vermelho e preta
