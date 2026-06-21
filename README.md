@@ -1,8 +1,8 @@
 # Simulador de Escalonador de Processos e Gerenciador de Memória
 
-Este projeto implementa um simulador integrado de escalonamento de processos e gerenciamento de memória em C. Ele lê um conjunto de processos de um arquivo de entrada e aplica algoritmos de escalonamento de CPU a algoritmos de substituição de páginas na memória.
+Este projeto implementa, em C, um simulador integrado de escalonamento de processos e substituição de páginas.
 
-O projeto foi testado e implementado usando a versão 11.4.0 do GCC (Ubuntu 11.4.0-1ubuntu1~22.04.3).
+O programa lê `entradaEscalonador.txt`, simula a execução dos processos ciclo a ciclo e compara os algoritmos de memória **FIFO**, **LRU**, **NUF (NFU)** e **Ótimo** pelo número de trocas de página.
 
 ## Estrutura do projeto
 
@@ -22,6 +22,59 @@ Na raiz do projeto, utilize o comando abaixo (certifique-se de compilar todos os
 gcc main.c auxiliary_files/*.c scheduler_algorithms/*.c memory_algorithms/*.c -o escalonador
 ./escalonador
 ```
+
+O arquivo `saidaEscalonador.txt` é gerado automaticamente com o log detalhado.
+
+## Formato de entrada
+
+A entrada deve estar em `entradaEscalonador.txt` e seguir o formato:
+
+```text
+algoritmoDeEscalonamento|fraçãoDeCPU|políticaMemória|tamanhoMemória|tamanhoPáginasMolduras|percentualAlocação
+tempoCriacaoProcesso|PID|tempoDeExecução|prioridade (ou bilhetes)|qtdeMemoria|sequênciaAcessoPaginasProcesso
+```
+
+Significado dos campos da primeira linha:
+
+- `algoritmoDeEscalonamento`: `alternancia` (ou `alternanciaCircular`), `prioridade`, `loteria` ou `CFS`.
+- `fraçãoDeCPU`: quantum de CPU usado pelo escalonador.
+- `políticaMemória`: `local` ou `global`.
+- `tamanhoMemória`: tamanho da memória principal em bytes.
+- `tamanhoPáginasMolduras`: tamanho da página/moldura em bytes.
+- `percentualAlocação`: percentual máximo de alocação por processo.
+
+Significado dos campos das demais linhas (um processo por linha):
+
+- `tempoCriacaoProcesso`: instante de criação do processo.
+- `PID`: identificador único do processo.
+- `tempoDeExecução`: tempo total necessário de CPU.
+- `prioridade (ou bilhetes)`: prioridade (ou quantidade de bilhetes na loteria).
+- `qtdeMemoria`: memória virtual solicitada pelo processo (bytes).
+- `sequênciaAcessoPaginasProcesso`: sequência de páginas referenciadas.
+
+## Formato de saída
+
+Ao final da execução, o programa imprime **uma linha com resultados e uma tabela com as trocas de memória**:
+
+```text
+38|40|35|27|NFU
+PID    | FIFO     | LRU      | NFU      | OTM   
+---------------------------------------------
+1      | 7        | 8        | 7        | 5   
+2      | 9        | 11       | 11       | 8   
+3      | 22       | 21       | 17       | 14  
+```
+
+Onde:
+
+- `FIFO`, `LRU`, `NUF`, `OTIMO`: número de trocas de página de cada algoritmo.
+- `melhor`: algoritmo com desempenho mais próximo do ótimo (`FIFO`, `LRU`, `NFU`), ou `empate` em caso de empate.
+
+Observações de implementação:
+
+- Troca de página conta apenas substituição real; carregamento inicial não conta troca.
+- No NUF, em empate de frequência, é escolhida a página de menor ID.
+- Em cada ciclo de CPU, ocorre no máximo um acesso de memória por processo em execução.
 
 ## Algoritmos de escalonamento implementados
 
@@ -50,9 +103,9 @@ gcc main.c auxiliary_files/*.c scheduler_algorithms/*.c memory_algorithms/*.c -o
 4. A cada decisão, o simulador atualiza o tempo de CPU consumido, espera, prioridade/dinâmica e estado do processo.
 5. Ao final, o simulador exibe o resumo da execução e as métricas calculadas.
 
-## Saída
+## Saída detalhada
 
-Os resultados são exibidos no terminal e também gravados em `saidaEscalonador.txt`.
+Além da linha final para correção automática, o arquivo `saidaEscalonador.txt` contém logs de escalonamento, passos de memória e tabelas-resumo por processo/algoritmo.
 
 ## Observações sobre IA
 

@@ -47,7 +47,11 @@ int nfu_simulate(int frames, const int *sequence, int seq_len, int is_global, in
                         continue;
                     }
                     if (freq[j] < freq[nfu_idx]) nfu_idx = j;
-                    else if (freq[j] == freq[nfu_idx] && memory[j] < memory[nfu_idx]) nfu_idx = j;
+                    else if (freq[j] == freq[nfu_idx]) {
+                        int page_j = memory[j] & 0xFFFF;
+                        int page_best = memory[nfu_idx] & 0xFFFF;
+                        if (page_j < page_best) nfu_idx = j;
+                    }
                 }
 
                 if (nfu_idx == -1) nfu_idx = 0;

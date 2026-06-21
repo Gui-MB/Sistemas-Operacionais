@@ -152,9 +152,9 @@ void print_metrics_memory(void) {
         }
     }
 
-    int diff_fifo = total_fifo - total_optimal;
-    int diff_lru  = total_lru  - total_optimal;
-    int diff_nfu  = total_nfu  - total_optimal;
+    int diff_fifo = abs(total_fifo - total_optimal);
+    int diff_lru  = abs(total_lru  - total_optimal);
+    int diff_nfu  = abs(total_nfu  - total_optimal);
 
     int min_diff = diff_fifo;
     if (diff_lru < min_diff) min_diff = diff_lru;
@@ -194,9 +194,10 @@ void print_metrics_memory(void) {
     printf("%d|%d|%d|%d|%s\n", total_fifo, total_lru, total_nfu, total_optimal, best);
 
     // Tabela adicional no terminal com trocas por processo e por algoritmo.
-    printf("PID|FIFO|LRU|NFU|OTM\n");
+    printf("%-6s | %-8s | %-8s | %-8s | %-8s\n", "PID", "FIFO", "LRU", "NFU", "OTM");
+    printf("---------------------------------------------\n");
     for (int i = 0; i < num_processes; i++) {
-        printf("%d|%d|%d|%d|%d\n",
+        printf("%-6d | %-8d | %-8d | %-8d | %-8d\n",
                processes[i].pid,
                fifo_by_proc[i],
                lru_by_proc[i],
