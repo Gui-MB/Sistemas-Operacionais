@@ -18,6 +18,7 @@ int log_printf(const char *format, ...);
 
 void print_process_event(const char *event, int current_time, const Process *p, int run_time);
 void announce_created_processes(int current_time);
+void print_system_state(int current_time, int running_idx);
 void print_metrics_scaling(void);
 void print_metrics_memory(void);
 

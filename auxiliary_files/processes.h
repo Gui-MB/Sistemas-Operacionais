@@ -25,6 +25,17 @@ typedef struct {
     int lru_faults;
     int nfu_faults;
     int optimal_faults;
+    int chance_request_io;     // Chance (%) de solicitar E/S durante a fatia de CPU
+    int blocked;               // 1 se bloqueado (na fila ou em uso de um dispositivo), 0 caso contrário
+    int requested_device_id;   // Dispositivo alvo da solicitação de E/S atual (-1 se nenhum)
+    int device_in_use;         // 1 se já está sendo atendido pelo dispositivo, 0 se apenas na fila de espera
+    int io_remaining_time;     // Tempo restante da operação de E/S em andamento
+    int io_offset_ticks;       // Instante (dentro da fatia atual) em que a E/S será solicitada (-1 se não solicitará)
+    int planned_device_id;     // Dispositivo sorteado para a solicitação da fatia atual
+    int ready_wait_time;       // Tempo total acumulado no estado pronto
+    int blocked_time;          // Tempo total acumulado no estado bloqueado
+    int last_ready_entry_time; // Instante em que o processo entrou no estado pronto pela última vez
+    int io_wait_start_time;    // Instante em que o processo entrou em estado bloqueado
 } Process;
 
 // Configurações globais lidas do arquivo de entrada

@@ -8,47 +8,31 @@
 #include "scheduler_algorithms/scheduler_manager.h"
 #include "scheduler_algorithms/lottery.h"
 #include "memory_algorithms/memory_manager.h"
+#include "io_algorithms/io_manager.h"
  
 #define INPUT_FILE "entradaEscalonador.txt"
 #define OUTPUT_FILE "saidaEscalonador.txt"
 
-// Executa o processo selecionado por um time slice (ou pelo tempo restante)
-static void execute_process(int selected_idx, int *current_time, int *completed_processes) {
-	// Imprime o evento de execução do processo selecionado
+// Inicia uma nova fatia de CPU para o processo selecionado, sorteando se e quando ele solicitará E/S
+static int start_slice(int selected_idx, int current_time) {
     Process *p = &processes[selected_idx];
-    int run_time = (p->remaining_time > time_slice) ? time_slice : p->remaining_time;
-    print_process_event("RUN", *current_time, p, run_time);
+    int slice_length = (p->remaining_time > time_slice) ? time_slice : p->remaining_time;
 
-    // Cada ciclo de CPU contabiliza um acesso real à memória
-    for(int i = 0; i < run_time; i++) {
-        if (p->next_access_index < p->page_sequence_len) {
-            int page = p->page_sequence[p->next_access_index++];
-            record_memory_access(p->pid, page); // Insere na fila de contexto global
-        }
+    // Contabiliza o tempo que o processo aguardou no estado pronto até começar a executar
+    p->ready_wait_time += current_time - p->last_ready_entry_time;
+
+    // Sorteia se o processo solicitará E/S e em que instante da fatia isso ocorrerá
+    p->io_offset_ticks = -1;
+    if (io_manager_should_request(p)) {
+        p->io_offset_ticks = (rand() % slice_length) + 1;
+        p->planned_device_id = io_manager_pick_device();
     }
 
-	// Simula o avanço do tempo e a execução do processo	
-    p->remaining_time -= run_time;
-    *current_time += run_time;
- 
-    // Atualiza o vruntime para o CFS
-    if (scheduler_manager_get_algorithm() == ALG_CFS) {
-        p->vruntime += run_time * p->priority;
-    }
-
-	// Verifica se o processo terminou sua execução
-    if (p->remaining_time <= 0) {
-        p->is_completed = 1;
-        p->completion_time = *current_time;
-        (*completed_processes)++;
-        print_process_event("FINISH", *current_time, p, 0);
-        return;
-    }
- 
-	// Anuncia que o processo foi preemptado
-    print_process_event("PREEMPT", *current_time, p, 0);
+    print_process_event("RUN", current_time, p, slice_length);
+    print_system_state(current_time, selected_idx);
+    return slice_length;
 }
- 
+
 int main(void) {
     srand((unsigned)time(NULL));
  
@@ -61,7 +45,7 @@ int main(void) {
         fprintf(stderr, "Erro ao abrir o arquivo de saída %s!\n", OUTPUT_FILE);
         return 1;
     }
-	// Lê o arquivo de entrada e inicializa os processos
+	// Lê o arquivo de entrada e inicializa os processos e os dispositivos de E/S
     read_input_file(INPUT_FILE);
 
     // Inicializa o gerenciador de escalonamento
@@ -73,28 +57,94 @@ int main(void) {
         log_printf("Algoritmo: %s | Slice: %d\n\n", algorithm, time_slice);
     }
  
-	// Loop principal de simulação do escalonamento
+	// Loop principal de simulação do escalonamento, executado ciclo a ciclo (1 unidade de tempo por iteração)
     int current_time = 0;
     int completed_processes = 0;
+    int running_idx = -1;
+    int slice_length = 0;
+    int slice_ticks_done = 0;
  
     while (completed_processes < num_processes) {
         announce_created_processes(current_time);
  
-        int had_error = 0;
-        int selected_idx = scheduler_manager_select_next(current_time, &had_error);
-        if (had_error) return 1;
+        // Nenhum processo em execução no momento: seleciona o próximo processo pronto
+        if (running_idx == -1) {
+            int had_error = 0;
+            running_idx = scheduler_manager_select_next(current_time, &had_error);
+            if (had_error) return 1;
  
-        if (selected_idx == -1) {
-            if (log_cfg.cpu_events) log_printf("[T=%03d] IDLE\n", current_time);
-            current_time++;
+            if (running_idx == -1) {
+                if (log_cfg.cpu_events) log_printf("[T=%03d] IDLE\n", current_time);
+                io_manager_tick(current_time);
+                current_time++;
+                continue;
+            }
+ 
+            slice_length = start_slice(running_idx, current_time);
+            slice_ticks_done = 0;
+        }
+ 
+        Process *p = &processes[running_idx];
+ 
+        // Cada ciclo de CPU contabiliza um acesso real à memória
+        if (p->next_access_index < p->page_sequence_len) {
+            int page = p->page_sequence[p->next_access_index++];
+            record_memory_access(p->pid, page); // Insere na fila de contexto global
+        }
+ 
+        p->remaining_time--;
+        slice_ticks_done++;
+ 
+        // Atualiza o vruntime para o CFS
+        if (scheduler_manager_get_algorithm() == ALG_CFS) {
+            p->vruntime += p->priority;
+        }
+ 
+        current_time++;
+        io_manager_tick(current_time);
+ 
+        // Verifica se o processo terminou sua execução
+        if (p->remaining_time <= 0) {
+            p->is_completed = 1;
+            p->completion_time = current_time;
+            completed_processes++;
+            print_process_event("FINISH", current_time, p, 0);
+
+            // Para o algoritmo de loteria, é necessário informar que o processo terminou para atualizar a segment tree
+            if (scheduler_manager_get_algorithm() == ALG_LOTTERY) {
+                lottery_process_finished(running_idx);
+            }
+
+            running_idx = -1;
+            print_system_state(current_time, -1);
             continue;
         }
  
-        execute_process(selected_idx, &current_time, &completed_processes);
+        // Verifica se chegou o instante sorteado para a solicitação de E/S
+        if (p->io_offset_ticks == slice_ticks_done) {
+            io_manager_request(running_idx, p->planned_device_id, current_time);
+
+            if (scheduler_manager_get_algorithm() == ALG_LOTTERY) {
+                lottery_process_finished(running_idx);
+            }
+
+            running_idx = -1;
+            print_system_state(current_time, -1);
+            continue;
+        }
  
-		// Para o algoritmo de loteria, é necessário informar que o processo terminou para atualizar a segment tree
-        if (scheduler_manager_get_algorithm() == ALG_LOTTERY) {
-            lottery_process_finished(selected_idx);
+        // Verifica se a fatia de CPU foi consumida por completo (preempção)
+        if (slice_ticks_done >= slice_length) {
+            p->last_ready_entry_time = current_time;
+            print_process_event("PREEMPT", current_time, p, 0);
+
+            if (scheduler_manager_get_algorithm() == ALG_LOTTERY) {
+                lottery_process_finished(running_idx);
+            }
+
+            running_idx = -1;
+            print_system_state(current_time, -1);
+            continue;
         }
     }
 

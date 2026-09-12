@@ -9,6 +9,7 @@
 #include "../memory_algorithms/rec_used.h"
 #include "../memory_algorithms/freq_used.h"
 #include "../memory_algorithms/optimal.h"
+#include "../io_algorithms/io_manager.h"
 
 // Inicialização das configurações de Log
 LogConfig log_cfg = {
@@ -32,16 +33,22 @@ void close_output_file(void) {
     }
 }
 
-// Imprime no arquivo, de saída, e retorna o número de caracteres escritos
+// Imprime no arquivo, no terminal, e retorna o número de caracteres escritos no arquivo
 int log_printf(const char *format, ...) {
     int count = 0;
+    va_list args_stdout;
+    va_start(args_stdout, format);
+
     if (log_file) {
         va_list args_file;
-        va_start(args_file, format);
+        va_copy(args_file, args_stdout);
         count = vfprintf(log_file, format, args_file);
         va_end(args_file);
         fflush(log_file);
     }
+
+    vprintf(format, args_stdout);
+    va_end(args_stdout);
     return count;
 }
 
@@ -72,27 +79,52 @@ void announce_created_processes(int current_time) {
     }
 }
 
+// Imprime o estado atual do sistema (processos e dispositivos) a cada troca de contexto
+void print_system_state(int current_time, int running_idx) {
+    if (!log_cfg.cpu_events) return;
+
+    log_printf("---- Estado do sistema em T=%03d ----\n", current_time);
+
+    for (int i = 0; i < num_processes; i++) {
+        Process *p = &processes[i];
+        if (!p->creation_announced || p->is_completed) continue;
+
+        if (i == running_idx) {
+            log_printf("  EXECUTANDO | pid=%-3d | remaining_t=%-4d\n", p->pid, p->remaining_time);
+        } else if (p->blocked) {
+            log_printf("  BLOQUEADO  | pid=%-3d | remaining_t=%-4d | dispositivo=%s (%s)\n",
+                       p->pid, p->remaining_time, devices[p->requested_device_id].name,
+                       p->device_in_use ? "em uso" : "aguardando");
+        } else {
+            log_printf("  PRONTO     | pid=%-3d | remaining_t=%-4d\n", p->pid, p->remaining_time);
+        }
+    }
+
+    io_manager_print_state();
+    log_printf("--------------------------------------\n");
+}
+
 void print_metrics_scaling(void) {
     if (log_cfg.final_metrics) {
         log_printf("\n----------------------- RESULTADOS DA EXECUÇÃO -----------------------\n");
-        log_printf("%-5s | %-17s | %-16s | %-16s\n", "PID", "Latência", "Tempo de Espera", "Tempo de Execução");
+        log_printf("%-5s | %-17s | %-16s | %-16s | %-16s\n", "PID", "Turnaround", "Tempo de Espera", "Tempo de Bloqueio", "Tempo de Execução");
         log_printf("----------------------------------------------------------------------\n");
     }
 
-    float total_latency = 0, total_wt = 0;
+    float total_latency = 0, total_wt = 0, total_bt = 0;
     int total_exec_time = 0;
 
     for (int i = 0; i < num_processes; i++) {
         Process p = processes[i];
         int latency_time = p.completion_time - p.creation_time;
-        int waiting_time = latency_time - p.exec_time;
 
         total_latency += latency_time;
-        total_wt += waiting_time;
+        total_wt += p.ready_wait_time;
+        total_bt += p.blocked_time;
         total_exec_time += p.exec_time;
 
         if (log_cfg.final_metrics) {
-            log_printf("%-5d | %-16d | %-16d | %-16d\n", p.pid, latency_time, waiting_time, p.exec_time);
+            log_printf("%-5d | %-16d | %-16d | %-16d | %-16d\n", p.pid, latency_time, p.ready_wait_time, p.blocked_time, p.exec_time);
         }
     }
 
@@ -100,6 +132,7 @@ void print_metrics_scaling(void) {
         log_printf("----------------------------------------------------------------------\n");
         log_printf("Latência Média: %-16.2f\n", total_latency / num_processes);
         log_printf("Tempo de Espera Médio: %-16.2f\n", total_wt / num_processes);
+        log_printf("Tempo de Bloqueio Médio: %-16.2f\n", total_bt / num_processes);
         log_printf("Tempo Total de Execução: %-16d\n", total_exec_time);
     }
 }
@@ -192,16 +225,4 @@ void print_metrics_memory(void) {
 
     // Saída principal em uma linha para correção automática.
     printf("%d|%d|%d|%d|%s\n", total_fifo, total_lru, total_nfu, total_optimal, best);
-
-    // Tabela adicional no terminal com trocas por processo e por algoritmo.
-    printf("%-6s | %-8s | %-8s | %-8s | %-8s\n", "PID", "FIFO", "LRU", "NFU", "OTM");
-    printf("---------------------------------------------\n");
-    for (int i = 0; i < num_processes; i++) {
-        printf("%-6d | %-8d | %-8d | %-8d | %-8d\n",
-               processes[i].pid,
-               fifo_by_proc[i],
-               lru_by_proc[i],
-               nfu_by_proc[i],
-               optimal_by_proc[i]);
-    }
 }

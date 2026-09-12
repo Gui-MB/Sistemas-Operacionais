@@ -24,7 +24,7 @@ void cfs_destroy(void) {
 // Enfileira novos processos prontos na árvore
 static void cfs_enqueue_ready(int current_time) {
 	for (int i = 0; i < num_processes; i++) {
-		if (processes[i].creation_time <= current_time && !processes[i].is_completed && !processes[i].in_cfs_tree) {
+		if (processes[i].creation_time <= current_time && !processes[i].is_completed && !processes[i].in_cfs_tree && !processes[i].blocked) {
 			rb_insert(&processes[i]);
 			processes[i].in_cfs_tree = 1;
 		}

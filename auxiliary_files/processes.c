@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../io_algorithms/io_manager.h"
 
 Process processes[MAX_PROCESSES];
 int num_processes = 0;
@@ -65,16 +66,27 @@ void read_input_file(const char *filename) {
     }
 
     free_input_data();
+    io_manager_reset();
 
     char *line = NULL;
     size_t line_size = 0;
+    int num_devices_declared = 0;
 
     if (getline(&line, &line_size, file) != -1) {
-        sscanf(line, "%49[^|]|%d|%49[^|]|%d|%d|%d",
+        sscanf(line, "%49[^|]|%d|%49[^|]|%d|%d|%d|%d",
                algorithm, &time_slice, memory_policy,
-               &memory_size_bytes, &page_size_bytes, &allocation_percent);
+               &memory_size_bytes, &page_size_bytes, &allocation_percent,
+               &num_devices_declared);
         algorithm[strcspn(algorithm, "\r\n")] = 0;
         memory_policy[strcspn(memory_policy, "\r\n")] = 0;
+    }
+
+    // Lê as linhas de dispositivos de E/S: idDispositivo|numUsosSimultaneos|tempoOperação
+    for (int i = 0; i < num_devices_declared && getline(&line, &line_size, file) != -1; i++) {
+        char device_name[50];
+        int max_concurrent = 0, operation_time = 0;
+        sscanf(line, "%49[^|]|%d|%d", device_name, &max_concurrent, &operation_time);
+        io_manager_add_device(device_name, max_concurrent, operation_time);
     }
 
     while (getline(&line, &line_size, file) != -1) {
@@ -84,9 +96,10 @@ void read_input_file(const char *filename) {
         char *exec_time = strtok_r(NULL, "|", &save_ptr);
         char *priority = strtok_r(NULL, "|", &save_ptr);
         char *memory = strtok_r(NULL, "|", &save_ptr);
-        char *sequence = strtok_r(NULL, "", &save_ptr);
+        char *sequence = strtok_r(NULL, "|", &save_ptr);
+        char *chance = strtok_r(NULL, "", &save_ptr);
 
-        if (!creation || !pid || !exec_time || !priority || !memory || !sequence) continue;
+        if (!creation || !pid || !exec_time || !priority || !memory || !sequence || !chance) continue;
 
         Process *process = &processes[num_processes];
         memset(process, 0, sizeof(*process));
@@ -96,6 +109,7 @@ void read_input_file(const char *filename) {
         process->exec_time = (int)strtol(exec_time, NULL, 10);
         process->priority = (int)strtol(priority, NULL, 10);
         process->memory_bytes = (int)strtol(memory, NULL, 10);
+        process->chance_request_io = (int)strtol(chance, NULL, 10);
         process->page_sequence_len = count_pages_in_sequence(sequence);
         process->virtual_pages = (process->memory_bytes + page_size_bytes - 1) / page_size_bytes;
         
@@ -127,6 +141,16 @@ void read_input_file(const char *filename) {
         process->in_cfs_tree = 0;
         process->in_priority_heap = 0;
         process->next_access_index = 0;
+        process->blocked = 0;
+        process->requested_device_id = -1;
+        process->device_in_use = 0;
+        process->io_remaining_time = 0;
+        process->io_offset_ticks = -1;
+        process->planned_device_id = -1;
+        process->ready_wait_time = 0;
+        process->blocked_time = 0;
+        process->last_ready_entry_time = process->creation_time;
+        process->io_wait_start_time = 0;
 
         num_processes++;
     }

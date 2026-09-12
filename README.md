@@ -10,6 +10,7 @@ O programa lê `entradaEscalonador.txt`, simula a execução dos processos ciclo
 - `entradaEscalonador.txt`: Arquivo de entrada que indica a configuração do sistema e a estrutura dos processos. Deve estar na raiz do projeto.
 - `scheduler_algorithms/`: Implementações dos algoritmos de escalonamento de CPU.
 - `memory_algorithms/`: Implementações dos algoritmos de substituição de páginas de memória.
+- `io_algorithms/`: Gerenciador de dispositivos de E/S (`io_manager.c`/`io_manager.h`).
 - `auxiliary_files/`: Define utilitários comuns, como estruturas de dados (árvores, heaps) e o sistema de formatação de logs (`prints.c`/`prints.h`).
 - `input_generator/`: Contém os scripts em Python geradores de entradas somente para o processo de escalonador.
 - `saidaEscalonador.txt`: Arquivo de saída gerado que contém o log completo e o resumo da simulação.
@@ -19,7 +20,7 @@ O programa lê `entradaEscalonador.txt`, simula a execução dos processos ciclo
 Na raiz do projeto, utilize o comando abaixo (certifique-se de compilar todos os arquivos `.c` das subpastas):
 
 ```bash
-gcc main.c auxiliary_files/*.c scheduler_algorithms/*.c memory_algorithms/*.c -o escalonador
+gcc main.c auxiliary_files/*.c scheduler_algorithms/*.c memory_algorithms/*.c io_algorithms/*.c -o escalonador
 ./escalonador
 ```
 
@@ -30,8 +31,10 @@ O arquivo `saidaEscalonador.txt` é gerado automaticamente com o log detalhado.
 A entrada deve estar em `entradaEscalonador.txt` e seguir o formato:
 
 ```text
-algoritmoDeEscalonamento|fraçãoDeCPU|políticaMemória|tamanhoMemória|tamanhoPáginasMolduras|percentualAlocação
-tempoCriacaoProcesso|PID|tempoDeExecução|prioridade (ou bilhetes)|qtdeMemoria|sequênciaAcessoPaginasProcesso
+algoritmoDeEscalonamento|fraçãoDeCPU|políticaMemória|tamanhoMemória|tamanhoPáginasMolduras|percentualAlocação|numDispositivosES
+idDispositivo|numUsosSimultaneos|tempoOperação
+...
+tempoCriacaoProcesso|PID|tempoDeExecução|prioridade (ou bilhetes)|qtdeMemoria|sequênciaAcessoPaginasProcesso|chanceRequisitarES
 ```
 
 Significado dos campos da primeira linha:
@@ -42,6 +45,13 @@ Significado dos campos da primeira linha:
 - `tamanhoMemória`: tamanho da memória principal em bytes.
 - `tamanhoPáginasMolduras`: tamanho da página/moldura em bytes.
 - `percentualAlocação`: percentual máximo de alocação por processo.
+- `numDispositivosES`: quantidade de dispositivos de E/S do sistema, uma linha por dispositivo é lida em seguida.
+
+Significado dos campos das linhas de dispositivo (uma por dispositivo de E/S):
+
+- `idDispositivo`: identificador do dispositivo.
+- `numUsosSimultaneos`: quantidade de processos que podem usar o dispositivo ao mesmo tempo.
+- `tempoOperação`: tempo que o dispositivo demora para concluir uma operação de E/S.
 
 Significado dos campos das demais linhas (um processo por linha):
 
@@ -51,6 +61,7 @@ Significado dos campos das demais linhas (um processo por linha):
 - `prioridade (ou bilhetes)`: prioridade (ou quantidade de bilhetes na loteria).
 - `qtdeMemoria`: memória virtual solicitada pelo processo (bytes).
 - `sequênciaAcessoPaginasProcesso`: sequência de páginas referenciadas.
+- `chanceRequisitarES`: chance (%) do processo solicitar uma operação de E/S durante sua fatia de CPU.
 
 ## Formato de saída
 
