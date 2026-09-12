@@ -1,4 +1,5 @@
 #include "logs.h"
+#include "devices.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -72,34 +73,83 @@ void announce_created_processes(int current_time) {
     }
 }
 
+// Imprime o estado completo do sistema a cada troca de processo na CPU: quem executa, quem está pronto,
+// quem está bloqueado (e em qual dispositivo) e o estado de todos os dispositivos de E/S.
+void print_system_state(int current_time, int running_idx) {
+    log_printf("\n[T=%03d] ---- Estado do sistema ----\n", current_time);
+
+    if (running_idx >= 0 && running_idx < num_processes) {
+        Process *p = &processes[running_idx];
+        log_printf("  Executando: PID %d (restante=%d)\n", p->pid, p->remaining_time);
+    } else {
+        log_printf("  Executando: (CPU ociosa)\n");
+    }
+
+    log_printf("  Prontos:");
+    int any_ready = 0;
+    for (int i = 0; i < num_processes; i++) {
+        Process *p = &processes[i];
+        if (i == running_idx) continue;
+        if (p->is_completed) continue;
+        if (p->creation_time > current_time) continue;
+        if (p->state != STATE_READY) continue;
+        log_printf(" PID %d(restante=%d)", p->pid, p->remaining_time);
+        any_ready = 1;
+    }
+    if (!any_ready) log_printf(" nenhum");
+    log_printf("\n");
+
+    log_printf("  Bloqueados:");
+    int any_blocked = 0;
+    for (int i = 0; i < num_processes; i++) {
+        Process *p = &processes[i];
+        if (p->state != STATE_BLOCKED) continue;
+        // Consulta o estado REAL do dispositivo (não a cópia guardada no processo no momento do
+        // pedido), pois o processo pode ter sido promovido da fila para um slot livre desde então.
+        int is_waiting = 0;
+        int dev_idx = device_status_of_pid(p->pid, &is_waiting);
+        const char *dev_id = (dev_idx >= 0) ? devices[dev_idx].id : "-1";
+        log_printf(" PID %d(restante=%d, dispositivo=%s, %s)", p->pid, p->remaining_time, dev_id,
+                   is_waiting ? "aguardando" : "em uso");
+        any_blocked = 1;
+    }
+    if (!any_blocked) log_printf(" nenhum");
+    log_printf("\n");
+
+    devices_print_state();
+}
+
 void print_metrics_scaling(void) {
     if (log_cfg.final_metrics) {
         log_printf("\n----------------------- RESULTADOS DA EXECUÇÃO -----------------------\n");
-        log_printf("%-5s | %-17s | %-16s | %-16s\n", "PID", "Latência", "Tempo de Espera", "Tempo de Execução");
-        log_printf("----------------------------------------------------------------------\n");
+        log_printf("%-5s | %-16s | %-16s | %-16s | %-16s\n",
+                   "PID", "Tempo Total", "Tempo Pronto", "Tempo Bloqueado", "Tempo Execução");
+        log_printf("-----------------------------------------------------------------------------\n");
     }
 
-    float total_latency = 0, total_wt = 0;
+    float total_turnaround = 0, total_ready = 0, total_blocked = 0;
     int total_exec_time = 0;
 
     for (int i = 0; i < num_processes; i++) {
         Process p = processes[i];
-        int latency_time = p.completion_time - p.creation_time;
-        int waiting_time = latency_time - p.exec_time;
+        int turnaround_time = p.completion_time - p.creation_time;
 
-        total_latency += latency_time;
-        total_wt += waiting_time;
+        total_turnaround += turnaround_time;
+        total_ready += p.ready_time_accum;
+        total_blocked += p.blocked_time_accum;
         total_exec_time += p.exec_time;
 
         if (log_cfg.final_metrics) {
-            log_printf("%-5d | %-16d | %-16d | %-16d\n", p.pid, latency_time, waiting_time, p.exec_time);
+            log_printf("%-5d | %-16d | %-16d | %-16d | %-16d\n",
+                       p.pid, turnaround_time, p.ready_time_accum, p.blocked_time_accum, p.exec_time);
         }
     }
 
     if (log_cfg.final_metrics) {
-        log_printf("----------------------------------------------------------------------\n");
-        log_printf("Latência Média: %-16.2f\n", total_latency / num_processes);
-        log_printf("Tempo de Espera Médio: %-16.2f\n", total_wt / num_processes);
+        log_printf("-----------------------------------------------------------------------------\n");
+        log_printf("Turnaround Médio (criação->conclusão): %-16.2f\n", total_turnaround / num_processes);
+        log_printf("Tempo Pronto Médio: %-16.2f\n", total_ready / num_processes);
+        log_printf("Tempo Bloqueado Médio: %-16.2f\n", total_blocked / num_processes);
         log_printf("Tempo Total de Execução: %-16d\n", total_exec_time);
     }
 }
@@ -170,13 +220,13 @@ void print_metrics_memory(void) {
     if (count_best > 1) best = "empate";
 
     if (log_cfg.final_metrics) {
-        log_printf("\n----------------------- RESULTADOS DA MEMÓRIA  -----------------------\n");
+        log_printf("\n----------------------- RESULTADOS DA MEMÓRIA  ----------------------\n");
         log_printf("%-8s | %-8s | %-8s | %-8s | %-8s\n", "FIFO", "LRU", "NFU", "OTM", "Melhor");
         log_printf("----------------------------------------------------------------------\n");
         log_printf("%-8d | %-8d | %-8d | %-8d | %-8s\n", total_fifo, total_lru, total_nfu, total_optimal, best);
         log_printf("----------------------------------------------------------------------\n");
 
-        log_printf("\n---------------- TROCAS DE MEMÓRIA POR PROCESSO/ALGORITMO ------------\n");
+        log_printf("\n-------------------- TROCAS DE MEMÓRIA POR PROCESSO/ALGORITMO --------------------\n");
         log_printf("%-6s | %-8s | %-8s | %-8s | %-8s\n", "PID", "FIFO", "LRU", "NFU", "OTM");
         log_printf("----------------------------------------------------------------------\n");
         for (int i = 0; i < num_processes; i++) {
@@ -195,7 +245,7 @@ void print_metrics_memory(void) {
 
     // Tabela adicional no terminal com trocas por processo e por algoritmo.
     printf("%-6s | %-8s | %-8s | %-8s | %-8s\n", "PID", "FIFO", "LRU", "NFU", "OTM");
-    printf("---------------------------------------------\n");
+    printf("-------------------------------------------------\n");
     for (int i = 0; i < num_processes; i++) {
         printf("%-6d | %-8d | %-8d | %-8d | %-8d\n",
                processes[i].pid,

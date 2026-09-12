@@ -1,122 +1,104 @@
-# Simulador de Escalonador de Processos e Gerenciador de Memória
+# Trabalho OS 3 — Escalonador com Gerenciador de E/S
 
-Este projeto implementa, em C, um simulador integrado de escalonamento de processos e substituição de páginas.
+Extensão do simulador de escalonamento (Alternância Circular) e memória (política Local) para
+incorporar um **gerenciador de dispositivos de Entrada/Saída (E/S)**, conforme o enunciado do
+Trabalho OS 3.
 
-O programa lê `entradaEscalonador.txt`, simula a execução dos processos ciclo a ciclo e compara os algoritmos de memória **FIFO**, **LRU**, **NUF (NFU)** e **Ótimo** pelo número de trocas de página.
-
-## Estrutura do projeto
-
-- `main.c`: Arquivo principal que carrega a entrada, aciona as simulações, realiza a contagem do tempo decorrido e gerencia a intercalação entre CPU e Memória.
-- `entradaEscalonador.txt`: Arquivo de entrada que indica a configuração do sistema e a estrutura dos processos. Deve estar na raiz do projeto.
-- `scheduler_algorithms/`: Implementações dos algoritmos de escalonamento de CPU.
-- `memory_algorithms/`: Implementações dos algoritmos de substituição de páginas de memória.
-- `auxiliary_files/`: Define utilitários comuns, como estruturas de dados (árvores, heaps) e o sistema de formatação de logs (`prints.c`/`prints.h`).
-- `input_generator/`: Contém os scripts em Python geradores de entradas somente para o processo de escalonador.
-- `saidaEscalonador.txt`: Arquivo de saída gerado que contém o log completo e o resumo da simulação.
-
-## Como compilar e executar
-
-Na raiz do projeto, utilize o comando abaixo (certifique-se de compilar todos os arquivos `.c` das subpastas):
+## Como compilar
 
 ```bash
-gcc main.c auxiliary_files/*.c scheduler_algorithms/*.c memory_algorithms/*.c -o escalonador
+gcc -Wall -Wextra -o escalonador main.c auxiliary_files/*.c scheduler_algorithms/*.c memory_algorithms/*.c
+```
+
+## Como executar
+
+```bash
 ./escalonador
 ```
 
-O arquivo `saidaEscalonador.txt` é gerado automaticamente com o log detalhado.
+O programa lê `entradaEscalonador.txt` (mesmo diretório do executável) e grava o log completo em
+`saidaEscalonador.txt`. No terminal, imprime apenas o resumo final de trocas de página por algoritmo
+de memória (para fins de correção automática).
 
-## Formato de entrada
+## Formato do arquivo de entrada
 
-A entrada deve estar em `entradaEscalonador.txt` e seguir o formato:
-
-```text
-algoritmoDeEscalonamento|fraçãoDeCPU|políticaMemória|tamanhoMemória|tamanhoPáginasMolduras|percentualAlocação
-tempoCriacaoProcesso|PID|tempoDeExecução|prioridade (ou bilhetes)|qtdeMemoria|sequênciaAcessoPaginasProcesso
+```
+algoritmoDeEscalonamento|fraçãoDeCPU|políticaMemória|tamanhoMemória|tamanhoPáginasMolduras|percentualAlocação|numDispositivosES
+idDispositivo|numUsosSimultaneos|tempoOperação
+...  (uma linha por dispositivo, numDispositivosES linhas no total)
+tempoCriação|PID|tempoDeExecução|prioridade|qtdeMemoria|sequênciaAcessoPaginasProcesso|chanceRequisitarES
+...  (uma linha por processo)
 ```
 
-Significado dos campos da primeira linha:
+- `algoritmoDeEscalonamento`: nesta entrega, apenas `alternancia` (Alternância Circular) é utilizado.
+- `políticaMemória`: nesta entrega, apenas `local` é utilizada.
+- `numDispositivosES`: quantidade de dispositivos de E/S do sistema.
+- `idDispositivo`: identificador do dispositivo (usado nos logs).
+- `numUsosSimultaneos`: quantos processos podem usar o dispositivo ao mesmo tempo.
+- `tempoOperação`: quantos ciclos de tempo uma operação de E/S naquele dispositivo demora.
+- `chanceRequisitarES`: chance (0–100) do processo requisitar uma operação de E/S a cada vez que é
+  escalonado para a CPU. Se o processo decidir requisitar, o dispositivo e o instante dentro da fatia
+  de CPU em que isso ocorre são sorteados aleatoriamente.
 
-- `algoritmoDeEscalonamento`: `alternancia` (ou `alternanciaCircular`), `prioridade`, `loteria` ou `CFS`.
-- `fraçãoDeCPU`: quantum de CPU usado pelo escalonador.
-- `políticaMemória`: `local` ou `global`.
-- `tamanhoMemória`: tamanho da memória principal em bytes.
-- `tamanhoPáginasMolduras`: tamanho da página/moldura em bytes.
-- `percentualAlocação`: percentual máximo de alocação por processo.
+Exemplo (`entradaEscalonador.txt`):
 
-Significado dos campos das demais linhas (um processo por linha):
-
-- `tempoCriacaoProcesso`: instante de criação do processo.
-- `PID`: identificador único do processo.
-- `tempoDeExecução`: tempo total necessário de CPU.
-- `prioridade (ou bilhetes)`: prioridade (ou quantidade de bilhetes na loteria).
-- `qtdeMemoria`: memória virtual solicitada pelo processo (bytes).
-- `sequênciaAcessoPaginasProcesso`: sequência de páginas referenciadas.
-
-## Formato de saída
-
-Ao final da execução, o programa imprime **uma linha com resultados e uma tabela com as trocas de memória**:
-
-```text
-38|40|35|27|NFU
-PID    | FIFO     | LRU      | NFU      | OTM   
----------------------------------------------
-1      | 7        | 8        | 7        | 5   
-2      | 9        | 11       | 11       | 8   
-3      | 22       | 21       | 17       | 14  
+```
+alternancia|1|local|65536|512|50|2
+1|1|3
+2|2|5
+0|1|20|59|4096|1 2 2 2 3 4 3 4 5 5 6 1 5 3 2 6 7 7 7 8|30
+0|2|24|32|2048|1 2 2 2 3 4 3 4 4 4 2 3 2 1 3 2 1 2 2 3 4 3 2 2|20
+0|3|32|32|4096|1 2 3 4 5 6 7 8 4 3 2 1 1 6 7 5 6 8 3 2 2 1 2 2 4 4 5 3 2 1 7 8|10
 ```
 
-Onde:
+## Comportamento do gerenciador de E/S
 
-- `FIFO`, `LRU`, `NUF`, `OTIMO`: número de trocas de página de cada algoritmo.
-- `melhor`: algoritmo com desempenho mais próximo do ótimo (`FIFO`, `LRU`, `NFU`), ou `empate` em caso de empate.
+- Ao ser escalonado, cada processo sorteia (com base em `chanceRequisitarES`) se vai requisitar uma
+  operação de E/S durante a fatia de CPU que recebeu. Se sim, sorteia também qual dispositivo e em
+  qual ciclo da fatia isso ocorre.
+- Se o dispositivo tiver um slot livre (`numUsosSimultaneos` respeitado), o processo começa a operação
+  imediatamente. Caso contrário, entra na fila de espera (FIFO) do dispositivo.
+- Enquanto está bloqueado (operando ou aguardando), o processo não é escalonado para a CPU. Os demais
+  processos prontos continuam concorrendo à CPU normalmente pela alternância circular.
+- Quando a operação de E/S termina, o processo volta ao estado "pronto" e é reenfileirado no final da
+  fila de prontos (comportamento padrão de alternância circular).
 
-Observações de implementação:
+## Saída (`saidaEscalonador.txt`)
 
-- Troca de página conta apenas substituição real; carregamento inicial não conta troca.
-- No NUF, em empate de frequência, é escolhida a página de menor ID.
-- Em cada ciclo de CPU, ocorre no máximo um acesso de memória por processo em execução.
+A cada troca de processo na CPU, o log mostra:
 
-## Algoritmos de escalonamento implementados
+```
+[T=XXX] ---- Estado do sistema ----
+  Executando: PID <pid> (restante=<tempo>)
+  Prontos: PID <pid>(restante=<tempo>) ...
+  Bloqueados: PID <pid>(restante=<tempo>, dispositivo=<id>, em uso|aguardando) ...
+  Dispositivos:
+    Dispositivo <id> (slots=<n>, tempo_operacao=<t>): [uso: PID <pid>, restante=<t>] ... | fila: PID <pid> ...
+```
 
-- **Alternância Circular** (`round_robin.c`).
-- **Prioridade** (`priority.c`).
-- **Lottery** (`lottery.c`).
-- **CFS** (`cfs.c`).
+Eventos de CPU (`CREATE`, `RUN`, `PREEMPT`, `FINISH`, `IO_REQ`, `IO_DONE`) também são registrados
+linha a linha.
 
-## Políticas de memória implementadas
+Ao final, a tabela de resultados mostra, para cada processo: tempo total (criação → conclusão),
+tempo total em estado "pronto" e tempo total em estado "bloqueado" (aguardando/realizando E/S), além
+do tempo de execução efetivo na CPU.
 
-- **Local:** Cada processo substitui apenas suas próprias páginas dentro de um limite de frames calculado pelo seu percentual de alocação.
-- **Global:** Todos os processos competem pelas mesmas molduras de memória física, sofrendo e causando substituições de forma intercalada de acordo com os ciclos de CPU.
+A simulação de memória (FIFO/LRU/NFU/Ótimo) é mantida como no trabalho anterior, para fins de
+referência e comparação, mesmo com apenas a política `local` sendo usada nesta entrega.
 
-## Algoritmos de memória implementados
+## Estrutura dos arquivos
 
-- **FIFO (First-In-First-Out)** (`fifo.c`).
-- **LRU (Menos Recentemente Usada)** (`rec_used.c`).
-- **NFU (Não Usada Frequentemente)** (`freq_used.c`).
-- **Ótimo** (`optimal.c`).
+| Arquivo | Descrição |
+|---|---|
+| `main.c` | Loop principal: simulação ciclo a ciclo da CPU, integrando o escalonador e o gerenciador de E/S |
+| `auxiliary_files/processes.h/c` | Estrutura `Process`, leitura do arquivo de entrada (agora incluindo dispositivos e `chanceRequisitarES`) |
+| `auxiliary_files/devices.h/c` | **Novo**: gerenciador de dispositivos de E/S (slots simultâneos, fila de espera, `device_tick`) |
+| `auxiliary_files/logs.h/c` | Impressão de eventos, estado do sistema a cada troca de contexto e métricas finais |
+| `scheduler_algorithms/round_robin.c` | Alternância Circular, adaptada para respeitar processos bloqueados por E/S |
+| `scheduler_algorithms/scheduler_manager.c` | Seleciona o algoritmo de escalonamento configurado |
+| `memory_algorithms/*` | Simulação de FIFO, LRU, NFU e Ótimo (mantidos do trabalho anterior) |
 
-## Funcionamento (visão geral)
-
-1. O programa lê todos os processos de `entradaEscalonador.txt`.
-2. Cada processo é inserido nas estruturas internas.
-3. A simulação avança em passos de tempo, selecionando o próximo processo a executar conforme o algoritmo.
-4. A cada decisão, o simulador atualiza o tempo de CPU consumido, espera, prioridade/dinâmica e estado do processo.
-5. Ao final, o simulador exibe o resumo da execução e as métricas calculadas.
-
-## Saída detalhada
-
-Além da linha final para correção automática, o arquivo `saidaEscalonador.txt` contém logs de escalonamento, passos de memória e tabelas-resumo por processo/algoritmo.
-
-## Observações sobre IA
-
-A IA foi utilizada para:
-
-- refatorar a arquitetura de logs
-- log em formato de tabela para número de trocas por processo e algoritmo
-- ajuda para encontrar o problema que causava o "global" não funcionar
-- refatorar a organização das informações dos processos para incluir memória
-- criar a função `log_printf()`
-- implementar a estrutura de dados da árvore vermelho e preta
-- implementar a estrutura de dados heap mínimo
-- revisar as informações dos arquivos .h
-- auxiliar na escrita do arquivo README.md
+Os módulos `priority.c`, `lottery.c`, `cfs.c` (e suas estruturas de apoio `heap_min`,
+`red_and_black_tree`) permanecem no projeto por compatibilidade, mas não são utilizados nesta entrega,
+já que o enunciado pede a consideração de apenas um algoritmo de escalonamento (Alternância Circular)
+e um de memória (Local).

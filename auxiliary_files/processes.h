@@ -2,6 +2,11 @@
 #define PROCESSES_H
 #define MAX_PROCESSES 1000
 
+// Estados possíveis de um processo em relação à CPU
+#define STATE_READY   0
+#define STATE_RUNNING 1
+#define STATE_BLOCKED 2
+
 // Estrutura para armazenar as informacoes de cada processo
 typedef struct {
     int pid;
@@ -25,6 +30,17 @@ typedef struct {
     int lru_faults;
     int nfu_faults;
     int optimal_faults;
+
+    // --- Campos de E/S (Trabalho OS 3) ---
+    int chance_requisitar_es;     // 0-100: chance de solicitar E/S ao ser escalonado
+    int state;                    // STATE_READY, STATE_RUNNING ou STATE_BLOCKED
+    int device_index;             // índice do dispositivo em uso/aguardado, -1 se não bloqueado
+    int waiting_in_queue;         // 1 se está na fila de espera do dispositivo, 0 se em operação
+    int io_will_request;          // 1 se, na fatia atual, o processo vai requisitar E/S
+    int io_trigger_tick;          // ciclo (relativo ao início da fatia) em que a E/S será solicitada
+    int io_device_choice;         // índice do dispositivo sorteado para a requisição da fatia atual
+    int ready_time_accum;         // tempo total acumulado em estado "pronto"
+    int blocked_time_accum;       // tempo total acumulado em estado "bloqueado"
 } Process;
 
 // Configurações globais lidas do arquivo de entrada

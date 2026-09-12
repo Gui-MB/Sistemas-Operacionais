@@ -16,7 +16,7 @@ static int in_queue[MAX_QUEUE];
 // Marca processos já adicionados após criação
 static int already_arrived[MAX_QUEUE];
 
-// Último processo executado (para re-enfileirar após o slice)
+// Último processo executado (para re-enfileirar após o slice, se ainda estiver pronto)
 static int last_executed = -1;
 
 
@@ -74,6 +74,20 @@ static void update_ready_queue(int current_time) {
 
 
 // =========================
+// Notifica que um processo bloqueado por E/S terminou sua operação e voltou a ficar pronto
+// =========================
+
+// Chamada pelo main.c quando um dispositivo libera um processo: o processo volta ao final da fila,
+// como esperado no comportamento padrão de alternância circular.
+void rr_enqueue_unblocked(int process_idx) {
+    if (process_idx < 0 || process_idx >= num_processes) return;
+    if (!in_queue[process_idx]) {
+        enqueue(process_idx);
+    }
+}
+
+
+// =========================
 // Seleciona próximo processo
 // =========================
 
@@ -82,10 +96,10 @@ int get_next_rr(int current_time) {
     // Adiciona novos processos que chegaram
     update_ready_queue(current_time);
 
-    // Re-enfileira o último processo se ainda não terminou
+    // Re-enfileira o último processo se ele ainda estiver pronto (não terminou e não foi bloqueado por E/S)
     if (last_executed != -1) {
         Process *last = &processes[last_executed];
-        if (!last->is_completed && last->remaining_time > 0 && !in_queue[last_executed]) {
+        if (!last->is_completed && last->remaining_time > 0 && last->state != STATE_BLOCKED && !in_queue[last_executed]) {
             enqueue(last_executed);
         }
     }

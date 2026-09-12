@@ -1,173 +1,395 @@
 
 ----------------------------------------------------------------------
 Log de escalonamento:
-Algoritmo: alternancia | Slice: 1
+Algoritmo: alternancia | Slice: 10 | Dispositivos de E/S: 4
 
 [T=000] CREATE  | pid=1   | total_t=20      
 [T=000] CREATE  | pid=2   | total_t=24      
 [T=000] CREATE  | pid=3   | total_t=32      
-[T=000] RUN     | pid=1   | remaining_t=20   | cpu_slice=1  
-[T=001] PREEMPT | pid=1   | remaining_t=19  
-[T=001] RUN     | pid=2   | remaining_t=24   | cpu_slice=1  
-[T=002] PREEMPT | pid=2   | remaining_t=23  
-[T=002] RUN     | pid=3   | remaining_t=32   | cpu_slice=1  
-[T=003] PREEMPT | pid=3   | remaining_t=31  
-[T=003] RUN     | pid=1   | remaining_t=19   | cpu_slice=1  
-[T=004] PREEMPT | pid=1   | remaining_t=18  
-[T=004] RUN     | pid=2   | remaining_t=23   | cpu_slice=1  
-[T=005] PREEMPT | pid=2   | remaining_t=22  
-[T=005] RUN     | pid=3   | remaining_t=31   | cpu_slice=1  
-[T=006] PREEMPT | pid=3   | remaining_t=30  
-[T=006] RUN     | pid=1   | remaining_t=18   | cpu_slice=1  
-[T=007] PREEMPT | pid=1   | remaining_t=17  
-[T=007] RUN     | pid=2   | remaining_t=22   | cpu_slice=1  
-[T=008] PREEMPT | pid=2   | remaining_t=21  
-[T=008] RUN     | pid=3   | remaining_t=30   | cpu_slice=1  
-[T=009] PREEMPT | pid=3   | remaining_t=29  
-[T=009] RUN     | pid=1   | remaining_t=17   | cpu_slice=1  
-[T=010] PREEMPT | pid=1   | remaining_t=16  
-[T=010] RUN     | pid=2   | remaining_t=21   | cpu_slice=1  
-[T=011] PREEMPT | pid=2   | remaining_t=20  
-[T=011] RUN     | pid=3   | remaining_t=29   | cpu_slice=1  
-[T=012] PREEMPT | pid=3   | remaining_t=28  
-[T=012] RUN     | pid=1   | remaining_t=16   | cpu_slice=1  
-[T=013] PREEMPT | pid=1   | remaining_t=15  
-[T=013] RUN     | pid=2   | remaining_t=20   | cpu_slice=1  
-[T=014] PREEMPT | pid=2   | remaining_t=19  
-[T=014] RUN     | pid=3   | remaining_t=28   | cpu_slice=1  
-[T=015] PREEMPT | pid=3   | remaining_t=27  
-[T=015] RUN     | pid=1   | remaining_t=15   | cpu_slice=1  
-[T=016] PREEMPT | pid=1   | remaining_t=14  
-[T=016] RUN     | pid=2   | remaining_t=19   | cpu_slice=1  
-[T=017] PREEMPT | pid=2   | remaining_t=18  
-[T=017] RUN     | pid=3   | remaining_t=27   | cpu_slice=1  
-[T=018] PREEMPT | pid=3   | remaining_t=26  
-[T=018] RUN     | pid=1   | remaining_t=14   | cpu_slice=1  
-[T=019] PREEMPT | pid=1   | remaining_t=13  
-[T=019] RUN     | pid=2   | remaining_t=18   | cpu_slice=1  
-[T=020] PREEMPT | pid=2   | remaining_t=17  
-[T=020] RUN     | pid=3   | remaining_t=26   | cpu_slice=1  
-[T=021] PREEMPT | pid=3   | remaining_t=25  
-[T=021] RUN     | pid=1   | remaining_t=13   | cpu_slice=1  
-[T=022] PREEMPT | pid=1   | remaining_t=12  
-[T=022] RUN     | pid=2   | remaining_t=17   | cpu_slice=1  
-[T=023] PREEMPT | pid=2   | remaining_t=16  
-[T=023] RUN     | pid=3   | remaining_t=25   | cpu_slice=1  
-[T=024] PREEMPT | pid=3   | remaining_t=24  
-[T=024] RUN     | pid=1   | remaining_t=12   | cpu_slice=1  
-[T=025] PREEMPT | pid=1   | remaining_t=11  
-[T=025] RUN     | pid=2   | remaining_t=16   | cpu_slice=1  
-[T=026] PREEMPT | pid=2   | remaining_t=15  
-[T=026] RUN     | pid=3   | remaining_t=24   | cpu_slice=1  
-[T=027] PREEMPT | pid=3   | remaining_t=23  
-[T=027] RUN     | pid=1   | remaining_t=11   | cpu_slice=1  
-[T=028] PREEMPT | pid=1   | remaining_t=10  
-[T=028] RUN     | pid=2   | remaining_t=15   | cpu_slice=1  
-[T=029] PREEMPT | pid=2   | remaining_t=14  
-[T=029] RUN     | pid=3   | remaining_t=23   | cpu_slice=1  
-[T=030] PREEMPT | pid=3   | remaining_t=22  
-[T=030] RUN     | pid=1   | remaining_t=10   | cpu_slice=1  
-[T=031] PREEMPT | pid=1   | remaining_t=9   
-[T=031] RUN     | pid=2   | remaining_t=14   | cpu_slice=1  
-[T=032] PREEMPT | pid=2   | remaining_t=13  
-[T=032] RUN     | pid=3   | remaining_t=22   | cpu_slice=1  
-[T=033] PREEMPT | pid=3   | remaining_t=21  
-[T=033] RUN     | pid=1   | remaining_t=9    | cpu_slice=1  
-[T=034] PREEMPT | pid=1   | remaining_t=8   
-[T=034] RUN     | pid=2   | remaining_t=13   | cpu_slice=1  
-[T=035] PREEMPT | pid=2   | remaining_t=12  
-[T=035] RUN     | pid=3   | remaining_t=21   | cpu_slice=1  
-[T=036] PREEMPT | pid=3   | remaining_t=20  
-[T=036] RUN     | pid=1   | remaining_t=8    | cpu_slice=1  
-[T=037] PREEMPT | pid=1   | remaining_t=7   
-[T=037] RUN     | pid=2   | remaining_t=12   | cpu_slice=1  
-[T=038] PREEMPT | pid=2   | remaining_t=11  
-[T=038] RUN     | pid=3   | remaining_t=20   | cpu_slice=1  
-[T=039] PREEMPT | pid=3   | remaining_t=19  
-[T=039] RUN     | pid=1   | remaining_t=7    | cpu_slice=1  
-[T=040] PREEMPT | pid=1   | remaining_t=6   
-[T=040] RUN     | pid=2   | remaining_t=11   | cpu_slice=1  
-[T=041] PREEMPT | pid=2   | remaining_t=10  
-[T=041] RUN     | pid=3   | remaining_t=19   | cpu_slice=1  
-[T=042] PREEMPT | pid=3   | remaining_t=18  
-[T=042] RUN     | pid=1   | remaining_t=6    | cpu_slice=1  
-[T=043] PREEMPT | pid=1   | remaining_t=5   
-[T=043] RUN     | pid=2   | remaining_t=10   | cpu_slice=1  
-[T=044] PREEMPT | pid=2   | remaining_t=9   
-[T=044] RUN     | pid=3   | remaining_t=18   | cpu_slice=1  
-[T=045] PREEMPT | pid=3   | remaining_t=17  
-[T=045] RUN     | pid=1   | remaining_t=5    | cpu_slice=1  
-[T=046] PREEMPT | pid=1   | remaining_t=4   
-[T=046] RUN     | pid=2   | remaining_t=9    | cpu_slice=1  
-[T=047] PREEMPT | pid=2   | remaining_t=8   
-[T=047] RUN     | pid=3   | remaining_t=17   | cpu_slice=1  
-[T=048] PREEMPT | pid=3   | remaining_t=16  
-[T=048] RUN     | pid=1   | remaining_t=4    | cpu_slice=1  
-[T=049] PREEMPT | pid=1   | remaining_t=3   
-[T=049] RUN     | pid=2   | remaining_t=8    | cpu_slice=1  
-[T=050] PREEMPT | pid=2   | remaining_t=7   
-[T=050] RUN     | pid=3   | remaining_t=16   | cpu_slice=1  
-[T=051] PREEMPT | pid=3   | remaining_t=15  
-[T=051] RUN     | pid=1   | remaining_t=3    | cpu_slice=1  
-[T=052] PREEMPT | pid=1   | remaining_t=2   
-[T=052] RUN     | pid=2   | remaining_t=7    | cpu_slice=1  
-[T=053] PREEMPT | pid=2   | remaining_t=6   
-[T=053] RUN     | pid=3   | remaining_t=15   | cpu_slice=1  
-[T=054] PREEMPT | pid=3   | remaining_t=14  
-[T=054] RUN     | pid=1   | remaining_t=2    | cpu_slice=1  
-[T=055] PREEMPT | pid=1   | remaining_t=1   
-[T=055] RUN     | pid=2   | remaining_t=6    | cpu_slice=1  
-[T=056] PREEMPT | pid=2   | remaining_t=5   
-[T=056] RUN     | pid=3   | remaining_t=14   | cpu_slice=1  
-[T=057] PREEMPT | pid=3   | remaining_t=13  
-[T=057] RUN     | pid=1   | remaining_t=1    | cpu_slice=1  
-[T=058] FINISH  | pid=1   | remaining_t=0   
-[T=058] RUN     | pid=2   | remaining_t=5    | cpu_slice=1  
-[T=059] PREEMPT | pid=2   | remaining_t=4   
-[T=059] RUN     | pid=3   | remaining_t=13   | cpu_slice=1  
-[T=060] PREEMPT | pid=3   | remaining_t=12  
-[T=060] RUN     | pid=2   | remaining_t=4    | cpu_slice=1  
-[T=061] PREEMPT | pid=2   | remaining_t=3   
-[T=061] RUN     | pid=3   | remaining_t=12   | cpu_slice=1  
-[T=062] PREEMPT | pid=3   | remaining_t=11  
-[T=062] RUN     | pid=2   | remaining_t=3    | cpu_slice=1  
-[T=063] PREEMPT | pid=2   | remaining_t=2   
-[T=063] RUN     | pid=3   | remaining_t=11   | cpu_slice=1  
-[T=064] PREEMPT | pid=3   | remaining_t=10  
-[T=064] RUN     | pid=2   | remaining_t=2    | cpu_slice=1  
-[T=065] PREEMPT | pid=2   | remaining_t=1   
-[T=065] RUN     | pid=3   | remaining_t=10   | cpu_slice=1  
-[T=066] PREEMPT | pid=3   | remaining_t=9   
-[T=066] RUN     | pid=2   | remaining_t=1    | cpu_slice=1  
-[T=067] FINISH  | pid=2   | remaining_t=0   
-[T=067] RUN     | pid=3   | remaining_t=9    | cpu_slice=1  
-[T=068] PREEMPT | pid=3   | remaining_t=8   
-[T=068] RUN     | pid=3   | remaining_t=8    | cpu_slice=1  
-[T=069] PREEMPT | pid=3   | remaining_t=7   
-[T=069] RUN     | pid=3   | remaining_t=7    | cpu_slice=1  
-[T=070] PREEMPT | pid=3   | remaining_t=6   
-[T=070] RUN     | pid=3   | remaining_t=6    | cpu_slice=1  
-[T=071] PREEMPT | pid=3   | remaining_t=5   
-[T=071] RUN     | pid=3   | remaining_t=5    | cpu_slice=1  
-[T=072] PREEMPT | pid=3   | remaining_t=4   
-[T=072] RUN     | pid=3   | remaining_t=4    | cpu_slice=1  
-[T=073] PREEMPT | pid=3   | remaining_t=3   
-[T=073] RUN     | pid=3   | remaining_t=3    | cpu_slice=1  
-[T=074] PREEMPT | pid=3   | remaining_t=2   
-[T=074] RUN     | pid=3   | remaining_t=2    | cpu_slice=1  
-[T=075] PREEMPT | pid=3   | remaining_t=1   
-[T=075] RUN     | pid=3   | remaining_t=1    | cpu_slice=1  
-[T=076] FINISH  | pid=3   | remaining_t=0   
+[T=000] RUN     | pid=1   | remaining_t=20   | cpu_slice=10 
+
+[T=000] ---- Estado do sistema ----
+  Executando: PID 1 (restante=20)
+  Prontos: PID 2(restante=24) PID 3(restante=32)
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=010] PREEMPT | pid=1   | remaining_t=10  
+[T=010] RUN     | pid=2   | remaining_t=24   | cpu_slice=10 
+
+[T=010] ---- Estado do sistema ----
+  Executando: PID 2 (restante=24)
+  Prontos: PID 1(restante=10) PID 3(restante=32)
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=014] IO_REQ  | pid=2   | dispositivo=device-0   | iniciou operacao
+[T=014] RUN     | pid=3   | remaining_t=32   | cpu_slice=10 
+
+[T=014] ---- Estado do sistema ----
+  Executando: PID 3 (restante=32)
+  Prontos: PID 1(restante=10)
+  Bloqueados: PID 2(restante=20, dispositivo=device-0, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): [uso: PID 2, restante=3]
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=015] IO_REQ  | pid=3   | dispositivo=device-0   | entrou na fila de espera
+[T=015] RUN     | pid=1   | remaining_t=10   | cpu_slice=10 
+
+[T=015] ---- Estado do sistema ----
+  Executando: PID 1 (restante=10)
+  Prontos: nenhum
+  Bloqueados: PID 2(restante=20, dispositivo=device-0, em uso) PID 3(restante=31, dispositivo=device-0, aguardando)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): [uso: PID 2, restante=2] | fila: PID 3
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=017] IO_DONE | pid=2   | operacao de E/S concluida
+[T=017] IO_REQ  | pid=1   | dispositivo=device-0   | entrou na fila de espera
+[T=017] RUN     | pid=2   | remaining_t=20   | cpu_slice=10 
+
+[T=017] ---- Estado do sistema ----
+  Executando: PID 2 (restante=20)
+  Prontos: nenhum
+  Bloqueados: PID 1(restante=8, dispositivo=device-0, aguardando) PID 3(restante=31, dispositivo=device-0, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): [uso: PID 3, restante=3] | fila: PID 1
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=020] IO_DONE | pid=3   | operacao de E/S concluida
+[T=023] IO_DONE | pid=1   | operacao de E/S concluida
+[T=027] PREEMPT | pid=2   | remaining_t=10  
+[T=027] RUN     | pid=3   | remaining_t=31   | cpu_slice=10 
+
+[T=027] ---- Estado do sistema ----
+  Executando: PID 3 (restante=31)
+  Prontos: PID 1(restante=8) PID 2(restante=10)
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=033] IO_REQ  | pid=3   | dispositivo=device-1   | iniciou operacao
+[T=033] RUN     | pid=1   | remaining_t=8    | cpu_slice=8  
+
+[T=033] ---- Estado do sistema ----
+  Executando: PID 1 (restante=8)
+  Prontos: PID 2(restante=10)
+  Bloqueados: PID 3(restante=25, dispositivo=device-1, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): [uso: PID 3, restante=5]
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=038] IO_DONE | pid=3   | operacao de E/S concluida
+[T=041] FINISH  | pid=1   | remaining_t=0   
+[T=041] RUN     | pid=2   | remaining_t=10   | cpu_slice=10 
+
+[T=041] ---- Estado do sistema ----
+  Executando: PID 2 (restante=10)
+  Prontos: PID 3(restante=25)
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=051] FINISH  | pid=2   | remaining_t=0   
+[T=051] RUN     | pid=3   | remaining_t=25   | cpu_slice=10 
+
+[T=051] ---- Estado do sistema ----
+  Executando: PID 3 (restante=25)
+  Prontos: nenhum
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=060] IO_REQ  | pid=3   | dispositivo=device-1   | iniciou operacao
+[T=060] IDLE
+
+[T=061] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=16, dispositivo=device-1, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): [uso: PID 3, restante=4]
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=061] IDLE
+
+[T=062] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=16, dispositivo=device-1, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): [uso: PID 3, restante=3]
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=062] IDLE
+
+[T=063] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=16, dispositivo=device-1, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): [uso: PID 3, restante=2]
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=063] IDLE
+
+[T=064] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=16, dispositivo=device-1, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): [uso: PID 3, restante=1]
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=064] IDLE
+[T=065] IO_DONE | pid=3   | operacao de E/S concluida
+
+[T=065] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: PID 3(restante=16)
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=065] RUN     | pid=3   | remaining_t=16   | cpu_slice=10 
+
+[T=065] ---- Estado do sistema ----
+  Executando: PID 3 (restante=16)
+  Prontos: nenhum
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=071] IO_REQ  | pid=3   | dispositivo=device-2   | iniciou operacao
+[T=071] IDLE
+
+[T=072] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=10, dispositivo=device-2, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): [uso: PID 3, restante=1]
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=072] IDLE
+[T=073] IO_DONE | pid=3   | operacao de E/S concluida
+
+[T=073] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: PID 3(restante=10)
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=073] RUN     | pid=3   | remaining_t=10   | cpu_slice=10 
+
+[T=073] ---- Estado do sistema ----
+  Executando: PID 3 (restante=10)
+  Prontos: nenhum
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=075] IO_REQ  | pid=3   | dispositivo=device-3   | iniciou operacao
+[T=075] IDLE
+
+[T=076] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=8, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=5]
+[T=076] IDLE
+
+[T=077] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=8, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=4]
+[T=077] IDLE
+
+[T=078] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=8, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=3]
+[T=078] IDLE
+
+[T=079] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=8, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=2]
+[T=079] IDLE
+
+[T=080] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=8, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=1]
+[T=080] IDLE
+[T=081] IO_DONE | pid=3   | operacao de E/S concluida
+
+[T=081] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: PID 3(restante=8)
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=081] RUN     | pid=3   | remaining_t=8    | cpu_slice=8  
+
+[T=081] ---- Estado do sistema ----
+  Executando: PID 3 (restante=8)
+  Prontos: nenhum
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=085] IO_REQ  | pid=3   | dispositivo=device-3   | iniciou operacao
+[T=085] IDLE
+
+[T=086] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=4, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=5]
+[T=086] IDLE
+
+[T=087] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=4, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=4]
+[T=087] IDLE
+
+[T=088] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=4, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=3]
+[T=088] IDLE
+
+[T=089] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=4, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=2]
+[T=089] IDLE
+
+[T=090] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: nenhum
+  Bloqueados: PID 3(restante=4, dispositivo=device-3, em uso)
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): [uso: PID 3, restante=1]
+[T=090] IDLE
+[T=091] IO_DONE | pid=3   | operacao de E/S concluida
+
+[T=091] ---- Estado do sistema ----
+  Executando: (CPU ociosa)
+  Prontos: PID 3(restante=4)
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=091] RUN     | pid=3   | remaining_t=4    | cpu_slice=4  
+
+[T=091] ---- Estado do sistema ----
+  Executando: PID 3 (restante=4)
+  Prontos: nenhum
+  Bloqueados: nenhum
+  Dispositivos:
+    Dispositivo device-0 (slots=1, tempo_operacao=3): livre
+    Dispositivo device-1 (slots=2, tempo_operacao=5): livre
+    Dispositivo device-2 (slots=2, tempo_operacao=2): livre
+    Dispositivo device-3 (slots=1, tempo_operacao=6): livre
+[T=095] FINISH  | pid=3   | remaining_t=0   
 
 ----------------------- RESULTADOS DA EXECUÇÃO -----------------------
-PID   | Latência         | Tempo de Espera  | Tempo de Execução
-----------------------------------------------------------------------
-1     | 58               | 38               | 20              
-2     | 67               | 43               | 24              
-3     | 76               | 44               | 32              
-----------------------------------------------------------------------
-Latência Média: 67.00           
-Tempo de Espera Médio: 41.67           
+PID   | Tempo Total      | Tempo Pronto     | Tempo Bloqueado  | Tempo Execução
+-----------------------------------------------------------------------------
+1     | 41               | 15               | 6                | 20              
+2     | 51               | 24               | 3                | 24              
+3     | 95               | 34               | 29               | 32              
+-----------------------------------------------------------------------------
+Turnaround Médio (criação->conclusão): 62.33           
+Tempo Pronto Médio: 24.33           
+Tempo Bloqueado Médio: 12.67           
 Tempo Total de Execução: 76              
 
 ----------------------------------------------------------------------
@@ -507,13 +729,13 @@ Ref:  1 | Mem: [ 1,  5,  3,  2] | Troca
 Ref:  7 | Mem: [ 7,  5,  3,  2] | Troca
 Ref:  8 | Mem: [ 8,  5,  3,  2] | Troca
 
------------------------ RESULTADOS DA MEMÓRIA  -----------------------
+----------------------- RESULTADOS DA MEMÓRIA  ----------------------
 FIFO     | LRU      | NFU      | OTM      | Melhor  
 ----------------------------------------------------------------------
 38       | 40       | 35       | 27       | NFU     
 ----------------------------------------------------------------------
 
----------------- TROCAS DE MEMÓRIA POR PROCESSO/ALGORITMO ------------
+-------------------- TROCAS DE MEMÓRIA POR PROCESSO/ALGORITMO --------------------
 PID    | FIFO     | LRU      | NFU      | OTM     
 ----------------------------------------------------------------------
 1      | 7        | 8        | 7        | 5       
