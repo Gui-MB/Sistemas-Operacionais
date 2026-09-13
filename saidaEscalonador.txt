@@ -1,610 +1,351 @@
+Log de Escalonamento:
+Algoritmo: CFS | Slice: 10
 
-----------------------------------------------------------------------
-Log de escalonamento:
-Algoritmo: alternancia | Slice: 10
 
-[T=000] CREATE  | pid=1   | total_t=20      
-[T=000] CREATE  | pid=2   | total_t=24      
-[T=000] CREATE  | pid=3   | total_t=32      
-[T=000] RUN     | pid=1   | remaining_t=20   | cpu_slice=10 
----- Estado do sistema em T=000 ----
-  EXECUTANDO | pid=1   | remaining_t=20  
-  PRONTO     | pid=2   | remaining_t=24  
-  PRONTO     | pid=3   | remaining_t=32  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
----- Estado do sistema em T=006 ----
-  BLOQUEADO  | pid=1   | remaining_t=14   | dispositivo=device-2 (em uso)
-  PRONTO     | pid=2   | remaining_t=24  
-  PRONTO     | pid=3   | remaining_t=32  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 1/2 | aguardando: 0)
-    Em uso: pid=1 
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=006] RUN     | pid=2   | remaining_t=24   | cpu_slice=10 
----- Estado do sistema em T=006 ----
-  BLOQUEADO  | pid=1   | remaining_t=14   | dispositivo=device-2 (em uso)
-  EXECUTANDO | pid=2   | remaining_t=24  
-  PRONTO     | pid=3   | remaining_t=32  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 1/2 | aguardando: 0)
-    Em uso: pid=1 
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
----- Estado do sistema em T=012 ----
-  PRONTO     | pid=1   | remaining_t=14  
-  BLOQUEADO  | pid=2   | remaining_t=18   | dispositivo=device-2 (em uso)
-  PRONTO     | pid=3   | remaining_t=32  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 1/2 | aguardando: 0)
-    Em uso: pid=2 
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=012] RUN     | pid=3   | remaining_t=32   | cpu_slice=10 
----- Estado do sistema em T=012 ----
-  PRONTO     | pid=1   | remaining_t=14  
-  BLOQUEADO  | pid=2   | remaining_t=18   | dispositivo=device-2 (em uso)
-  EXECUTANDO | pid=3   | remaining_t=32  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 1/2 | aguardando: 0)
-    Em uso: pid=2 
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
----- Estado do sistema em T=021 ----
-  PRONTO     | pid=1   | remaining_t=14  
-  PRONTO     | pid=2   | remaining_t=18  
-  BLOQUEADO  | pid=3   | remaining_t=23   | dispositivo=device-3 (em uso)
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
---------------------------------------
-[T=021] RUN     | pid=1   | remaining_t=14   | cpu_slice=10 
----- Estado do sistema em T=021 ----
-  EXECUTANDO | pid=1   | remaining_t=14  
-  PRONTO     | pid=2   | remaining_t=18  
-  BLOQUEADO  | pid=3   | remaining_t=23   | dispositivo=device-3 (em uso)
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
---------------------------------------
-[T=031] PREEMPT | pid=1   | remaining_t=4   
----- Estado do sistema em T=031 ----
-  PRONTO     | pid=1   | remaining_t=4   
-  PRONTO     | pid=2   | remaining_t=18  
-  PRONTO     | pid=3   | remaining_t=23  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=031] RUN     | pid=2   | remaining_t=18   | cpu_slice=10 
----- Estado do sistema em T=031 ----
-  PRONTO     | pid=1   | remaining_t=4   
-  EXECUTANDO | pid=2   | remaining_t=18  
-  PRONTO     | pid=3   | remaining_t=23  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=041] PREEMPT | pid=2   | remaining_t=8   
----- Estado do sistema em T=041 ----
-  PRONTO     | pid=1   | remaining_t=4   
-  PRONTO     | pid=2   | remaining_t=8   
-  PRONTO     | pid=3   | remaining_t=23  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=041] RUN     | pid=3   | remaining_t=23   | cpu_slice=10 
----- Estado do sistema em T=041 ----
-  PRONTO     | pid=1   | remaining_t=4   
-  PRONTO     | pid=2   | remaining_t=8   
-  EXECUTANDO | pid=3   | remaining_t=23  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=051] PREEMPT | pid=3   | remaining_t=13  
----- Estado do sistema em T=051 ----
-  PRONTO     | pid=1   | remaining_t=4   
-  PRONTO     | pid=2   | remaining_t=8   
-  PRONTO     | pid=3   | remaining_t=13  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=051] RUN     | pid=1   | remaining_t=4    | cpu_slice=4  
----- Estado do sistema em T=051 ----
-  EXECUTANDO | pid=1   | remaining_t=4   
-  PRONTO     | pid=2   | remaining_t=8   
-  PRONTO     | pid=3   | remaining_t=13  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=055] FINISH  | pid=1   | remaining_t=0   
----- Estado do sistema em T=055 ----
-  PRONTO     | pid=2   | remaining_t=8   
-  PRONTO     | pid=3   | remaining_t=13  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=055] RUN     | pid=2   | remaining_t=8    | cpu_slice=8  
----- Estado do sistema em T=055 ----
-  EXECUTANDO | pid=2   | remaining_t=8   
-  PRONTO     | pid=3   | remaining_t=13  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=063] FINISH  | pid=2   | remaining_t=0   
----- Estado do sistema em T=063 ----
-  PRONTO     | pid=3   | remaining_t=13  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=063] RUN     | pid=3   | remaining_t=13   | cpu_slice=10 
----- Estado do sistema em T=063 ----
-  EXECUTANDO | pid=3   | remaining_t=13  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
----- Estado do sistema em T=068 ----
-  BLOQUEADO  | pid=3   | remaining_t=8    | dispositivo=device-0 (em uso)
-Dispositivos de E/S:
-  device-0 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=068] RUN     | pid=3   | remaining_t=8    | cpu_slice=8  
----- Estado do sistema em T=068 ----
-  EXECUTANDO | pid=3   | remaining_t=8   
-Dispositivos de E/S:
-  device-0 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
----- Estado do sistema em T=072 ----
-  BLOQUEADO  | pid=3   | remaining_t=4    | dispositivo=device-0 (em uso)
-Dispositivos de E/S:
-  device-0 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=072] RUN     | pid=3   | remaining_t=4    | cpu_slice=4  
----- Estado do sistema em T=072 ----
-  EXECUTANDO | pid=3   | remaining_t=4   
-Dispositivos de E/S:
-  device-0 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
----- Estado do sistema em T=075 ----
-  BLOQUEADO  | pid=3   | remaining_t=1    | dispositivo=device-2 (em uso)
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 1/2 | aguardando: 0)
-    Em uso: pid=3 
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=075] RUN     | pid=3   | remaining_t=1    | cpu_slice=1  
----- Estado do sistema em T=075 ----
-  EXECUTANDO | pid=3   | remaining_t=1   
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 1/2 | aguardando: 0)
-    Em uso: pid=3 
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=076] FINISH  | pid=3   | remaining_t=0   
----- Estado do sistema em T=076 ----
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 1/2 | aguardando: 0)
-    Em uso: pid=3 
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
+[T=0000] CREATE  | pid=1   | total_t=20       | priority=59   | vruntime=0   
+
+[T=0000] CREATE  | pid=2   | total_t=24       | priority=32   | vruntime=0   
+
+[T=0000] CREATE  | pid=3   | total_t=32       | priority=32   | vruntime=0   
+
+[T=0000] RUN     | pid=1   | remaining_t=20   | cpu_slice=10  | priority=59   | vruntime=0   
+  [T=0000]
+    System State: 
+      RUNNING | pid=1   | remaining_t=20  
+      READY   | pid=2   | remaining_t=24  
+      READY   | pid=3   | remaining_t=32  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0010] PREEMPT | pid=1   | remaining_t=10   | priority=59   | vruntime=590 
+  [T=0010]
+    System State: 
+      READY   | pid=1   | remaining_t=10  
+      READY   | pid=2   | remaining_t=24  
+      READY   | pid=3   | remaining_t=32  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0010] RUN     | pid=2   | remaining_t=24   | cpu_slice=10  | priority=32   | vruntime=0   
+  [T=0010]
+    System State: 
+      READY   | pid=1   | remaining_t=10  
+      RUNNING | pid=2   | remaining_t=24  
+      READY   | pid=3   | remaining_t=32  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0020] PREEMPT | pid=2   | remaining_t=14   | priority=32   | vruntime=320 
+  [T=0020]
+    System State: 
+      READY   | pid=1   | remaining_t=10  
+      READY   | pid=2   | remaining_t=14  
+      READY   | pid=3   | remaining_t=32  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0020] RUN     | pid=3   | remaining_t=32   | cpu_slice=10  | priority=32   | vruntime=0   
+  [T=0020]
+    System State: 
+      READY   | pid=1   | remaining_t=10  
+      READY   | pid=2   | remaining_t=14  
+      RUNNING | pid=3   | remaining_t=32  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+  [T=0022]
+    System State: 
+      READY   | pid=1   | remaining_t=10  
+      READY   | pid=2   | remaining_t=14  
+      BLOCKED | pid=3   | remaining_t=30   | io_device=device-3 (using)
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=1/1 | waiting=0
+        current_process: pid=3 
+
+[T=0022] RUN     | pid=2   | remaining_t=14   | cpu_slice=10  | priority=32   | vruntime=320 
+  [T=0022]
+    System State: 
+      READY   | pid=1   | remaining_t=10  
+      RUNNING | pid=2   | remaining_t=14  
+      BLOCKED | pid=3   | remaining_t=30   | io_device=device-3 (using)
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=1/1 | waiting=0
+        current_process: pid=3 
+
+[T=0032] PREEMPT | pid=2   | remaining_t=4    | priority=32   | vruntime=640 
+  [T=0032]
+    System State: 
+      READY   | pid=1   | remaining_t=10  
+      READY   | pid=2   | remaining_t=4   
+      READY   | pid=3   | remaining_t=30  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0032] RUN     | pid=3   | remaining_t=30   | cpu_slice=10  | priority=32   | vruntime=64  
+  [T=0032]
+    System State: 
+      READY   | pid=1   | remaining_t=10  
+      READY   | pid=2   | remaining_t=4   
+      RUNNING | pid=3   | remaining_t=30  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+  [T=0038]
+    System State: 
+      READY   | pid=1   | remaining_t=10  
+      READY   | pid=2   | remaining_t=4   
+      BLOCKED | pid=3   | remaining_t=24   | io_device=device-0 (using)
+    I/O Devices:
+      device-0 | capacity=1/1 | waiting=0
+        current_process: pid=3 
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0038] RUN     | pid=1   | remaining_t=10   | cpu_slice=10  | priority=59   | vruntime=590 
+  [T=0038]
+    System State: 
+      RUNNING | pid=1   | remaining_t=10  
+      READY   | pid=2   | remaining_t=4   
+      BLOCKED | pid=3   | remaining_t=24   | io_device=device-0 (using)
+    I/O Devices:
+      device-0 | capacity=1/1 | waiting=0
+        current_process: pid=3 
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0048] FINISH  | pid=1   | remaining_t=0    | priority=59   | vruntime=1180
+  [T=0048]
+    System State: 
+      READY   | pid=2   | remaining_t=4   
+      READY   | pid=3   | remaining_t=24  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0048] RUN     | pid=3   | remaining_t=24   | cpu_slice=10  | priority=32   | vruntime=256 
+  [T=0048]
+    System State: 
+      READY   | pid=2   | remaining_t=4   
+      RUNNING | pid=3   | remaining_t=24  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+  [T=0050]
+    System State: 
+      READY   | pid=2   | remaining_t=4   
+      BLOCKED | pid=3   | remaining_t=22   | io_device=device-0 (using)
+    I/O Devices:
+      device-0 | capacity=1/1 | waiting=0
+        current_process: pid=3 
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0050] RUN     | pid=2   | remaining_t=4    | cpu_slice=4   | priority=32   | vruntime=640 
+  [T=0050]
+    System State: 
+      RUNNING | pid=2   | remaining_t=4   
+      BLOCKED | pid=3   | remaining_t=22   | io_device=device-0 (using)
+    I/O Devices:
+      device-0 | capacity=1/1 | waiting=0
+        current_process: pid=3 
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0054] FINISH  | pid=2   | remaining_t=0    | priority=32   | vruntime=768 
+  [T=0054]
+    System State: 
+      READY   | pid=3   | remaining_t=22  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0054] RUN     | pid=3   | remaining_t=22   | cpu_slice=10  | priority=32   | vruntime=320 
+  [T=0054]
+    System State: 
+      RUNNING | pid=3   | remaining_t=22  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0064] PREEMPT | pid=3   | remaining_t=12   | priority=32   | vruntime=640 
+  [T=0064]
+    System State: 
+      READY   | pid=3   | remaining_t=12  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0064] RUN     | pid=3   | remaining_t=12   | cpu_slice=10  | priority=32   | vruntime=640 
+  [T=0064]
+    System State: 
+      RUNNING | pid=3   | remaining_t=12  
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+  [T=0070]
+    System State: 
+      BLOCKED | pid=3   | remaining_t=6    | io_device=device-1 (using)
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=1/2 | waiting=0
+        current_process: pid=3 
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0070] IDLE
+
+[T=0071] IDLE
+
+[T=0072] IDLE
+
+[T=0073] IDLE
+
+[T=0074] IDLE
+
+[T=0075] RUN     | pid=3   | remaining_t=6    | cpu_slice=6   | priority=32   | vruntime=832 
+  [T=0075]
+    System State: 
+      RUNNING | pid=3   | remaining_t=6   
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+  [T=0078]
+    System State: 
+      BLOCKED | pid=3   | remaining_t=3    | io_device=device-0 (using)
+    I/O Devices:
+      device-0 | capacity=1/1 | waiting=0
+        current_process: pid=3 
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0078] IDLE
+
+[T=0079] IDLE
+
+[T=0080] IDLE
+
+[T=0081] RUN     | pid=3   | remaining_t=3    | cpu_slice=3   | priority=32   | vruntime=928 
+  [T=0081]
+    System State: 
+      RUNNING | pid=3   | remaining_t=3   
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+  [T=0082]
+    System State: 
+      BLOCKED | pid=3   | remaining_t=2    | io_device=device-0 (using)
+    I/O Devices:
+      device-0 | capacity=1/1 | waiting=0
+        current_process: pid=3 
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0082] IDLE
+
+[T=0083] IDLE
+
+[T=0084] IDLE
+
+[T=0085] RUN     | pid=3   | remaining_t=2    | cpu_slice=2   | priority=32   | vruntime=960 
+  [T=0085]
+    System State: 
+      RUNNING | pid=3   | remaining_t=2   
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+  [T=0086]
+    System State: 
+      BLOCKED | pid=3   | remaining_t=1    | io_device=device-2 (using)
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=1/2 | waiting=0
+        current_process: pid=3 
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0086] IDLE
+
+[T=0087] IDLE
+
+[T=0088] RUN     | pid=3   | remaining_t=1    | cpu_slice=1   | priority=32   | vruntime=992 
+  [T=0088]
+    System State: 
+      RUNNING | pid=3   | remaining_t=1   
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
+
+[T=0089] FINISH  | pid=3   | remaining_t=0    | priority=32   | vruntime=1024
+  [T=0089]
+    System State: 
+    I/O Devices:
+      device-0 | capacity=0/1 | waiting=0
+      device-1 | capacity=0/2 | waiting=0
+      device-2 | capacity=0/2 | waiting=0
+      device-3 | capacity=0/1 | waiting=0
 
 ----------------------- RESULTADOS DA EXECUÇÃO -----------------------
-PID   | Turnaround        | Tempo de Espera  | Tempo de Bloqueio | Tempo de Execução
+PID   | Turnaround       | Tempo de Espera  | Tempo de Bloqueio | Tempo de Execução
 ----------------------------------------------------------------------
-1     | 55               | 33               | 2                | 20              
-2     | 63               | 37               | 2                | 24              
-3     | 76               | 56               | 12               | 32              
+1     | 48               | 28               | 0                | 20              
+2     | 54               | 30               | 0                | 24              
+3     | 89               | 36               | 21               | 32              
 ----------------------------------------------------------------------
-Latência Média: 64.67           
-Tempo de Espera Médio: 42.00           
-Tempo de Bloqueio Médio: 5.33            
+Latência Média: 63.67           
+Tempo de Espera Médio: 31.33           
+Tempo de Bloqueio Médio: 7.00            
 Tempo Total de Execução: 76              
-
-----------------------------------------------------------------------
-Estado de Memória para o processo PID: 1 (Frames: 4)
-----------------------------------------------------------------------
---- Simulação FIFO ---
-Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
-Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
-Ref:  3 | Mem: [ 1,  2,  3,  4] | Acerto
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Acerto
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Acerto
-Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
-Ref:  1 | Mem: [ 5,  6,  1,  4] | Troca
-Ref:  5 | Mem: [ 5,  6,  1,  4] | Acerto
-Ref:  3 | Mem: [ 5,  6,  1,  3] | Troca
-Ref:  2 | Mem: [ 2,  6,  1,  3] | Troca
-Ref:  6 | Mem: [ 2,  6,  1,  3] | Acerto
-Ref:  7 | Mem: [ 2,  7,  1,  3] | Troca
-Ref:  7 | Mem: [ 2,  7,  1,  3] | Acerto
-Ref:  7 | Mem: [ 2,  7,  1,  3] | Acerto
-Ref:  8 | Mem: [ 2,  7,  8,  3] | Troca
-
---- Simulação LRU ---
-Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
-Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
-Ref:  3 | Mem: [ 1,  2,  3,  4] | Acerto
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Acerto
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Acerto
-Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
-Ref:  1 | Mem: [ 5,  6,  1,  4] | Troca
-Ref:  5 | Mem: [ 5,  6,  1,  4] | Acerto
-Ref:  3 | Mem: [ 5,  6,  1,  3] | Troca
-Ref:  2 | Mem: [ 5,  2,  1,  3] | Troca
-Ref:  6 | Mem: [ 5,  2,  6,  3] | Troca
-Ref:  7 | Mem: [ 7,  2,  6,  3] | Troca
-Ref:  7 | Mem: [ 7,  2,  6,  3] | Acerto
-Ref:  7 | Mem: [ 7,  2,  6,  3] | Acerto
-Ref:  8 | Mem: [ 7,  2,  6,  8] | Troca
-
---- Simulação NFU ---
-Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
-Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
-Ref:  3 | Mem: [ 1,  2,  3,  4] | Acerto
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Acerto
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Acerto
-Ref:  6 | Mem: [ 5,  2,  6,  4] | Troca
-Ref:  1 | Mem: [ 5,  2,  1,  4] | Troca
-Ref:  5 | Mem: [ 5,  2,  1,  4] | Acerto
-Ref:  3 | Mem: [ 5,  2,  3,  4] | Troca
-Ref:  2 | Mem: [ 5,  2,  3,  4] | Acerto
-Ref:  6 | Mem: [ 5,  2,  6,  4] | Troca
-Ref:  7 | Mem: [ 5,  2,  7,  4] | Troca
-Ref:  7 | Mem: [ 5,  2,  7,  4] | Acerto
-Ref:  7 | Mem: [ 5,  2,  7,  4] | Acerto
-Ref:  8 | Mem: [ 5,  2,  7,  8] | Troca
-
---- Simulação ÓTIMO ---
-Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Acerto
-Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
-Ref:  3 | Mem: [ 1,  2,  3,  4] | Acerto
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Acerto
-Ref:  5 | Mem: [ 1,  2,  3,  5] | Troca
-Ref:  5 | Mem: [ 1,  2,  3,  5] | Acerto
-Ref:  6 | Mem: [ 1,  6,  3,  5] | Troca
-Ref:  1 | Mem: [ 1,  6,  3,  5] | Acerto
-Ref:  5 | Mem: [ 1,  6,  3,  5] | Acerto
-Ref:  3 | Mem: [ 1,  6,  3,  5] | Acerto
-Ref:  2 | Mem: [ 2,  6,  3,  5] | Troca
-Ref:  6 | Mem: [ 2,  6,  3,  5] | Acerto
-Ref:  7 | Mem: [ 7,  6,  3,  5] | Troca
-Ref:  7 | Mem: [ 7,  6,  3,  5] | Acerto
-Ref:  7 | Mem: [ 7,  6,  3,  5] | Acerto
-Ref:  8 | Mem: [ 8,  6,  3,  5] | Troca
-
-----------------------------------------------------------------------
-Estado de Memória para o processo PID: 2 (Frames: 2)
-----------------------------------------------------------------------
---- Simulação FIFO ---
-Ref:  1 | Mem: [ 1,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2] | Preenchimento
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  4 | Mem: [ 3,  4] | Troca
-Ref:  3 | Mem: [ 3,  4] | Acerto
-Ref:  4 | Mem: [ 3,  4] | Acerto
-Ref:  4 | Mem: [ 3,  4] | Acerto
-Ref:  4 | Mem: [ 3,  4] | Acerto
-Ref:  2 | Mem: [ 2,  4] | Troca
-Ref:  3 | Mem: [ 2,  3] | Troca
-Ref:  2 | Mem: [ 2,  3] | Acerto
-Ref:  1 | Mem: [ 1,  3] | Troca
-Ref:  3 | Mem: [ 1,  3] | Acerto
-Ref:  2 | Mem: [ 1,  2] | Troca
-Ref:  1 | Mem: [ 1,  2] | Acerto
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  4 | Mem: [ 3,  4] | Troca
-Ref:  3 | Mem: [ 3,  4] | Acerto
-Ref:  2 | Mem: [ 2,  4] | Troca
-Ref:  2 | Mem: [ 2,  4] | Acerto
-
---- Simulação LRU ---
-Ref:  1 | Mem: [ 1,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2] | Preenchimento
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  4 | Mem: [ 3,  4] | Troca
-Ref:  3 | Mem: [ 3,  4] | Acerto
-Ref:  4 | Mem: [ 3,  4] | Acerto
-Ref:  4 | Mem: [ 3,  4] | Acerto
-Ref:  4 | Mem: [ 3,  4] | Acerto
-Ref:  2 | Mem: [ 2,  4] | Troca
-Ref:  3 | Mem: [ 2,  3] | Troca
-Ref:  2 | Mem: [ 2,  3] | Acerto
-Ref:  1 | Mem: [ 2,  1] | Troca
-Ref:  3 | Mem: [ 3,  1] | Troca
-Ref:  2 | Mem: [ 3,  2] | Troca
-Ref:  1 | Mem: [ 1,  2] | Troca
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  4 | Mem: [ 3,  4] | Troca
-Ref:  3 | Mem: [ 3,  4] | Acerto
-Ref:  2 | Mem: [ 3,  2] | Troca
-Ref:  2 | Mem: [ 3,  2] | Acerto
-
---- Simulação NFU ---
-Ref:  1 | Mem: [ 1,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2] | Preenchimento
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  4 | Mem: [ 4,  2] | Troca
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  4 | Mem: [ 4,  2] | Troca
-Ref:  4 | Mem: [ 4,  2] | Acerto
-Ref:  4 | Mem: [ 4,  2] | Acerto
-Ref:  2 | Mem: [ 4,  2] | Acerto
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  2 | Mem: [ 3,  2] | Acerto
-Ref:  1 | Mem: [ 1,  2] | Troca
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  2 | Mem: [ 3,  2] | Acerto
-Ref:  1 | Mem: [ 1,  2] | Troca
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  4 | Mem: [ 4,  2] | Troca
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  2 | Mem: [ 3,  2] | Acerto
-Ref:  2 | Mem: [ 3,  2] | Acerto
-
---- Simulação ÓTIMO ---
-Ref:  1 | Mem: [ 1,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2] | Preenchimento
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  2 | Mem: [ 1,  2] | Acerto
-Ref:  3 | Mem: [ 3,  2] | Troca
-Ref:  4 | Mem: [ 3,  4] | Troca
-Ref:  3 | Mem: [ 3,  4] | Acerto
-Ref:  4 | Mem: [ 3,  4] | Acerto
-Ref:  4 | Mem: [ 3,  4] | Acerto
-Ref:  4 | Mem: [ 3,  4] | Acerto
-Ref:  2 | Mem: [ 3,  2] | Troca
-Ref:  3 | Mem: [ 3,  2] | Acerto
-Ref:  2 | Mem: [ 3,  2] | Acerto
-Ref:  1 | Mem: [ 3,  1] | Troca
-Ref:  3 | Mem: [ 3,  1] | Acerto
-Ref:  2 | Mem: [ 2,  1] | Troca
-Ref:  1 | Mem: [ 2,  1] | Acerto
-Ref:  2 | Mem: [ 2,  1] | Acerto
-Ref:  2 | Mem: [ 2,  1] | Acerto
-Ref:  3 | Mem: [ 2,  3] | Troca
-Ref:  4 | Mem: [ 4,  3] | Troca
-Ref:  3 | Mem: [ 4,  3] | Acerto
-Ref:  2 | Mem: [ 2,  3] | Troca
-Ref:  2 | Mem: [ 2,  3] | Acerto
-
-----------------------------------------------------------------------
-Estado de Memória para o processo PID: 3 (Frames: 4)
-----------------------------------------------------------------------
---- Simulação FIFO ---
-Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
-Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
-Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
-Ref:  7 | Mem: [ 5,  6,  7,  4] | Troca
-Ref:  8 | Mem: [ 5,  6,  7,  8] | Troca
-Ref:  4 | Mem: [ 4,  6,  7,  8] | Troca
-Ref:  3 | Mem: [ 4,  3,  7,  8] | Troca
-Ref:  2 | Mem: [ 4,  3,  2,  8] | Troca
-Ref:  1 | Mem: [ 4,  3,  2,  1] | Troca
-Ref:  1 | Mem: [ 4,  3,  2,  1] | Acerto
-Ref:  6 | Mem: [ 6,  3,  2,  1] | Troca
-Ref:  7 | Mem: [ 6,  7,  2,  1] | Troca
-Ref:  5 | Mem: [ 6,  7,  5,  1] | Troca
-Ref:  6 | Mem: [ 6,  7,  5,  1] | Acerto
-Ref:  8 | Mem: [ 6,  7,  5,  8] | Troca
-Ref:  3 | Mem: [ 3,  7,  5,  8] | Troca
-Ref:  2 | Mem: [ 3,  2,  5,  8] | Troca
-Ref:  2 | Mem: [ 3,  2,  5,  8] | Acerto
-Ref:  1 | Mem: [ 3,  2,  1,  8] | Troca
-Ref:  2 | Mem: [ 3,  2,  1,  8] | Acerto
-Ref:  2 | Mem: [ 3,  2,  1,  8] | Acerto
-Ref:  4 | Mem: [ 3,  2,  1,  4] | Troca
-Ref:  4 | Mem: [ 3,  2,  1,  4] | Acerto
-Ref:  5 | Mem: [ 5,  2,  1,  4] | Troca
-Ref:  3 | Mem: [ 5,  3,  1,  4] | Troca
-Ref:  2 | Mem: [ 5,  3,  2,  4] | Troca
-Ref:  1 | Mem: [ 5,  3,  2,  1] | Troca
-Ref:  7 | Mem: [ 7,  3,  2,  1] | Troca
-Ref:  8 | Mem: [ 7,  8,  2,  1] | Troca
-
---- Simulação LRU ---
-Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
-Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
-Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
-Ref:  7 | Mem: [ 5,  6,  7,  4] | Troca
-Ref:  8 | Mem: [ 5,  6,  7,  8] | Troca
-Ref:  4 | Mem: [ 4,  6,  7,  8] | Troca
-Ref:  3 | Mem: [ 4,  3,  7,  8] | Troca
-Ref:  2 | Mem: [ 4,  3,  2,  8] | Troca
-Ref:  1 | Mem: [ 4,  3,  2,  1] | Troca
-Ref:  1 | Mem: [ 4,  3,  2,  1] | Acerto
-Ref:  6 | Mem: [ 6,  3,  2,  1] | Troca
-Ref:  7 | Mem: [ 6,  7,  2,  1] | Troca
-Ref:  5 | Mem: [ 6,  7,  5,  1] | Troca
-Ref:  6 | Mem: [ 6,  7,  5,  1] | Acerto
-Ref:  8 | Mem: [ 6,  7,  5,  8] | Troca
-Ref:  3 | Mem: [ 6,  3,  5,  8] | Troca
-Ref:  2 | Mem: [ 6,  3,  2,  8] | Troca
-Ref:  2 | Mem: [ 6,  3,  2,  8] | Acerto
-Ref:  1 | Mem: [ 1,  3,  2,  8] | Troca
-Ref:  2 | Mem: [ 1,  3,  2,  8] | Acerto
-Ref:  2 | Mem: [ 1,  3,  2,  8] | Acerto
-Ref:  4 | Mem: [ 1,  3,  2,  4] | Troca
-Ref:  4 | Mem: [ 1,  3,  2,  4] | Acerto
-Ref:  5 | Mem: [ 1,  5,  2,  4] | Troca
-Ref:  3 | Mem: [ 3,  5,  2,  4] | Troca
-Ref:  2 | Mem: [ 3,  5,  2,  4] | Acerto
-Ref:  1 | Mem: [ 3,  5,  2,  1] | Troca
-Ref:  7 | Mem: [ 3,  7,  2,  1] | Troca
-Ref:  8 | Mem: [ 8,  7,  2,  1] | Troca
-
---- Simulação NFU ---
-Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
-Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
-Ref:  6 | Mem: [ 5,  6,  3,  4] | Troca
-Ref:  7 | Mem: [ 5,  6,  7,  4] | Troca
-Ref:  8 | Mem: [ 5,  6,  7,  8] | Troca
-Ref:  4 | Mem: [ 4,  6,  7,  8] | Troca
-Ref:  3 | Mem: [ 3,  6,  7,  8] | Troca
-Ref:  2 | Mem: [ 2,  6,  7,  8] | Troca
-Ref:  1 | Mem: [ 1,  6,  7,  8] | Troca
-Ref:  1 | Mem: [ 1,  6,  7,  8] | Acerto
-Ref:  6 | Mem: [ 1,  6,  7,  8] | Acerto
-Ref:  7 | Mem: [ 1,  6,  7,  8] | Acerto
-Ref:  5 | Mem: [ 1,  6,  7,  5] | Troca
-Ref:  6 | Mem: [ 1,  6,  7,  5] | Acerto
-Ref:  8 | Mem: [ 1,  6,  7,  8] | Troca
-Ref:  3 | Mem: [ 1,  6,  7,  3] | Troca
-Ref:  2 | Mem: [ 1,  6,  7,  2] | Troca
-Ref:  2 | Mem: [ 1,  6,  7,  2] | Acerto
-Ref:  1 | Mem: [ 1,  6,  7,  2] | Acerto
-Ref:  2 | Mem: [ 1,  6,  7,  2] | Acerto
-Ref:  2 | Mem: [ 1,  6,  7,  2] | Acerto
-Ref:  4 | Mem: [ 1,  6,  4,  2] | Troca
-Ref:  4 | Mem: [ 1,  6,  4,  2] | Acerto
-Ref:  5 | Mem: [ 1,  6,  5,  2] | Troca
-Ref:  3 | Mem: [ 1,  6,  3,  2] | Troca
-Ref:  2 | Mem: [ 1,  6,  3,  2] | Acerto
-Ref:  1 | Mem: [ 1,  6,  3,  2] | Acerto
-Ref:  7 | Mem: [ 1,  6,  7,  2] | Troca
-Ref:  8 | Mem: [ 1,  6,  8,  2] | Troca
-
---- Simulação ÓTIMO ---
-Ref:  1 | Mem: [ 1,  -,  -,  -] | Preenchimento
-Ref:  2 | Mem: [ 1,  2,  -,  -] | Preenchimento
-Ref:  3 | Mem: [ 1,  2,  3,  -] | Preenchimento
-Ref:  4 | Mem: [ 1,  2,  3,  4] | Preenchimento
-Ref:  5 | Mem: [ 5,  2,  3,  4] | Troca
-Ref:  6 | Mem: [ 6,  2,  3,  4] | Troca
-Ref:  7 | Mem: [ 7,  2,  3,  4] | Troca
-Ref:  8 | Mem: [ 8,  2,  3,  4] | Troca
-Ref:  4 | Mem: [ 8,  2,  3,  4] | Acerto
-Ref:  3 | Mem: [ 8,  2,  3,  4] | Acerto
-Ref:  2 | Mem: [ 8,  2,  3,  4] | Acerto
-Ref:  1 | Mem: [ 8,  2,  3,  1] | Troca
-Ref:  1 | Mem: [ 8,  2,  3,  1] | Acerto
-Ref:  6 | Mem: [ 8,  2,  3,  6] | Troca
-Ref:  7 | Mem: [ 8,  7,  3,  6] | Troca
-Ref:  5 | Mem: [ 8,  5,  3,  6] | Troca
-Ref:  6 | Mem: [ 8,  5,  3,  6] | Acerto
-Ref:  8 | Mem: [ 8,  5,  3,  6] | Acerto
-Ref:  3 | Mem: [ 8,  5,  3,  6] | Acerto
-Ref:  2 | Mem: [ 8,  5,  3,  2] | Troca
-Ref:  2 | Mem: [ 8,  5,  3,  2] | Acerto
-Ref:  1 | Mem: [ 1,  5,  3,  2] | Troca
-Ref:  2 | Mem: [ 1,  5,  3,  2] | Acerto
-Ref:  2 | Mem: [ 1,  5,  3,  2] | Acerto
-Ref:  4 | Mem: [ 4,  5,  3,  2] | Troca
-Ref:  4 | Mem: [ 4,  5,  3,  2] | Acerto
-Ref:  5 | Mem: [ 4,  5,  3,  2] | Acerto
-Ref:  3 | Mem: [ 4,  5,  3,  2] | Acerto
-Ref:  2 | Mem: [ 4,  5,  3,  2] | Acerto
-Ref:  1 | Mem: [ 1,  5,  3,  2] | Troca
-Ref:  7 | Mem: [ 7,  5,  3,  2] | Troca
-Ref:  8 | Mem: [ 8,  5,  3,  2] | Troca
 
 ----------------------- RESULTADOS DA MEMÓRIA  -----------------------
 FIFO     | LRU      | NFU      | OTM      | Melhor  
@@ -619,3 +360,10 @@ PID    | FIFO     | LRU      | NFU      | OTM
 2      | 9        | 11       | 11       | 8       
 3      | 22       | 21       | 17       | 14      
 ----------------------------------------------------------------------
+
+----------------------- RESULTADOS DE E/S -----------------------
+PID      | Tempo de Bloqueio | Tempo de Espera  | Solicitações de E/S
+-----------------------------------------------------------------
+1        | 0                | 28               | 32              
+2        | 0                | 30               | 12              
+3        | 21               | 36               | 88              

@@ -3,7 +3,7 @@
 
 #include "../processes/process_manager.h"
 
-#define MAX_DEVICES 64
+#define MAX_DEVICES 100
 
 // Estrutura para armazenar as informações de cada dispositivo de E/S
 typedef struct {

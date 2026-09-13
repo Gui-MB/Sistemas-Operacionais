@@ -120,13 +120,13 @@ void io_manager_tick(int current_time) {
 
 // Imprime o estado atual de todos os dispositivos (em uso e na fila de espera)
 void io_manager_print_state(void) {
-    log_printf("Dispositivos de E/S:\n");
+    log_printf("    I/O Devices:\n");
     for (int di = 0; di < num_devices; di++) {
         Device *d = &devices[di];
-        log_printf("  %s (em uso: %d/%d | aguardando: %d)\n", d->name, d->current_users, d->max_concurrent, d->waiting_count);
+        log_printf("      %s | capacity=%d/%d | waiting=%d\n", d->name, d->current_users, d->max_concurrent, d->waiting_count);
 
         if (d->current_users > 0) {
-            log_printf("    Em uso: ");
+            log_printf("        current_process: ");
             for (int i = 0; i < d->current_users; i++) {
                 log_printf("pid=%d ", processes[d->active_procs[i]].pid);
             }
@@ -134,7 +134,7 @@ void io_manager_print_state(void) {
         }
 
         if (d->waiting_count > 0) {
-            log_printf("    Fila de espera: ");
+            log_printf("        waiting_line: ");
             for (int i = 0; i < d->waiting_count; i++) {
                 int idx = d->waiting_queue[(d->waiting_head + i) % MAX_PROCESSES];
                 log_printf("pid=%d ", processes[idx].pid);

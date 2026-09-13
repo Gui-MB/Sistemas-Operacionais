@@ -16,7 +16,8 @@
 // Inicialização das configurações de Log
 LogConfig log_cfg = {
     .cpu_events = 1,
-    .memory_steps = 1,
+    .memory_steps = 0,
+    .io_steps = 1,
     .final_metrics = 1
 };
 
@@ -63,7 +64,7 @@ static void print_algo_details(const Process *p) {
 void print_process_event(const char *event, int current_time, const Process *p, int run_time) {
     if (!log_cfg.cpu_events) return; 
 
-    log_printf("[T=%03d] %-7s | pid=%-3d", current_time, event, p->pid);
+    log_printf("\n[T=%04d] %-7s | pid=%-3d", current_time, event, p->pid);
     if (strcmp(event, "CREATE") == 0) log_printf(" | total_t=%-8d", p->exec_time);
     else if (strcmp(event, "RUN") == 0) log_printf(" | remaining_t=%-4d | cpu_slice=%-3d", p->remaining_time, run_time);
     else if (strcmp(event, "PREEMPT") == 0) log_printf(" | remaining_t=%-4d", p->remaining_time);
@@ -85,31 +86,30 @@ void announce_created_processes(int current_time) {
 void print_system_state(int current_time, int running_idx) {
     if (!log_cfg.cpu_events) return;
 
-    log_printf("---- Estado do sistema em T=%03d ----\n", current_time);
+    log_printf("  [T=%04d]\n    System State: \n", current_time);
 
     for (int i = 0; i < num_processes; i++) {
         Process *p = &processes[i];
         if (!p->creation_announced || p->is_completed) continue;
 
         if (i == running_idx) {
-            log_printf("  EXECUTANDO | pid=%-3d | remaining_t=%-4d\n", p->pid, p->remaining_time);
+            log_printf("      RUNNING | pid=%-3d | remaining_t=%-4d\n", p->pid, p->remaining_time);
         } else if (p->blocked) {
-            log_printf("  BLOQUEADO  | pid=%-3d | remaining_t=%-4d | dispositivo=%s (%s)\n",
+            log_printf("      BLOCKED | pid=%-3d | remaining_t=%-4d | io_device=%s (%s)\n",
                        p->pid, p->remaining_time, devices[p->requested_device_id].name,
-                       p->device_in_use ? "em uso" : "aguardando");
+                       p->device_in_use ? "using" : "waiting");
         } else {
-            log_printf("  PRONTO     | pid=%-3d | remaining_t=%-4d\n", p->pid, p->remaining_time);
+            log_printf("      READY   | pid=%-3d | remaining_t=%-4d\n", p->pid, p->remaining_time);
         }
     }
 
     io_manager_print_state();
-    log_printf("--------------------------------------\n");
 }
 
 void print_metrics_scaling(void) {
     if (log_cfg.final_metrics) {
         log_printf("\n----------------------- RESULTADOS DA EXECUÇÃO -----------------------\n");
-        log_printf("%-5s | %-17s | %-16s | %-16s | %-16s\n", "PID", "Turnaround", "Tempo de Espera", "Tempo de Bloqueio", "Tempo de Execução");
+        log_printf("%-5s | %-16s | %-16s | %-16s | %-16s\n", "PID", "Turnaround", "Tempo de Espera", "Tempo de Bloqueio", "Tempo de Execução");
         log_printf("----------------------------------------------------------------------\n");
     }
 
@@ -153,18 +153,11 @@ void print_metrics_memory(void) {
         if (physical_frames <= 0) physical_frames = 1;
 
         // Em modo global, o limite de frames considera a soma do teto de cada processo.
-        // Isso evita superalocar molduras e mascarar trocas com valores sempre zerados.
         for (int i = 0; i < num_processes; i++) {
             total_frames += processes[i].frame_limit;
         }
         if (total_frames <= 0) total_frames = 1;
         if (total_frames > physical_frames) total_frames = physical_frames;
-
-        if (log_cfg.memory_steps) {
-            log_printf("\n----------------------------------------------------------------------\n");
-            log_printf("SIMULANDO MEMÓRIA GLOBAL (Frames Totais: %d)\n", total_frames);
-            log_printf("----------------------------------------------------------------------\n");
-        }
 
         total_fifo    = fifo_simulate(total_frames, global_page_sequence, global_sequence_len, 1, fifo_by_proc);
         total_lru     = lru_simulate(total_frames, global_page_sequence, global_sequence_len, 1, lru_by_proc);
@@ -223,8 +216,21 @@ void print_metrics_memory(void) {
                       optimal_by_proc[i]);
         }
         log_printf("----------------------------------------------------------------------\n");
+        
+        // Saída principal em uma linha para correção automática.
+        printf("%d|%d|%d|%d|%s\n", total_fifo, total_lru, total_nfu, total_optimal, best);
     }
+}
 
-    // Saída principal em uma linha para correção automática.
-    printf("%d|%d|%d|%d|%s\n", total_fifo, total_lru, total_nfu, total_optimal, best);
+void print_metrics_io(void) {
+    if (!log_cfg.final_metrics) return;
+
+    log_printf("\n----------------------- RESULTADOS DE E/S -----------------------\n");
+    log_printf("%-8s | %-16s | %-16s | %-16s\n", "PID", "Tempo de Bloqueio", "Tempo de Espera", "Solicitações de E/S");
+    log_printf("-----------------------------------------------------------------\n");
+
+    for (int i = 0; i < num_processes; i++) {
+        Process p = processes[i];
+        log_printf("%-8d | %-16d | %-16d | %-16d\n", p.pid, p.blocked_time, p.ready_wait_time, p.chance_request_io);
+    }
 }

@@ -16,7 +16,6 @@
 static int init_simulation(void) {
     srand((unsigned)time(NULL));
 
-
     if (!init_output_file(OUTPUT_FILE)) {
         fprintf(stderr, "Erro ao abrir o arquivo de saída %s!\n", OUTPUT_FILE);
         return 0;
@@ -26,8 +25,7 @@ static int init_simulation(void) {
     scheduler_manager_init();
 
     if (log_cfg.cpu_events) {
-        log_printf("\n----------------------------------------------------------------------\n");
-        log_printf("Log de escalonamento:\n");
+        log_printf("Log de Escalonamento:\n");
         log_printf("Algoritmo: %s | Slice: %d\n\n", algorithm, time_slice);
     }
     
@@ -40,6 +38,7 @@ static void finish_simulation(void) {
 
     print_metrics_scaling();
     print_metrics_memory();
+    print_metrics_io();
     close_output_file();
 }
 
@@ -112,7 +111,7 @@ int main(void) {
             if (had_error) return 1;
 
             if (running_idx == -1) { // Sistema IDLE
-                if (log_cfg.cpu_events) log_printf("[T=%03d] IDLE\n", current_time);
+                if (log_cfg.cpu_events) log_printf("\n[T=%04d] IDLE\n", current_time);
                 io_manager_tick(current_time);
                 current_time++;
                 continue;
