@@ -1,7 +1,7 @@
 #ifndef IO_MANAGER_H
 #define IO_MANAGER_H
 
-#include "../auxiliary_files/processes.h"
+#include "../processes/process_manager.h"
 
 #define MAX_DEVICES 64
 

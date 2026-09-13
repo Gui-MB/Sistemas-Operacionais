@@ -1,15 +1,17 @@
-#include "logs.h"
+#include "log_manager.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "../processes/process_manager.h"
 #include "../memory_algorithms/memory_manager.h"
+#include "../io_algorithms/io_manager.h"
 #include "../memory_algorithms/fifo.h"
 #include "../memory_algorithms/rec_used.h"
 #include "../memory_algorithms/freq_used.h"
 #include "../memory_algorithms/optimal.h"
-#include "../io_algorithms/io_manager.h"
 
 // Inicialização das configurações de Log
 LogConfig log_cfg = {

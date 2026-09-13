@@ -1,5 +1,7 @@
 #include "fifo.h"
-#include "../auxiliary_files/processes.h"
+
+#include "../processes/process_manager.h"
+#include "../logs/log_manager.h"
 
 static int find_process_index_by_pid(int pid) {
     for (int i = 0; i < num_processes; i++) {

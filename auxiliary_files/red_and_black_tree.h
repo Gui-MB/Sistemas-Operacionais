@@ -1,7 +1,7 @@
 #ifndef RED_AND_BLACK_TREE_H
 #define RED_AND_BLACK_TREE_H
 
-#include "processes.h"
+#include "../processes/process_manager.h"
 
 void rb_init(void);
 void rb_destroy(void);

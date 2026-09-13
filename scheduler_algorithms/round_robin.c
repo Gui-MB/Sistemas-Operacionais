@@ -1,6 +1,8 @@
 #include "round_robin.h"
-#include "../auxiliary_files/processes.h"
+
 #include <stdio.h>
+
+#include "../processes/process_manager.h"
 
 #define MAX_QUEUE 1000
 

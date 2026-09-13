@@ -2,11 +2,12 @@
 
 #include <string.h>
 
-#include "../auxiliary_files/processes.h"
-#include "cfs.h"
-#include "lottery.h"
-#include "priority.h"
+#include "../processes/process_manager.h"
+#include "../logs/log_manager.h"
 #include "round_robin.h"
+#include "priority.h"
+#include "lottery.h"
+#include "cfs.h"
 
 static Algorithm current_algorithm = ALG_UNKNOWN;
 
@@ -27,6 +28,20 @@ static Algorithm parse_algorithm(void) {
 // Inicializa o gerenciador de escalonamento, definindo o algoritmo a ser utilizado
 void scheduler_manager_init(void) {
     current_algorithm = parse_algorithm();
+}
+
+// Finaliza recursos específicos dos algoritmos
+void scheduler_manager_destroy(void) {
+    if (current_algorithm == ALG_CFS) {
+        cfs_destroy();
+    }
+}
+
+// Notifica o algoritmo de que um processo saiu da CPU
+void scheduler_manager_process_finished(int pid) {
+    if (current_algorithm == ALG_LOTTERY) {
+        lottery_process_finished(pid);
+    }
 }
 
 // Retorna o algoritmo de escalonamento atualmente configurado

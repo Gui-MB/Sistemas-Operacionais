@@ -1,6 +1,8 @@
 #include "cfs.h"
+
 #include <stddef.h>
-#include "../auxiliary_files/processes.h"
+
+#include "../processes/process_manager.h"
 #include "../auxiliary_files/red_and_black_tree.h"
 
 static int cfs_initialized = 0;

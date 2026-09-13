@@ -1,7 +1,9 @@
 #include "priority.h"
-#include "../auxiliary_files/heap_min.h"
-#include "../auxiliary_files/processes.h"
+
 #include <stddef.h>
+
+#include "../processes/process_manager.h"
+#include "../auxiliary_files/heap_min.h"
 
 static int priority_initialized = 0;
 

@@ -1,5 +1,8 @@
 #include "red_and_black_tree.h"
+
 #include <stdlib.h>
+
+#include "../processes/process_manager.h"
 
 enum Color { RED, BLACK };
 

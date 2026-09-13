@@ -1,12 +1,12 @@
 
 ----------------------------------------------------------------------
 Log de escalonamento:
-Algoritmo: CFS | Slice: 10
+Algoritmo: alternancia | Slice: 10
 
-[T=000] CREATE  | pid=1   | total_t=20       | priority=59   | vruntime=0   
-[T=000] CREATE  | pid=2   | total_t=24       | priority=32   | vruntime=0   
-[T=000] CREATE  | pid=3   | total_t=32       | priority=32   | vruntime=0   
-[T=000] RUN     | pid=1   | remaining_t=20   | cpu_slice=10  | priority=59   | vruntime=0   
+[T=000] CREATE  | pid=1   | total_t=20      
+[T=000] CREATE  | pid=2   | total_t=24      
+[T=000] CREATE  | pid=3   | total_t=32      
+[T=000] RUN     | pid=1   | remaining_t=20   | cpu_slice=10 
 ---- Estado do sistema em T=000 ----
   EXECUTANDO | pid=1   | remaining_t=20  
   PRONTO     | pid=2   | remaining_t=24  
@@ -17,100 +17,56 @@ Dispositivos de E/S:
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
----- Estado do sistema em T=009 ----
-  BLOQUEADO  | pid=1   | remaining_t=11   | dispositivo=device-3 (em uso)
+---- Estado do sistema em T=006 ----
+  BLOQUEADO  | pid=1   | remaining_t=14   | dispositivo=device-2 (em uso)
   PRONTO     | pid=2   | remaining_t=24  
   PRONTO     | pid=3   | remaining_t=32  
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 1/1 | aguardando: 0)
+  device-2 (em uso: 1/2 | aguardando: 0)
     Em uso: pid=1 
+  device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
-[T=009] RUN     | pid=2   | remaining_t=24   | cpu_slice=10  | priority=32   | vruntime=0   
----- Estado do sistema em T=009 ----
-  BLOQUEADO  | pid=1   | remaining_t=11   | dispositivo=device-3 (em uso)
+[T=006] RUN     | pid=2   | remaining_t=24   | cpu_slice=10 
+---- Estado do sistema em T=006 ----
+  BLOQUEADO  | pid=1   | remaining_t=14   | dispositivo=device-2 (em uso)
   EXECUTANDO | pid=2   | remaining_t=24  
   PRONTO     | pid=3   | remaining_t=32  
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 1/1 | aguardando: 0)
+  device-2 (em uso: 1/2 | aguardando: 0)
     Em uso: pid=1 
+  device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
-[T=019] PREEMPT | pid=2   | remaining_t=14   | priority=32   | vruntime=320 
----- Estado do sistema em T=019 ----
-  PRONTO     | pid=1   | remaining_t=11  
-  PRONTO     | pid=2   | remaining_t=14  
+---- Estado do sistema em T=012 ----
+  PRONTO     | pid=1   | remaining_t=14  
+  BLOQUEADO  | pid=2   | remaining_t=18   | dispositivo=device-2 (em uso)
   PRONTO     | pid=3   | remaining_t=32  
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 1/2 | aguardando: 0)
+    Em uso: pid=2 
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
-[T=019] RUN     | pid=3   | remaining_t=32   | cpu_slice=10  | priority=32   | vruntime=0   
----- Estado do sistema em T=019 ----
-  PRONTO     | pid=1   | remaining_t=11  
-  PRONTO     | pid=2   | remaining_t=14  
+[T=012] RUN     | pid=3   | remaining_t=32   | cpu_slice=10 
+---- Estado do sistema em T=012 ----
+  PRONTO     | pid=1   | remaining_t=14  
+  BLOQUEADO  | pid=2   | remaining_t=18   | dispositivo=device-2 (em uso)
   EXECUTANDO | pid=3   | remaining_t=32  
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 1/2 | aguardando: 0)
+    Em uso: pid=2 
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
----- Estado do sistema em T=027 ----
-  PRONTO     | pid=1   | remaining_t=11  
-  PRONTO     | pid=2   | remaining_t=14  
-  BLOQUEADO  | pid=3   | remaining_t=24   | dispositivo=device-0 (em uso)
-Dispositivos de E/S:
-  device-0 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=027] RUN     | pid=2   | remaining_t=14   | cpu_slice=10  | priority=32   | vruntime=320 
----- Estado do sistema em T=027 ----
-  PRONTO     | pid=1   | remaining_t=11  
-  EXECUTANDO | pid=2   | remaining_t=14  
-  BLOQUEADO  | pid=3   | remaining_t=24   | dispositivo=device-0 (em uso)
-Dispositivos de E/S:
-  device-0 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=037] PREEMPT | pid=2   | remaining_t=4    | priority=32   | vruntime=640 
----- Estado do sistema em T=037 ----
-  PRONTO     | pid=1   | remaining_t=11  
-  PRONTO     | pid=2   | remaining_t=4   
-  PRONTO     | pid=3   | remaining_t=24  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
-[T=037] RUN     | pid=3   | remaining_t=24   | cpu_slice=10  | priority=32   | vruntime=256 
----- Estado do sistema em T=037 ----
-  PRONTO     | pid=1   | remaining_t=11  
-  PRONTO     | pid=2   | remaining_t=4   
-  EXECUTANDO | pid=3   | remaining_t=24  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 0/1 | aguardando: 0)
---------------------------------------
----- Estado do sistema em T=045 ----
-  PRONTO     | pid=1   | remaining_t=11  
-  PRONTO     | pid=2   | remaining_t=4   
-  BLOQUEADO  | pid=3   | remaining_t=16   | dispositivo=device-3 (em uso)
+---- Estado do sistema em T=021 ----
+  PRONTO     | pid=1   | remaining_t=14  
+  PRONTO     | pid=2   | remaining_t=18  
+  BLOQUEADO  | pid=3   | remaining_t=23   | dispositivo=device-3 (em uso)
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
@@ -118,11 +74,11 @@ Dispositivos de E/S:
   device-3 (em uso: 1/1 | aguardando: 0)
     Em uso: pid=3 
 --------------------------------------
-[T=045] RUN     | pid=1   | remaining_t=11   | cpu_slice=10  | priority=59   | vruntime=531 
----- Estado do sistema em T=045 ----
-  EXECUTANDO | pid=1   | remaining_t=11  
-  PRONTO     | pid=2   | remaining_t=4   
-  BLOQUEADO  | pid=3   | remaining_t=16   | dispositivo=device-3 (em uso)
+[T=021] RUN     | pid=1   | remaining_t=14   | cpu_slice=10 
+---- Estado do sistema em T=021 ----
+  EXECUTANDO | pid=1   | remaining_t=14  
+  PRONTO     | pid=2   | remaining_t=18  
+  BLOQUEADO  | pid=3   | remaining_t=23   | dispositivo=device-3 (em uso)
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
@@ -130,54 +86,54 @@ Dispositivos de E/S:
   device-3 (em uso: 1/1 | aguardando: 0)
     Em uso: pid=3 
 --------------------------------------
-[T=055] PREEMPT | pid=1   | remaining_t=1    | priority=59   | vruntime=1121
----- Estado do sistema em T=055 ----
-  PRONTO     | pid=1   | remaining_t=1   
-  PRONTO     | pid=2   | remaining_t=4   
-  PRONTO     | pid=3   | remaining_t=16  
+[T=031] PREEMPT | pid=1   | remaining_t=4   
+---- Estado do sistema em T=031 ----
+  PRONTO     | pid=1   | remaining_t=4   
+  PRONTO     | pid=2   | remaining_t=18  
+  PRONTO     | pid=3   | remaining_t=23  
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
-[T=055] RUN     | pid=3   | remaining_t=16   | cpu_slice=10  | priority=32   | vruntime=512 
----- Estado do sistema em T=055 ----
-  PRONTO     | pid=1   | remaining_t=1   
-  PRONTO     | pid=2   | remaining_t=4   
-  EXECUTANDO | pid=3   | remaining_t=16  
+[T=031] RUN     | pid=2   | remaining_t=18   | cpu_slice=10 
+---- Estado do sistema em T=031 ----
+  PRONTO     | pid=1   | remaining_t=4   
+  EXECUTANDO | pid=2   | remaining_t=18  
+  PRONTO     | pid=3   | remaining_t=23  
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
----- Estado do sistema em T=058 ----
-  PRONTO     | pid=1   | remaining_t=1   
-  PRONTO     | pid=2   | remaining_t=4   
-  BLOQUEADO  | pid=3   | remaining_t=13   | dispositivo=device-0 (em uso)
+[T=041] PREEMPT | pid=2   | remaining_t=8   
+---- Estado do sistema em T=041 ----
+  PRONTO     | pid=1   | remaining_t=4   
+  PRONTO     | pid=2   | remaining_t=8   
+  PRONTO     | pid=3   | remaining_t=23  
 Dispositivos de E/S:
-  device-0 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
+  device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
-[T=058] RUN     | pid=2   | remaining_t=4    | cpu_slice=4   | priority=32   | vruntime=640 
----- Estado do sistema em T=058 ----
-  PRONTO     | pid=1   | remaining_t=1   
-  EXECUTANDO | pid=2   | remaining_t=4   
-  BLOQUEADO  | pid=3   | remaining_t=13   | dispositivo=device-0 (em uso)
+[T=041] RUN     | pid=3   | remaining_t=23   | cpu_slice=10 
+---- Estado do sistema em T=041 ----
+  PRONTO     | pid=1   | remaining_t=4   
+  PRONTO     | pid=2   | remaining_t=8   
+  EXECUTANDO | pid=3   | remaining_t=23  
 Dispositivos de E/S:
-  device-0 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
+  device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
-[T=062] FINISH  | pid=2   | remaining_t=0    | priority=32   | vruntime=768 
----- Estado do sistema em T=062 ----
-  PRONTO     | pid=1   | remaining_t=1   
+[T=051] PREEMPT | pid=3   | remaining_t=13  
+---- Estado do sistema em T=051 ----
+  PRONTO     | pid=1   | remaining_t=4   
+  PRONTO     | pid=2   | remaining_t=8   
   PRONTO     | pid=3   | remaining_t=13  
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
@@ -185,9 +141,48 @@ Dispositivos de E/S:
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
-[T=062] RUN     | pid=3   | remaining_t=13   | cpu_slice=10  | priority=32   | vruntime=608 
----- Estado do sistema em T=062 ----
-  PRONTO     | pid=1   | remaining_t=1   
+[T=051] RUN     | pid=1   | remaining_t=4    | cpu_slice=4  
+---- Estado do sistema em T=051 ----
+  EXECUTANDO | pid=1   | remaining_t=4   
+  PRONTO     | pid=2   | remaining_t=8   
+  PRONTO     | pid=3   | remaining_t=13  
+Dispositivos de E/S:
+  device-0 (em uso: 0/1 | aguardando: 0)
+  device-1 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 0/2 | aguardando: 0)
+  device-3 (em uso: 0/1 | aguardando: 0)
+--------------------------------------
+[T=055] FINISH  | pid=1   | remaining_t=0   
+---- Estado do sistema em T=055 ----
+  PRONTO     | pid=2   | remaining_t=8   
+  PRONTO     | pid=3   | remaining_t=13  
+Dispositivos de E/S:
+  device-0 (em uso: 0/1 | aguardando: 0)
+  device-1 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 0/2 | aguardando: 0)
+  device-3 (em uso: 0/1 | aguardando: 0)
+--------------------------------------
+[T=055] RUN     | pid=2   | remaining_t=8    | cpu_slice=8  
+---- Estado do sistema em T=055 ----
+  EXECUTANDO | pid=2   | remaining_t=8   
+  PRONTO     | pid=3   | remaining_t=13  
+Dispositivos de E/S:
+  device-0 (em uso: 0/1 | aguardando: 0)
+  device-1 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 0/2 | aguardando: 0)
+  device-3 (em uso: 0/1 | aguardando: 0)
+--------------------------------------
+[T=063] FINISH  | pid=2   | remaining_t=0   
+---- Estado do sistema em T=063 ----
+  PRONTO     | pid=3   | remaining_t=13  
+Dispositivos de E/S:
+  device-0 (em uso: 0/1 | aguardando: 0)
+  device-1 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 0/2 | aguardando: 0)
+  device-3 (em uso: 0/1 | aguardando: 0)
+--------------------------------------
+[T=063] RUN     | pid=3   | remaining_t=13   | cpu_slice=10 
+---- Estado do sistema em T=063 ----
   EXECUTANDO | pid=3   | remaining_t=13  
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
@@ -195,117 +190,83 @@ Dispositivos de E/S:
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
----- Estado do sistema em T=063 ----
-  PRONTO     | pid=1   | remaining_t=1   
-  BLOQUEADO  | pid=3   | remaining_t=12   | dispositivo=device-3 (em uso)
+---- Estado do sistema em T=068 ----
+  BLOQUEADO  | pid=3   | remaining_t=8    | dispositivo=device-0 (em uso)
 Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 1/1 | aguardando: 0)
+  device-0 (em uso: 1/1 | aguardando: 0)
     Em uso: pid=3 
---------------------------------------
-[T=063] RUN     | pid=1   | remaining_t=1    | cpu_slice=1   | priority=59   | vruntime=1121
----- Estado do sistema em T=063 ----
-  EXECUTANDO | pid=1   | remaining_t=1   
-  BLOQUEADO  | pid=3   | remaining_t=12   | dispositivo=device-3 (em uso)
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
---------------------------------------
-[T=064] FINISH  | pid=1   | remaining_t=0    | priority=59   | vruntime=1180
----- Estado do sistema em T=064 ----
-  BLOQUEADO  | pid=3   | remaining_t=12   | dispositivo=device-3 (em uso)
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 1/1 | aguardando: 0)
-    Em uso: pid=3 
---------------------------------------
-[T=064] IDLE
-[T=065] IDLE
-[T=066] IDLE
-[T=067] IDLE
-[T=068] IDLE
-[T=069] RUN     | pid=3   | remaining_t=12   | cpu_slice=10  | priority=32   | vruntime=640 
----- Estado do sistema em T=069 ----
-  EXECUTANDO | pid=3   | remaining_t=12  
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
----- Estado do sistema em T=078 ----
-  BLOQUEADO  | pid=3   | remaining_t=3    | dispositivo=device-3 (em uso)
+[T=068] RUN     | pid=3   | remaining_t=8    | cpu_slice=8  
+---- Estado do sistema em T=068 ----
+  EXECUTANDO | pid=3   | remaining_t=8   
 Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
-  device-3 (em uso: 1/1 | aguardando: 0)
+  device-0 (em uso: 1/1 | aguardando: 0)
     Em uso: pid=3 
---------------------------------------
-[T=078] IDLE
-[T=079] IDLE
-[T=080] IDLE
-[T=081] IDLE
-[T=082] IDLE
-[T=083] IDLE
-[T=084] RUN     | pid=3   | remaining_t=3    | cpu_slice=3   | priority=32   | vruntime=928 
----- Estado do sistema em T=084 ----
-  EXECUTANDO | pid=3   | remaining_t=3   
-Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
----- Estado do sistema em T=086 ----
-  BLOQUEADO  | pid=3   | remaining_t=1    | dispositivo=device-1 (em uso)
+---- Estado do sistema em T=072 ----
+  BLOQUEADO  | pid=3   | remaining_t=4    | dispositivo=device-0 (em uso)
 Dispositivos de E/S:
-  device-0 (em uso: 0/1 | aguardando: 0)
-  device-1 (em uso: 1/2 | aguardando: 0)
+  device-0 (em uso: 1/1 | aguardando: 0)
     Em uso: pid=3 
+  device-1 (em uso: 0/2 | aguardando: 0)
   device-2 (em uso: 0/2 | aguardando: 0)
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
-[T=086] IDLE
-[T=087] IDLE
-[T=088] IDLE
-[T=089] IDLE
-[T=090] IDLE
-[T=091] RUN     | pid=3   | remaining_t=1    | cpu_slice=1   | priority=32   | vruntime=992 
----- Estado do sistema em T=091 ----
+[T=072] RUN     | pid=3   | remaining_t=4    | cpu_slice=4  
+---- Estado do sistema em T=072 ----
+  EXECUTANDO | pid=3   | remaining_t=4   
+Dispositivos de E/S:
+  device-0 (em uso: 1/1 | aguardando: 0)
+    Em uso: pid=3 
+  device-1 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 0/2 | aguardando: 0)
+  device-3 (em uso: 0/1 | aguardando: 0)
+--------------------------------------
+---- Estado do sistema em T=075 ----
+  BLOQUEADO  | pid=3   | remaining_t=1    | dispositivo=device-2 (em uso)
+Dispositivos de E/S:
+  device-0 (em uso: 0/1 | aguardando: 0)
+  device-1 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 1/2 | aguardando: 0)
+    Em uso: pid=3 
+  device-3 (em uso: 0/1 | aguardando: 0)
+--------------------------------------
+[T=075] RUN     | pid=3   | remaining_t=1    | cpu_slice=1  
+---- Estado do sistema em T=075 ----
   EXECUTANDO | pid=3   | remaining_t=1   
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 1/2 | aguardando: 0)
+    Em uso: pid=3 
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
-[T=092] FINISH  | pid=3   | remaining_t=0    | priority=32   | vruntime=1024
----- Estado do sistema em T=092 ----
+[T=076] FINISH  | pid=3   | remaining_t=0   
+---- Estado do sistema em T=076 ----
 Dispositivos de E/S:
   device-0 (em uso: 0/1 | aguardando: 0)
   device-1 (em uso: 0/2 | aguardando: 0)
-  device-2 (em uso: 0/2 | aguardando: 0)
+  device-2 (em uso: 1/2 | aguardando: 0)
+    Em uso: pid=3 
   device-3 (em uso: 0/1 | aguardando: 0)
 --------------------------------------
 
 ----------------------- RESULTADOS DA EXECUÇÃO -----------------------
 PID   | Turnaround        | Tempo de Espera  | Tempo de Bloqueio | Tempo de Execução
 ----------------------------------------------------------------------
-1     | 64               | 38               | 6                | 20              
-2     | 62               | 38               | 0                | 24              
-3     | 92               | 34               | 26               | 32              
+1     | 55               | 33               | 2                | 20              
+2     | 63               | 37               | 2                | 24              
+3     | 76               | 56               | 12               | 32              
 ----------------------------------------------------------------------
-Latência Média: 72.67           
-Tempo de Espera Médio: 36.67           
-Tempo de Bloqueio Médio: 10.67           
+Latência Média: 64.67           
+Tempo de Espera Médio: 42.00           
+Tempo de Bloqueio Médio: 5.33            
 Tempo Total de Execução: 76              
 
 ----------------------------------------------------------------------

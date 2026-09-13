@@ -1,8 +1,11 @@
-#include "processes.h"
+#include "process_manager.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "../io_algorithms/io_manager.h"
+#include "../logs/log_manager.h"
 
 Process processes[MAX_PROCESSES];
 int num_processes = 0;

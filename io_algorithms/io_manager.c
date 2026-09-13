@@ -1,7 +1,10 @@
 #include "io_manager.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "../auxiliary_files/logs.h"
+
+#include "../logs/log_manager.h"
+#include "../processes/process_manager.h"
 
 Device devices[MAX_DEVICES];
 int num_devices = 0;

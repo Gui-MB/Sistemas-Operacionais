@@ -1,7 +1,8 @@
 #ifndef MEMORY_MANAGER_H
 #define MEMORY_MANAGER_H
 
-#include "../auxiliary_files/processes.h"
+#include "../processes/process_manager.h"
+
 typedef struct {
     int fifo_faults;
     int lru_faults;

@@ -1,7 +1,7 @@
 #ifndef LOGS_H
 #define LOGS_H
 
-#include "processes.h"
+#include "../processes/process_manager.h"
 
 // Estrutura de Configuração de Logs
 typedef struct {

@@ -79,7 +79,4 @@ void free_input_data(void);
 // Função para registrar um acesso de memória à fila global, codificando PID e Página
 void record_memory_access(int pid, int page);
 
-// Inclusão do arquivo de logs
-#include "logs.h" 
-
 #endif

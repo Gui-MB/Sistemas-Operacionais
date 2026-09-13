@@ -1,5 +1,8 @@
 #include "heap_min.h"
+
 #include <stddef.h>
+
+#include "../processes/process_manager.h"
 
 // Vetor que representa o heap mínimo e seu estado atual
 static Process *heap[MAX_PROCESSES];

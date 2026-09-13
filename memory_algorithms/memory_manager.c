@@ -1,13 +1,15 @@
+#include "memory_manager.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "memory_manager.h"
+#include "../processes/process_manager.h"
+#include "../logs/log_manager.h"
 #include "fifo.h"
 #include "rec_used.h"
 #include "freq_used.h"
 #include "optimal.h"
-#include "../auxiliary_files/processes.h"
 
 void memory_manager_simulate(const Process *p, PageFaultResult *result) {
     // O gerenciador de memória recebe um processo já preparado e decide quantas molduras ele pode usar.
