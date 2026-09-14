@@ -6,7 +6,7 @@ Este projeto implementa, em C, um simulador integrado e modularizado de um Siste
 - `main.c`: Arquivo principal que carrega a entrada, aciona as simulações e gerencia a intercalação entre CPU, Memória e Dispositivos de E/S.
 - `entradaEscalonador.txt`: Arquivo de configuração e carga de processos.
 - `saidaEscalonador.txt`: Arquivo de saída gerado que contém o log completo e o resumo da simulação.
-- `processes/`: 
+- `processes/`: Gerenciador de processos (process_manager.c/process_manager.h), responsável por definir a estrutura de dados dos processos, manter o estado global e realizar a leitura e interpretação do arquivo de entrada.
 - `logs/`: Sistema de formatação de logs e exibição do estado do sistema.
 - `auxiliary_files/`: Define utilitários comuns, como por exemplo as estruturas de dados (árvores, heaps).
 - `scheduler_algorithms/`: Algoritmos de escalonamento de CPU (Round Robin, Prioridade, Loteria, CFS).
