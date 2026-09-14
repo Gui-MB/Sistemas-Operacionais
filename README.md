@@ -1,30 +1,24 @@
-# Simulador de Escalonador de Processos e Gerenciador de Memória
+# Simulador de Sistema Operacional
 
-Este projeto implementa, em C, um simulador integrado de escalonamento de processos e substituição de páginas.
-
-O programa lê `entradaEscalonador.txt`, simula a execução dos processos ciclo a ciclo e compara os algoritmos de memória **FIFO**, **LRU**, **NUF (NFU)** e **Ótimo** pelo número de trocas de página.
+Este projeto implementa, em C, um simulador integrado e modularizado de um Sistema Operacional, abrangendo o escalonamento de processos na CPU, gerenciamento de substituição de páginas na memória e o escalonamento de operações de Entrada e Saída (E/S).
 
 ## Estrutura do projeto
-
-- `main.c`: Arquivo principal que carrega a entrada, aciona as simulações, realiza a contagem do tempo decorrido e gerencia a intercalação entre CPU e Memória.
-- `entradaEscalonador.txt`: Arquivo de entrada que indica a configuração do sistema e a estrutura dos processos. Deve estar na raiz do projeto.
-- `scheduler_algorithms/`: Implementações dos algoritmos de escalonamento de CPU.
-- `memory_algorithms/`: Implementações dos algoritmos de substituição de páginas de memória.
-- `io_algorithms/`: Gerenciador de dispositivos de E/S (`io_manager.c`/`io_manager.h`).
-- `auxiliary_files/`: Define utilitários comuns, como estruturas de dados (árvores, heaps) e o sistema de formatação de logs (`prints.c`/`prints.h`).
-- `input_generator/`: Contém os scripts em Python geradores de entradas somente para o processo de escalonador.
+- `main.c`: Arquivo principal que carrega a entrada, aciona as simulações e gerencia a intercalação entre CPU, Memória e Dispositivos de E/S.
+- `entradaEscalonador.txt`: Arquivo de configuração e carga de processos.
 - `saidaEscalonador.txt`: Arquivo de saída gerado que contém o log completo e o resumo da simulação.
+- `processes/`: 
+- `logs/`: Sistema de formatação de logs e exibição do estado do sistema.
+- `auxiliary_files/`: Define utilitários comuns, como por exemplo as estruturas de dados (árvores, heaps).
+- `scheduler_algorithms/`: Algoritmos de escalonamento de CPU (Round Robin, Prioridade, Loteria, CFS).
+- `memory_algorithms/`: Algoritmos de substituição de páginas (FIFO, LRU, NFU, Ótimo).
+- `io_algorithms/`: Gerenciador de E/S (`io_manager.c`/`io_manager.h`) com controle de bloqueio e filas de espera circulares.
 
 ## Como compilar e executar
-
-Na raiz do projeto, utilize o comando abaixo (certifique-se de compilar todos os arquivos `.c` das subpastas):
-
+Na raiz do projeto, utilize o comando abaixo:
 ```bash
-gcc main.c auxiliary_files/*.c scheduler_algorithms/*.c memory_algorithms/*.c io_algorithms/*.c -o escalonador
+gcc main.c auxiliary_files/*.c scheduler_algorithms/*.c memory_algorithms/*.c io_algorithms/*.c logs/*.c -o escalonador
 ./escalonador
 ```
-
-O arquivo `saidaEscalonador.txt` é gerado automaticamente com o log detalhado.
 
 ## Formato de entrada
 
@@ -63,25 +57,7 @@ Significado dos campos das demais linhas (um processo por linha):
 - `sequênciaAcessoPaginasProcesso`: sequência de páginas referenciadas.
 - `chanceRequisitarES`: chance (%) do processo solicitar uma operação de E/S durante sua fatia de CPU.
 
-## Formato de saída
-
-Ao final da execução, o programa imprime **uma linha com resultados e uma tabela com as trocas de memória**:
-
-```text
-38|40|35|27|NFU
-PID    | FIFO     | LRU      | NFU      | OTM   
----------------------------------------------
-1      | 7        | 8        | 7        | 5   
-2      | 9        | 11       | 11       | 8   
-3      | 22       | 21       | 17       | 14  
-```
-
-Onde:
-
-- `FIFO`, `LRU`, `NUF`, `OTIMO`: número de trocas de página de cada algoritmo.
-- `melhor`: algoritmo com desempenho mais próximo do ótimo (`FIFO`, `LRU`, `NFU`), ou `empate` em caso de empate.
-
-Observações de implementação:
+## Observações:
 
 - Troca de página conta apenas substituição real; carregamento inicial não conta troca.
 - No NUF, em empate de frequência, é escolhida a página de menor ID.
@@ -106,26 +82,14 @@ Observações de implementação:
 - **NFU (Não Usada Frequentemente)** (`freq_used.c`).
 - **Ótimo** (`optimal.c`).
 
-## Funcionamento (visão geral)
-
-1. O programa lê todos os processos de `entradaEscalonador.txt`.
-2. Cada processo é inserido nas estruturas internas.
-3. A simulação avança em passos de tempo, selecionando o próximo processo a executar conforme o algoritmo.
-4. A cada decisão, o simulador atualiza o tempo de CPU consumido, espera, prioridade/dinâmica e estado do processo.
-5. Ao final, o simulador exibe o resumo da execução e as métricas calculadas.
-
-## Saída detalhada
-
-Além da linha final para correção automática, o arquivo `saidaEscalonador.txt` contém logs de escalonamento, passos de memória e tabelas-resumo por processo/algoritmo.
-
 ## Observações sobre IA
 
 A IA foi utilizada para:
 
 - refatorar a arquitetura de logs
-- log em formato de tabela para número de trocas por processo e algoritmo
-- ajuda para encontrar o problema que causava o "global" não funcionar
 - refatorar a organização das informações dos processos para incluir memória
+- refatorar a organização do algoritmo de CFS para permitir E/S
+- ajuda para encontrar o problema que causava a memória "global" não funcionar
 - criar a função `log_printf()`
 - implementar a estrutura de dados da árvore vermelho e preta
 - implementar a estrutura de dados heap mínimo
