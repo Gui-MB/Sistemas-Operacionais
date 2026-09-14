@@ -112,8 +112,8 @@ int main(void) {
 
             if (running_idx == -1) { // Sistema IDLE
                 if (log_cfg.cpu_events) log_printf("\n[T=%04d] IDLE\n", current_time);
-                io_manager_tick(current_time);
                 current_time++;
+                io_manager_tick(current_time);
                 continue;
             }
 

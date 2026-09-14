@@ -8,7 +8,6 @@
 typedef struct {
     int cpu_events;     // Imprime eventos do escalonador (CREATE, RUN, PREEMPT, FINISH)
     int memory_steps;   // Imprime o passo a passo da memória (Acertos, Trocas)
-    int io_steps;       // Imprime o estado dos dispositivos de E/S a cada troca de contexto
     int final_metrics;  // Imprime as tabelas visuais de resultados no final do arquivo
 } LogConfig;
 

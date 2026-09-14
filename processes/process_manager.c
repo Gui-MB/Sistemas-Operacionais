@@ -154,6 +154,7 @@ void read_input_file(const char *filename) {
         process->planned_device_id = -1;
         process->ready_wait_time = 0;
         process->blocked_time = 0;
+        process->io_queue_time = 0;
         process->last_ready_entry_time = process->creation_time;
         process->io_wait_start_time = 0;
 

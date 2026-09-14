@@ -113,6 +113,7 @@ void io_manager_tick(int current_time) {
             int idx = dequeue_waiting(d);
             Process *p = &processes[idx];
             p->device_in_use = 1;
+            p->io_queue_time += (current_time - p->io_wait_start_time);
             p->io_remaining_time = d->operation_time;
             d->active_procs[d->current_users++] = idx;
         }

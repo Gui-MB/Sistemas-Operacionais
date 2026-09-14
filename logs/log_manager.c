@@ -1,5 +1,4 @@
 #include "log_manager.h"
-
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,12 +15,19 @@
 // Inicialização das configurações de Log
 LogConfig log_cfg = {
     .cpu_events = 1,
-    .memory_steps = 0,
-    .io_steps = 1,
+    .memory_steps = 1,
     .final_metrics = 1
 };
 
 static FILE *log_file = NULL;
+
+// Variáveis estáticas para separar a simulação do print da memória
+static int mem_simulated = 0;
+static int total_fifo = 0, total_lru = 0, total_nfu = 0, total_optimal = 0;
+static int fifo_by_proc[MAX_PROCESSES] = {0};
+static int lru_by_proc[MAX_PROCESSES] = {0};
+static int nfu_by_proc[MAX_PROCESSES] = {0};
+static int optimal_by_proc[MAX_PROCESSES] = {0};
 
 int init_output_file(const char *filename) {
     log_file = fopen(filename, "w");
@@ -106,45 +112,10 @@ void print_system_state(int current_time, int running_idx) {
     io_manager_print_state();
 }
 
-void print_metrics_scaling(void) {
-    if (log_cfg.final_metrics) {
-        log_printf("\n----------------------- RESULTADOS DA EXECUÇÃO -----------------------\n");
-        log_printf("%-5s | %-16s | %-16s | %-16s | %-16s\n", "PID", "Turnaround", "Tempo de Espera", "Tempo de Bloqueio", "Tempo de Execução");
-        log_printf("----------------------------------------------------------------------\n");
-    }
-
-    float total_latency = 0, total_wt = 0, total_bt = 0;
-    int total_exec_time = 0;
-
-    for (int i = 0; i < num_processes; i++) {
-        Process p = processes[i];
-        int latency_time = p.completion_time - p.creation_time;
-
-        total_latency += latency_time;
-        total_wt += p.ready_wait_time;
-        total_bt += p.blocked_time;
-        total_exec_time += p.exec_time;
-
-        if (log_cfg.final_metrics) {
-            log_printf("%-5d | %-16d | %-16d | %-16d | %-16d\n", p.pid, latency_time, p.ready_wait_time, p.blocked_time, p.exec_time);
-        }
-    }
-
-    if (log_cfg.final_metrics) {
-        log_printf("----------------------------------------------------------------------\n");
-        log_printf("Latência Média: %-16.2f\n", total_latency / num_processes);
-        log_printf("Tempo de Espera Médio: %-16.2f\n", total_wt / num_processes);
-        log_printf("Tempo de Bloqueio Médio: %-16.2f\n", total_bt / num_processes);
-        log_printf("Tempo Total de Execução: %-16d\n", total_exec_time);
-    }
-}
-
-void print_metrics_memory(void) {
-    int total_fifo = 0, total_lru = 0, total_nfu = 0, total_optimal = 0;
-    int fifo_by_proc[MAX_PROCESSES] = {0};
-    int lru_by_proc[MAX_PROCESSES] = {0};
-    int nfu_by_proc[MAX_PROCESSES] = {0};
-    int optimal_by_proc[MAX_PROCESSES] = {0};
+// Garante que a simulação de memória execute e imprima os passos ANTES das tabelas finais
+static void ensure_memory_simulated(void) {
+    if (mem_simulated) return; // Evita rodar duas vezes
+    mem_simulated = 1;
 
     // Lógica para Memória GLOBAL
     if (strcmp(memory_policy, "global") == 0) {
@@ -152,7 +123,6 @@ void print_metrics_memory(void) {
         int physical_frames = memory_size_bytes / page_size_bytes;
         if (physical_frames <= 0) physical_frames = 1;
 
-        // Em modo global, o limite de frames considera a soma do teto de cada processo.
         for (int i = 0; i < num_processes; i++) {
             total_frames += processes[i].frame_limit;
         }
@@ -179,6 +149,61 @@ void print_metrics_memory(void) {
             total_optimal += res.optimal_faults;
         }
     }
+}
+
+void print_metrics_scaling(void) {
+    // Força a simulação e os prints passo-a-passo da memória ocorrerem agora
+    ensure_memory_simulated();
+
+    if (log_cfg.final_metrics) {
+        log_printf("\n----------------------- RESULTADOS DA EXECUÇÃO -----------------------\n");
+        log_printf("%-5s | %-10s | %-16s | %-16s | %-14s\n", "PID", "Latência", "Tempo em Espera", "Tempo Bloqueado", "Tempo na CPU");
+        log_printf("----------------------------------------------------------------------\n");
+    }
+
+    float total_latency = 0, total_wt = 0, total_bt = 0;
+    int total_exec_time = 0;
+    int tempo_simulacao = 0;
+
+    for (int i = 0; i < num_processes; i++) {
+        Process p = processes[i];
+        int latency_time = p.completion_time - p.creation_time;
+    
+        total_latency += latency_time;
+        total_wt += p.ready_wait_time;
+        total_bt += p.blocked_time;
+        total_exec_time += p.exec_time;
+
+        if (p.completion_time > tempo_simulacao) {
+            tempo_simulacao = p.completion_time;
+        }
+
+        if (log_cfg.final_metrics) {
+            log_printf("%-5d | %-9d | %-16d | %-16d | %-14d\n", p.pid, latency_time, p.ready_wait_time, p.blocked_time, p.exec_time);
+        }
+    }
+
+    int tempo_idle = tempo_simulacao - total_exec_time;
+    float ocupacao_cpu = ((float)total_exec_time / tempo_simulacao) * 100.0;
+
+    if (log_cfg.final_metrics) {
+        log_printf("----------------------------------------------------------------------\n");
+        log_printf("Tempo de Latência Médio: %-16.2f\n", total_latency / num_processes);
+        log_printf("Tempo de Espera Médio: %-16.2f\n", total_wt / num_processes);
+        log_printf("Tempo de Bloqueio Médio: %-16.2f\n", total_bt / num_processes);
+        log_printf("Tempo de Execução Médio: %-16.2f\n", (float)total_exec_time / num_processes);
+        log_printf("Taxa de Ocupação da CPU: %.2f%%\n", ocupacao_cpu);
+        log_printf("Tempo Total em Espera (Pronto): %-14d\n", (int)total_wt);
+        log_printf("Tempo Total em Bloqueado: %-14d\n", (int)total_bt);
+        log_printf("Tempo Total da CPU ociosa (Idle): %-14d\n", tempo_idle);
+        log_printf("Tempo Total em Execução: %-14d\n", total_exec_time);
+        log_printf("Tempo Total de Simulação: %-14d\n", tempo_simulacao);
+    }
+}
+
+void print_metrics_memory(void) {
+    // A simulação já ocorreu em print_metrics_scaling, mas chamamos para garantir segurança
+    ensure_memory_simulated();
 
     int diff_fifo = abs(total_fifo - total_optimal);
     int diff_lru  = abs(total_lru  - total_optimal);
@@ -225,12 +250,35 @@ void print_metrics_memory(void) {
 void print_metrics_io(void) {
     if (!log_cfg.final_metrics) return;
 
-    log_printf("\n----------------------- RESULTADOS DE E/S -----------------------\n");
-    log_printf("%-8s | %-16s | %-16s | %-16s\n", "PID", "Tempo de Bloqueio", "Tempo de Espera", "Solicitações de E/S");
-    log_printf("-----------------------------------------------------------------\n");
+log_printf("\n------------------------------------------- RESULTADOS DE E/S -------------------------------------------\n");
+    log_printf("%-5s | %-13s | %-16s | %-16s | %-17s | %-15s\n", 
+               "PID", "Total de Reqs", "Tempo Bloqueado", "Uso Efetivo E/S", "Tempo Fila E/S", "% Vida em Fila");
+    log_printf("---------------------------------------------------------------------------------------------------------\n");
+
+    int total_sys_requests = 0;
+    int total_sys_blocked = 0;
+    int total_sys_queue = 0;
 
     for (int i = 0; i < num_processes; i++) {
         Process p = processes[i];
-        log_printf("%-8d | %-16d | %-16d | %-16d\n", p.pid, p.blocked_time, p.ready_wait_time, p.io_request_count);
+        
+        // O tempo bloqueado menos o tempo de fila dá o tempo real em que a máquina trabalhou
+        int uso_efetivo = p.blocked_time - p.io_queue_time;
+        
+        // Porcentagem da vida do processo perdida APENAS na fila de dispositivo
+        int lifetime = p.completion_time - p.creation_time;
+        float percent_queue = lifetime > 0 ? ((float)p.io_queue_time / lifetime) * 100.0f : 0.0f;
+        
+        total_sys_requests += p.io_request_count;
+        total_sys_blocked += p.blocked_time;
+        total_sys_queue += p.io_queue_time;
+
+        log_printf("%-5d | %-13d | %-16d | %-16d | %-17d | %-14.2f%%\n", 
+                   p.pid, p.io_request_count, p.blocked_time, uso_efetivo, p.io_queue_time, percent_queue);
     }
+
+    log_printf("---------------------------------------------------------------------------------------------------------\n");
+    log_printf("Total de Solicitações E/S: %-14d\n", total_sys_requests);
+    log_printf("Tempo Total Bloqueado (Fila + Uso): %-14d\n", total_sys_blocked);
+    log_printf("Tempo Total Perdido em Filas de E/S: %-14d\n", total_sys_queue);
 }

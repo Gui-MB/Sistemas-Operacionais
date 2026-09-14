@@ -35,6 +35,7 @@ typedef struct {
     int planned_device_id;     // Dispositivo sorteado para a solicitação da fatia atual
     int ready_wait_time;       // Tempo total acumulado no estado pronto
     int blocked_time;          // Tempo total acumulado no estado bloqueado
+    int io_queue_time;         // Tempo total acumulado na fila de espera de E/S
     int last_ready_entry_time; // Instante em que o processo entrou no estado pronto pela última vez
     int io_wait_start_time;    // Instante em que o processo entrou em estado bloqueado
 } Process;
