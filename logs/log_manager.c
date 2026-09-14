@@ -231,6 +231,6 @@ void print_metrics_io(void) {
 
     for (int i = 0; i < num_processes; i++) {
         Process p = processes[i];
-        log_printf("%-8d | %-16d | %-16d | %-16d\n", p.pid, p.blocked_time, p.ready_wait_time, p.chance_request_io);
+        log_printf("%-8d | %-16d | %-16d | %-16d\n", p.pid, p.blocked_time, p.ready_wait_time, p.io_request_count);
     }
 }

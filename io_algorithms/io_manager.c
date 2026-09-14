@@ -69,6 +69,7 @@ void io_manager_request(int proc_idx, int device_id, int current_time) {
     p->blocked = 1;
     p->requested_device_id = device_id;
     p->io_wait_start_time = current_time;
+    p->io_request_count++;
 
     if (d->current_users < d->max_concurrent) {
         p->device_in_use = 1;

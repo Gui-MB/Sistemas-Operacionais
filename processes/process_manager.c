@@ -84,6 +84,8 @@ void read_input_file(const char *filename) {
         memory_policy[strcspn(memory_policy, "\r\n")] = 0;
     }
 
+    if (num_devices_declared > MAX_DEVICES) num_devices_declared = MAX_DEVICES;
+
     // Lê as linhas de dispositivos de E/S: idDispositivo|numUsosSimultaneos|tempoOperação
     for (int i = 0; i < num_devices_declared && getline(&line, &line_size, file) != -1; i++) {
         char device_name[50];

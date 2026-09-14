@@ -26,6 +26,7 @@ typedef struct {
     int nfu_faults;
     int optimal_faults;
     int chance_request_io;     // Chance (%) de solicitar E/S durante a fatia de CPU
+    int io_request_count;      // Quantidade real de solicitações de E/S feitas pelo processo
     int blocked;               // 1 se bloqueado (na fila ou em uso de um dispositivo), 0 caso contrário
     int requested_device_id;   // Dispositivo alvo da solicitação de E/S atual (-1 se nenhum)
     int device_in_use;         // 1 se já está sendo atendido pelo dispositivo, 0 se apenas na fila de espera
